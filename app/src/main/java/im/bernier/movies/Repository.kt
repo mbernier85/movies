@@ -1,8 +1,11 @@
 package im.bernier.movies
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import im.bernier.movies.genre.Genres
+import im.bernier.movies.movie.Movie
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -18,8 +21,13 @@ object Repository {
     lateinit var api: Api
     lateinit var db: AppDatabase
 
-    fun init(context: Context) {
+    private val movieLiveData = MutableLiveData<Movie>()
 
+    public fun movieLiveData(): LiveData<Movie> {
+        return movieLiveData
+    }
+
+    fun init(context: Context) {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder()
@@ -44,6 +52,20 @@ object Repository {
             val newRequest = request.newBuilder().url(newUrl).build()
             return chain.proceed(newRequest)
         }
+    }
+
+    fun fetchMovie(id: Long) {
+        api.getMovie(id).enqueue(object: Callback<Movie?> {
+            override fun onFailure(call: Call<Movie?>, t: Throwable) {
+                Timber.e(t)
+            }
+
+            override fun onResponse(call: Call<Movie?>, response: retrofit2.Response<Movie?>) {
+                if (response.isSuccessful) {
+                    movieLiveData.postValue(response.body())
+                }
+            }
+        })
     }
 
     fun fetchGenres() {

@@ -46,21 +46,7 @@ class MoviesDataSource: PageKeyedDataSource<Int, Movie>() {
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
-        Repository.api.discover(params.key).enqueue(object: Callback<Page?> {
-            override fun onFailure(call: Call<Page?>, t: Throwable) {
-                Timber.e(t)
-            }
-
-            override fun onResponse(call: Call<Page?>, response: Response<Page?>) {
-                val page = response.body()
-                if (response.isSuccessful && page != null) {
-                    addGenre(page.results)
-                    callback.onResult(page.results, page.page - 1)
-                } else {
-                    Timber.e(response.errorBody().toString())
-                }
-            }
-        })
+        // We only append data
     }
 
     private fun addGenre(movies: List<Movie>) {
@@ -68,7 +54,7 @@ class MoviesDataSource: PageKeyedDataSource<Int, Movie>() {
             movies.forEach {
                 val genres =
                     Repository.db.genreDao().loadAllByIds(it.genre_ids.toIntArray()).joinToString { genre -> genre.name }
-                it.genres = genres
+                it.genreString = genres
             }
         }.start()
     }
