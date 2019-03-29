@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
+import im.bernier.movies.credits.Credits
 import im.bernier.movies.genre.Genres
 import im.bernier.movies.movie.Movie
 import okhttp3.Interceptor
@@ -22,9 +23,14 @@ object Repository {
     lateinit var db: AppDatabase
 
     private val movieLiveData = MutableLiveData<Movie>()
+    private val creditsLiveData = MutableLiveData<Credits>()
 
-    public fun movieLiveData(): LiveData<Movie> {
+    fun movieLiveData(): LiveData<Movie> {
         return movieLiveData
+    }
+
+    fun creditsLiveData(): LiveData<Credits> {
+        return creditsLiveData
     }
 
     fun init(context: Context) {
@@ -80,8 +86,20 @@ object Repository {
                     Thread {
                         db.genreDao().insertAll(genres.genres)
                     }.start()
-                } else {
-                    Timber.e(response.errorBody().toString())
+                }
+            }
+        })
+    }
+
+    fun fetchMovieCredits(movieId: Long) {
+        api.getMovieCredits(movieId).enqueue(object: Callback<Credits> {
+            override fun onFailure(call: Call<Credits>, t: Throwable) {
+                Timber.e(t)
+            }
+
+            override fun onResponse(call: Call<Credits>, response: retrofit2.Response<Credits>) {
+                if (response.isSuccessful) {
+                    creditsLiveData.postValue(response.body())
                 }
             }
         })

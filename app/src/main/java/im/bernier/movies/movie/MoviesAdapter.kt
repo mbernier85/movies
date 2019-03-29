@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import im.bernier.movies.GlideApp
 import im.bernier.movies.R
+import im.bernier.movies.imageUrl
 
 class MoviesAdapter(private val listener: (Long) -> Unit): PagedListAdapter<Movie, MoviesAdapter.MovieViewHolder>(
     MOVIE_COMPARATOR
@@ -47,8 +48,8 @@ class MoviesAdapter(private val listener: (Long) -> Unit): PagedListAdapter<Movi
         fun bind(movie: Movie) {
             view.findViewById<TextView>(R.id.textViewMovieTitle).text = movie.title
             val imageView : ImageView = view.findViewById(R.id.imageViewMovie)
-            val url = "https://image.tmdb.org/t/p/original" + movie.poster_path
-            GlideApp.with(imageView).load(url).centerCrop().into(imageView)
+            val url = imageUrl(movie.poster_path)
+            GlideApp.with(imageView).load(url).dontTransform().into(imageView)
             view.findViewById<TextView>(R.id.textViewMovieOverview).text = movie.overview
             view.findViewById<TextView>(R.id.textViewMovieGenres).text = movie.genreString
         }

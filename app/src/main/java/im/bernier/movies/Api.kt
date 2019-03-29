@@ -1,5 +1,6 @@
 package im.bernier.movies
 
+import im.bernier.movies.credits.Credits
 import im.bernier.movies.genre.Genres
 import im.bernier.movies.movie.Movie
 import im.bernier.movies.movie.Page
@@ -15,6 +16,9 @@ interface Api {
     @GET("genre/movie/list")
     fun genres(): Call<Genres>
 
-    @GET("movie/{movieId}")
+    @GET("movie/{movieId}?append_to_response=credits")
     fun getMovie(@Path("movieId") movieId: Long): Call<Movie>
+
+    @GET("movie/{movieId}/credits")
+    fun getMovieCredits(@Path("movieId") movieId: Long): Call<Credits>
 }

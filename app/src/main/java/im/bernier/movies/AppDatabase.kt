@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import im.bernier.movies.genre.Genre
 import im.bernier.movies.genre.GenreDao
 
-@Database(entities = arrayOf(Genre::class), version = 1)
+@Database(entities = [Genre::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun genreDao(): GenreDao
 }
