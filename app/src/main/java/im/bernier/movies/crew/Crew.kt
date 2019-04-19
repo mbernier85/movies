@@ -1,5 +1,8 @@
 package im.bernier.movies.crew
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Crew(
     val credit_id: String,
     val department: String,

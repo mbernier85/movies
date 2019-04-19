@@ -2,7 +2,9 @@ package im.bernier.movies.movie
 
 import im.bernier.movies.credits.Credits
 import im.bernier.movies.genre.Genre
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Movie(
     val title: String = "",
     val id: Long = 0,
