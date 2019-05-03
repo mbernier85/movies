@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import im.bernier.movies.R
+import im.bernier.movies.cast.Cast
 import im.bernier.movies.cast.CastAdapter
 import im.bernier.movies.databinding.FragmentMovieBinding
 import timber.log.Timber
@@ -32,7 +33,13 @@ class MovieFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = binding.recyclerViewCasts
-        val adapter = CastAdapter(listOf())
+        val adapter = CastAdapter(listOf(), 5) {
+            if (it != null) {
+                showCastMember(it)
+            } else {
+                showFullCastList()
+            }
+        }
         viewModel = ViewModelProviders.of(this)[MovieViewModel::class.java]
         binding.viewModel = viewModel
         binding.executePendingBindings()
@@ -48,5 +55,13 @@ class MovieFragment : Fragment() {
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+    }
+
+    fun showFullCastList() {
+
+    }
+
+    fun showCastMember(cast: Cast) {
+        
     }
 }

@@ -2,6 +2,7 @@ package im.bernier.movies
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import im.bernier.movies.cast.Cast
 
 abstract class BaseAdapter<T, V : BaseAdapter.BaseViewHolder<T>?>(var list: List<T>) :
     RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
@@ -16,7 +17,10 @@ abstract class BaseAdapter<T, V : BaseAdapter.BaseViewHolder<T>?>(var list: List
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<T>, position: Int) {
-        holder.bind(list[position])
+        val item = list.getOrNull(position)
+        item?.let {
+            holder.bind(it)
+        }
     }
 
     abstract class BaseViewHolder<I>(itemView: View) : RecyclerView.ViewHolder(itemView) {

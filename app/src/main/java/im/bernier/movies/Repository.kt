@@ -27,11 +27,11 @@ object Repository {
     lateinit var api: Api
     lateinit var db: AppDatabase
 
-    private val movieLiveData = MutableLiveData<Movie>()
+    private val movieLiveData = hashMapOf<Long, MutableLiveData<Movie>>()
     private val creditsLiveData = MutableLiveData<Credits>()
 
-    fun movieLiveData(): LiveData<Movie> {
-        return movieLiveData
+    fun movieLiveData(id: Long): LiveData<Movie> {
+        return movieLiveData.getOrPut(id, { MutableLiveData() })
     }
 
     fun creditsLiveData(): LiveData<Credits> {
@@ -56,31 +56,32 @@ object Repository {
         db = Room.databaseBuilder(context, AppDatabase::class.java, "movies").build()
     }
 
-    class RequestInterceptor: Interceptor {
+    class RequestInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
-            val newUrl = request.url().newBuilder().addQueryParameter("api_key", "a6534fdec1ef0b0d5e392dae172e5a42").build()
+            val newUrl = request.url().newBuilder()
+                .addQueryParameter("api_key", "a6534fdec1ef0b0d5e392dae172e5a42").build()
             val newRequest = request.newBuilder().url(newUrl).build()
             return chain.proceed(newRequest)
         }
     }
 
     fun fetchMovie(id: Long) {
-        api.getMovie(id).enqueue(object: Callback<Movie?> {
+        api.getMovie(id).enqueue(object : Callback<Movie?> {
             override fun onFailure(call: Call<Movie?>, t: Throwable) {
                 Timber.e(t)
             }
 
             override fun onResponse(call: Call<Movie?>, response: retrofit2.Response<Movie?>) {
                 if (response.isSuccessful) {
-                    movieLiveData.postValue(response.body())
+                    movieLiveData.getOrPut(id, { MutableLiveData() }).postValue(response.body())
                 }
             }
         })
     }
 
     fun fetchGenres() {
-        api.genres().enqueue(object: Callback<Genres?> {
+        api.genres().enqueue(object : Callback<Genres?> {
             override fun onFailure(call: Call<Genres?>, t: Throwable) {
                 Timber.e(t)
             }
@@ -97,7 +98,7 @@ object Repository {
     }
 
     fun fetchMovieCredits(movieId: Long) {
-        api.getMovieCredits(movieId).enqueue(object: Callback<Credits> {
+        api.getMovieCredits(movieId).enqueue(object : Callback<Credits> {
             override fun onFailure(call: Call<Credits>, t: Throwable) {
                 Timber.e(t)
             }

@@ -16,7 +16,7 @@ class MovieViewModel: ViewModel() {
     var movie = Movie()
 
     fun getLiveData(): LiveData<Movie> {
-        return Repository.movieLiveData()
+        return Repository.movieLiveData(movieId)
     }
 
     fun getCreditsLiveData(): LiveData<Credits> {

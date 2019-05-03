@@ -9,18 +9,49 @@ import androidx.databinding.DataBindingUtil
 import im.bernier.movies.BaseAdapter
 import im.bernier.movies.GlideApp
 import im.bernier.movies.R
+import im.bernier.movies.databinding.ItemPersonBinding
 import im.bernier.movies.imageUrl
 
-class CastAdapter(casts: List<Cast>) : BaseAdapter<Cast, CastAdapter.CastViewHolder>(casts) {
+class CastAdapter(casts: List<Cast>, private val limit: Int = 0, private val onClick: (Cast?) -> Unit) : BaseAdapter<Cast, BaseAdapter.BaseViewHolder<Cast>>(casts) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CastViewHolder {
+    override fun getItemViewType(position: Int): Int {
+        return if (limit > 0 && limit == position) {
+            R.layout.item_button
+        } else {
+            R.layout.item_person
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<Cast> {
         val inflater = LayoutInflater.from(parent.context)
-        val binding: im.bernier.movies.databinding.ItemPersonBinding = DataBindingUtil.inflate(inflater, R.layout.item_person, parent, false)
-        return CastViewHolder(binding.root)
+        if (viewType == R.layout.item_person) {
+            val binding: ItemPersonBinding = DataBindingUtil.inflate(inflater, R.layout.item_person, parent, false)
+            val holder = CastViewHolder(binding.root)
+            binding.root.setOnClickListener {
+                onClick.invoke(list[holder.adapterPosition])
+            }
+            return holder
+        } else {
+            val holder = CastLoadMore(inflater.inflate(R.layout.item_button, parent, false))
+            holder.itemView.setOnClickListener {
+                onClick.invoke(null)
+            }
+            return holder
+        }
     }
 
     override fun getItemCount(): Int {
-        return Math.min(list.size, 5)
+        return if (limit == 0) {
+            list.size
+        } else {
+            Math.min(list.size, limit) + 1
+        }
+    }
+
+    class CastLoadMore(itemView: View): BaseViewHolder<Cast>(itemView) {
+        override fun bind(item: Cast) {
+
+        }
     }
 
     class CastViewHolder(itemView: View) : BaseViewHolder<Cast>(itemView) {
