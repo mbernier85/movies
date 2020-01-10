@@ -2,9 +2,9 @@ package im.bernier.movies
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import im.bernier.movies.datasource.Repository
 
 class MainActivity : AppCompatActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

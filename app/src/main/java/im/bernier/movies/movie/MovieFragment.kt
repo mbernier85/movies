@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -15,7 +14,6 @@ import im.bernier.movies.R
 import im.bernier.movies.cast.Cast
 import im.bernier.movies.cast.CastAdapter
 import im.bernier.movies.databinding.FragmentMovieBinding
-import timber.log.Timber
 
 class MovieFragment : Fragment() {
 
@@ -62,6 +60,6 @@ class MovieFragment : Fragment() {
     }
 
     fun showCastMember(cast: Cast) {
-        
+
     }
 }

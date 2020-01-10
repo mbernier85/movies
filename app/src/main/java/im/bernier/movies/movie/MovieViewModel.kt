@@ -2,7 +2,7 @@ package im.bernier.movies.movie
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import im.bernier.movies.Repository
+import im.bernier.movies.datasource.Repository
 import im.bernier.movies.credits.Credits
 
 class MovieViewModel: ViewModel() {

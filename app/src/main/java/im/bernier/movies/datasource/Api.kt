@@ -1,4 +1,4 @@
-package im.bernier.movies
+package im.bernier.movies.datasource
 
 import im.bernier.movies.credits.Credits
 import im.bernier.movies.genre.Genres

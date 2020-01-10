@@ -1,7 +1,7 @@
 package im.bernier.movies.movie
 
 import androidx.paging.PageKeyedDataSource
-import im.bernier.movies.Repository
+import im.bernier.movies.datasource.Repository
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

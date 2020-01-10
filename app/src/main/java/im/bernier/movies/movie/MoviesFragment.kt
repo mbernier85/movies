@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import im.bernier.movies.R
+import im.bernier.movies.databinding.FragmentMovieBinding
+import kotlinx.android.synthetic.main.fragment_movies.view.*
 
 class MoviesFragment : Fragment() {
 
@@ -21,7 +24,8 @@ class MoviesFragment : Fragment() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_movies, container, false)
+        val binding: FragmentMovieBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movies, container, false)
+        val view = binding.root
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutMovies)
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerViewMovies)
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -31,7 +35,9 @@ class MoviesFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(this)[MoviesViewModel::class.java]
         setupLiveData()
-
+        view.floatingActionButton.setOnClickListener {
+            findNavController().navigate(R.id.action_moviesFragment_to_searchFragment)
+        }
         return view
     }
 

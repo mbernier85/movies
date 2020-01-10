@@ -1,4 +1,4 @@
-package im.bernier.movies
+package im.bernier.movies.datasource
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -8,9 +8,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import im.bernier.movies.credits.Credits
 import im.bernier.movies.genre.Genres
 import im.bernier.movies.movie.Movie
-import kotlinx.serialization.StringFormat
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
@@ -19,7 +17,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
 
 object Repository {

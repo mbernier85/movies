@@ -1,6 +1,7 @@
 package im.bernier.movies
 
 import android.app.Application
+import im.bernier.movies.datasource.Repository
 import timber.log.Timber
 
 class MainApplication: Application() {

@@ -1,16 +1,14 @@
 package im.bernier.movies
 
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import im.bernier.movies.cast.Cast
 
 abstract class BaseAdapter<T, V : BaseAdapter.BaseViewHolder<T>?>(var list: List<T>) :
     RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
 
-    fun update(list: List<T>) {
-        this.list = list
-        notifyDataSetChanged()
-    }
+    abstract fun update(list: List<T>)
 
     override fun getItemCount(): Int {
         return list.size

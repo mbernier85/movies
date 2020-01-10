@@ -1,4 +1,4 @@
-package im.bernier.movies
+package im.bernier.movies.util
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter

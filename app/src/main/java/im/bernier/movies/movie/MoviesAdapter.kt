@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import im.bernier.movies.GlideApp
 import im.bernier.movies.R
-import im.bernier.movies.imageUrl
+import im.bernier.movies.util.imageUrl
 
 class MoviesAdapter(private val listener: (Long) -> Unit): PagedListAdapter<Movie, MoviesAdapter.MovieViewHolder>(
     MOVIE_COMPARATOR
