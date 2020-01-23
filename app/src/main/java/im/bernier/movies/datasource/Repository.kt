@@ -8,6 +8,8 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import im.bernier.movies.credits.Credits
 import im.bernier.movies.genre.Genres
 import im.bernier.movies.movie.Movie
+import im.bernier.movies.movie.Page
+import im.bernier.movies.search.SearchResultItem
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType
@@ -104,6 +106,21 @@ object Repository {
                 if (response.isSuccessful) {
                     creditsLiveData.postValue(response.body())
                 }
+            }
+        })
+    }
+
+    fun search(query: String) {
+        api.search(query).enqueue(object : Callback<Page<SearchResultItem>?> {
+            override fun onFailure(call: Call<Page<SearchResultItem>?>, t: Throwable) {
+                Timber.e(t)
+            }
+
+            override fun onResponse(
+                call: Call<Page<SearchResultItem>?>,
+                response: retrofit2.Response<Page<SearchResultItem>?>
+            ) {
+
             }
         })
     }

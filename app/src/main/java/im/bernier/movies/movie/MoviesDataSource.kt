@@ -10,12 +10,12 @@ import timber.log.Timber
 class MoviesDataSource: PageKeyedDataSource<Int, Movie>() {
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Movie>) {
-        Repository.api.discover(1).enqueue(object: Callback<Page?> {
-            override fun onFailure(call: Call<Page?>, t: Throwable) {
+        Repository.api.discover(1).enqueue(object: Callback<Page<Movie>?> {
+            override fun onFailure(call: Call<Page<Movie>?>, t: Throwable) {
                 Timber.e(t)
             }
 
-            override fun onResponse(call: Call<Page?>, response: Response<Page?>) {
+            override fun onResponse(call: Call<Page<Movie>?>, response: Response<Page<Movie>?>) {
                 val page = response.body()
                 if (response.isSuccessful && page != null) {
                     addGenre(page.results)
@@ -28,12 +28,12 @@ class MoviesDataSource: PageKeyedDataSource<Int, Movie>() {
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
-        Repository.api.discover(params.key).enqueue(object: Callback<Page?> {
-            override fun onFailure(call: Call<Page?>, t: Throwable) {
+        Repository.api.discover(params.key).enqueue(object: Callback<Page<Movie>?> {
+            override fun onFailure(call: Call<Page<Movie>?>, t: Throwable) {
                 Timber.e(t)
             }
 
-            override fun onResponse(call: Call<Page?>, response: Response<Page?>) {
+            override fun onResponse(call: Call<Page<Movie>?>, response: Response<Page<Movie>?>) {
                 val page = response.body()
                 if (response.isSuccessful && page != null) {
                     addGenre(page.results)

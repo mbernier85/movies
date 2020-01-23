@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import im.bernier.movies.R
-import im.bernier.movies.databinding.FragmentMovieBinding
+import im.bernier.movies.databinding.FragmentMoviesBinding
 import kotlinx.android.synthetic.main.fragment_movies.view.*
 
 class MoviesFragment : Fragment() {
@@ -24,7 +24,7 @@ class MoviesFragment : Fragment() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val binding: FragmentMovieBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movies, container, false)
+        val binding: FragmentMoviesBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_movies, container, false)
         val view = binding.root
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutMovies)
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerViewMovies)
