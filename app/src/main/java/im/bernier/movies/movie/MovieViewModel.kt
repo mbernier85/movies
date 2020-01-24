@@ -2,8 +2,8 @@ package im.bernier.movies.movie
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import im.bernier.movies.datasource.Repository
 import im.bernier.movies.credits.Credits
+import im.bernier.movies.datasource.Repository
 
 class MovieViewModel: ViewModel() {
 
@@ -16,14 +16,14 @@ class MovieViewModel: ViewModel() {
     var movie = Movie()
 
     fun getLiveData(): LiveData<Movie> {
-        return Repository.movieLiveData(movieId)
+        return Repository.movie(movieId)
     }
 
     fun getCreditsLiveData(): LiveData<Credits> {
-        return Repository.creditsLiveData()
+        return Repository.credits
     }
 
-    var genreString: String = ""
+    val genreString: String
         get() {
             return movie.genres.joinToString { genre -> genre.name }
         }

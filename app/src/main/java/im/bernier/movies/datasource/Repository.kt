@@ -12,7 +12,7 @@ import im.bernier.movies.movie.Page
 import im.bernier.movies.search.SearchResultItem
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,14 +28,18 @@ object Repository {
 
     private val movieLiveData = hashMapOf<Long, MutableLiveData<Movie>>()
     private val creditsLiveData = MutableLiveData<Credits>()
+    private val searchLiveData = MutableLiveData<List<SearchResultItem>>()
 
-    fun movieLiveData(id: Long): LiveData<Movie> {
+    fun movie(id: Long): LiveData<Movie> {
         return movieLiveData.getOrPut(id, { MutableLiveData() })
     }
 
-    fun creditsLiveData(): LiveData<Credits> {
-        return creditsLiveData
-    }
+    val credits: LiveData<Credits>
+        get() = creditsLiveData
+
+    val searchResult: LiveData<List<SearchResultItem>>
+        get() = searchLiveData
+
 
     fun init(context: Context) {
         val loggingInterceptor = HttpLoggingInterceptor()
@@ -44,7 +48,7 @@ object Repository {
             .addNetworkInterceptor(loggingInterceptor)
             .addInterceptor(RequestInterceptor())
             .build()
-        val contentType = MediaType.get("application/json")
+        val contentType = "application/json".toMediaType()
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl("https://api.themoviedb.org/3/")
             .client(client)
@@ -58,7 +62,7 @@ object Repository {
     class RequestInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
-            val newUrl = request.url().newBuilder()
+            val newUrl = request.url.newBuilder()
                 .addQueryParameter("api_key", "a6534fdec1ef0b0d5e392dae172e5a42").build()
             val newRequest = request.newBuilder().url(newUrl).build()
             return chain.proceed(newRequest)
@@ -120,7 +124,9 @@ object Repository {
                 call: Call<Page<SearchResultItem>?>,
                 response: retrofit2.Response<Page<SearchResultItem>?>
             ) {
-
+                response.body()?.let {
+                    searchLiveData.postValue(it.results)
+                }
             }
         })
     }

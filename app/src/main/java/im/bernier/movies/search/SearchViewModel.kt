@@ -1,6 +1,7 @@
 package im.bernier.movies.search
 
 import android.view.View
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import im.bernier.movies.datasource.Repository
@@ -13,6 +14,7 @@ class SearchViewModel: ViewModel() {
     var searchText = MutableLiveData<String>()
 
     fun submit(view: View) {
+        (view.parent as MotionLayout).transitionToEnd()
         Repository.search(searchText.value ?: "")
     }
 

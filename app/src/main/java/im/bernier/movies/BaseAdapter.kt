@@ -1,9 +1,7 @@
 package im.bernier.movies
 
 import android.view.View
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import im.bernier.movies.cast.Cast
 
 abstract class BaseAdapter<T, V : BaseAdapter.BaseViewHolder<T>?>(var list: List<T>) :
     RecyclerView.Adapter<BaseAdapter.BaseViewHolder<T>>() {
@@ -21,7 +19,7 @@ abstract class BaseAdapter<T, V : BaseAdapter.BaseViewHolder<T>?>(var list: List
         }
     }
 
-    abstract class BaseViewHolder<I>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract class BaseViewHolder<I>(view: View) : RecyclerView.ViewHolder(view) {
         abstract fun bind(item: I)
     }
 }
