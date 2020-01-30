@@ -5,9 +5,6 @@
         app:constraintSetEnd="@+id/end"
         app:constraintSetStart="@+id/start"
         app:duration="250">
-        <OnClick
-            app:clickAction="transitionToEnd"
-            app:targetId="@+id/buttonSearchSubmit" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
