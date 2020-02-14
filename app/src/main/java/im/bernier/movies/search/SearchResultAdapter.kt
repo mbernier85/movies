@@ -13,7 +13,7 @@ import im.bernier.movies.util.imageUrl
 /**
  * Created by Michael on 2020-01-23.
  */
-class SearchResultAdapter(list: List<SearchResultItem>) :
+class SearchResultAdapter(list: List<SearchResultItem>, private val listener: (Long) -> Unit) :
     BaseAdapter<SearchResultItem, SearchResultAdapter.SearchItemViewHolder>(list) {
     override fun update(list: List<SearchResultItem>) {
         this.list = list
@@ -25,7 +25,11 @@ class SearchResultAdapter(list: List<SearchResultItem>) :
         viewType: Int
     ): BaseViewHolder<SearchResultItem> {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
-        return SearchItemViewHolder(view)
+        val holder = SearchItemViewHolder(view)
+        view.setOnClickListener {
+            listener.invoke(list[holder.adapterPosition].id)
+        }
+        return holder
     }
 
     class SearchItemViewHolder(val view: View) :
