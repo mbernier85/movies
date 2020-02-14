@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class Movie(
     val title: String = "",
     val id: Long = 0,
-    val backdrop_path: String = "",
+    val backdrop_path: String? = null,
     val poster_path: String = "",
     val overview: String = "",
     val genre_ids: List<Int> = listOf(),
