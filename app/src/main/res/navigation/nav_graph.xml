@@ -22,6 +22,9 @@
         <argument
             android:name="movie"
             app:argType="long" />
+        <action
+            android:id="@+id/action_movieFragment_to_castFragment"
+            app:destination="@id/castFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -32,4 +35,9 @@
             android:id="@+id/action_searchFragment_to_movieFragment"
             app:destination="@id/movieFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/castFragment"
+        android:name="im.bernier.movies.cast.CastFragment"
+        android:label="fragment_cast"
+        tools:layout="@layout/fragment_cast" />
 </navigation>

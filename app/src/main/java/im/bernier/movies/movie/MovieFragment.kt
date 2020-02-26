@@ -9,8 +9,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import im.bernier.movies.R
+import im.bernier.movies.cast.ARG_CAST_ID
 import im.bernier.movies.cast.Cast
 import im.bernier.movies.cast.CastAdapter
 import im.bernier.movies.databinding.FragmentMovieBinding
@@ -58,7 +60,9 @@ class MovieFragment : Fragment() {
 
     }
 
-    fun showCastMember(cast: Cast) {
-
+    private fun showCastMember(cast: Cast) {
+        findNavController().navigate(R.id.action_movieFragment_to_castFragment, Bundle().apply {
+            putInt(ARG_CAST_ID, cast.id)
+        })
     }
 }

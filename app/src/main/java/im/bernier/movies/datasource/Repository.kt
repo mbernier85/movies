@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import im.bernier.movies.cast.Person
 import im.bernier.movies.credits.Credits
 import im.bernier.movies.genre.Genres
 import im.bernier.movies.movie.Movie
@@ -29,6 +30,7 @@ object Repository {
     private val movieLiveData = hashMapOf<Long, MutableLiveData<Movie>>()
     private val creditsLiveData = MutableLiveData<Credits>()
     private val searchLiveData = MutableLiveData<List<SearchResultItem>>()
+    private val personLiveData = MutableLiveData<Person>()
 
     fun movie(id: Long): LiveData<Movie> {
         return movieLiveData.getOrPut(id, { MutableLiveData() })
@@ -40,6 +42,8 @@ object Repository {
     val searchResult: LiveData<List<SearchResultItem>>
         get() = searchLiveData
 
+    val person: LiveData<Person>
+        get() = personLiveData
 
     fun init(context: Context) {
         val loggingInterceptor = HttpLoggingInterceptor()
@@ -100,15 +104,15 @@ object Repository {
         })
     }
 
-    fun fetchMovieCredits(movieId: Long) {
-        api.getMovieCredits(movieId).enqueue(object : Callback<Credits> {
-            override fun onFailure(call: Call<Credits>, t: Throwable) {
+    fun fetchPerson(id: Int) {
+        api.getCastById(id).enqueue(object : Callback<Person?> {
+            override fun onFailure(call: Call<Person?>, t: Throwable) {
                 Timber.e(t)
             }
 
-            override fun onResponse(call: Call<Credits>, response: retrofit2.Response<Credits>) {
+            override fun onResponse(call: Call<Person?>, response: retrofit2.Response<Person?>) {
                 if (response.isSuccessful) {
-                    creditsLiveData.postValue(response.body())
+                    personLiveData.postValue(response.body())
                 }
             }
         })

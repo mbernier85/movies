@@ -1,6 +1,6 @@
 package im.bernier.movies.datasource
 
-import im.bernier.movies.credits.Credits
+import im.bernier.movies.cast.Person
 import im.bernier.movies.genre.Genres
 import im.bernier.movies.movie.Movie
 import im.bernier.movies.movie.Page
@@ -20,9 +20,9 @@ interface Api {
     @GET("movie/{movieId}?append_to_response=credits")
     fun getMovie(@Path("movieId") movieId: Long): Call<Movie>
 
-    @GET("movie/{movieId}/credits")
-    fun getMovieCredits(@Path("movieId") movieId: Long): Call<Credits>
-
     @GET("search/multi")
     fun search(@Query("query") query: String): Call<Page<SearchResultItem>>
+
+    @GET("person/{person_id}")
+    fun getCastById(@Path("person_id") id: Int): Call<Person>
 }
