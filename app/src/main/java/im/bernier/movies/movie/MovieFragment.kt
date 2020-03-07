@@ -42,7 +42,7 @@ class MovieFragment : Fragment() {
         }
         binding.viewModel = viewModel
         binding.executePendingBindings()
-        val movie: Long = arguments?.getLong("movie") ?: 0
+        val movie: Int = arguments?.getInt("movie") ?: 0
         viewModel.movieId = movie
 
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer {

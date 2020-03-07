@@ -27,13 +27,17 @@ object Repository {
     lateinit var api: Api
     lateinit var db: AppDatabase
 
-    private val movieLiveData = hashMapOf<Long, MutableLiveData<Movie>>()
+    private val movieLiveData = hashMapOf<Int, MutableLiveData<Movie>>()
     private val creditsLiveData = MutableLiveData<Credits>()
     private val searchLiveData = MutableLiveData<List<SearchResultItem>>()
-    private val personLiveData = MutableLiveData<Person>()
+    private val personLiveData = hashMapOf<Int, MutableLiveData<Person>>()
 
-    fun movie(id: Long): LiveData<Movie> {
+    fun movie(id: Int): LiveData<Movie> {
         return movieLiveData.getOrPut(id, { MutableLiveData() })
+    }
+
+    fun person(id: Int): LiveData<Person> {
+        return personLiveData.getOrPut(id, { MutableLiveData() })
     }
 
     val credits: LiveData<Credits>
@@ -41,9 +45,6 @@ object Repository {
 
     val searchResult: LiveData<List<SearchResultItem>>
         get() = searchLiveData
-
-    val person: LiveData<Person>
-        get() = personLiveData
 
     fun init(context: Context) {
         val loggingInterceptor = HttpLoggingInterceptor()
@@ -73,7 +74,7 @@ object Repository {
         }
     }
 
-    fun fetchMovie(id: Long) {
+    fun fetchMovie(id: Int) {
         api.getMovie(id).enqueue(object : Callback<Movie?> {
             override fun onFailure(call: Call<Movie?>, t: Throwable) {
                 Timber.e(t)
@@ -112,7 +113,7 @@ object Repository {
 
             override fun onResponse(call: Call<Person?>, response: retrofit2.Response<Person?>) {
                 if (response.isSuccessful) {
-                    personLiveData.postValue(response.body())
+                    personLiveData.getOrPut(id, { MutableLiveData() }).postValue(response.body())
                 }
             }
         })

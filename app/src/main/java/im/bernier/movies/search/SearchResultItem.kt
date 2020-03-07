@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class SearchResultItem(
-    val id: Long,
+    val id: Int,
     val media_type: String,
     val name: String? = null,
     val title: String? = null,

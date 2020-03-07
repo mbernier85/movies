@@ -35,11 +35,10 @@ class CastFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         castId?.let {
             Repository.fetchPerson(it)
+            Repository.person(it).observe(viewLifecycleOwner, Observer { person ->
+                viewModel.update(person)
+            })
         }
-        Repository.person.observe(viewLifecycleOwner, Observer {
-            viewModel.update(it)
-        })
-
         return binding.root
     }
 

@@ -7,7 +7,7 @@ import im.bernier.movies.datasource.Repository
 
 class MovieViewModel: ViewModel() {
 
-    var movieId: Long = 0
+    var movieId: Int = 0
         set(value) {
             Repository.fetchMovie(value)
             field = value

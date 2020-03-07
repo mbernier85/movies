@@ -18,7 +18,7 @@ interface Api {
     fun genres(): Call<Genres>
 
     @GET("movie/{movieId}?append_to_response=credits")
-    fun getMovie(@Path("movieId") movieId: Long): Call<Movie>
+    fun getMovie(@Path("movieId") movieId: Int): Call<Movie>
 
     @GET("search/multi")
     fun search(@Query("query") query: String): Call<Page<SearchResultItem>>
