@@ -19,3 +19,8 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew clean lint test
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: reports
+        path: app/build/reports
