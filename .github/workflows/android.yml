@@ -18,9 +18,14 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Gradle
-      run: ./gradlew clean lint test
+      run: ./gradlew clean lint test assembleRelease
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: reports
         path: app/build/reports
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: release.apk
+        path: app/build/outputs/apk/release/app-release.apk
