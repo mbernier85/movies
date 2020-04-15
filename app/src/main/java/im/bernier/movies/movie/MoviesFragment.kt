@@ -13,14 +13,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import im.bernier.movies.MainApplication
 import im.bernier.movies.R
 import im.bernier.movies.databinding.FragmentMoviesBinding
+import im.bernier.movies.di.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_movies.view.*
 import timber.log.Timber
+import javax.inject.Inject
 
 class MoviesFragment : Fragment() {
 
-    private val viewModel: MoviesViewModel by viewModels()
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel: MoviesViewModel by viewModels(factoryProducer = { viewModelFactory })
     private lateinit var binding: FragmentMoviesBinding
     private lateinit var adapter: MoviesAdapter
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -30,6 +35,7 @@ class MoviesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity?.application as MainApplication).appComponent.inject(this)
         binding = FragmentMoviesBinding.inflate(layoutInflater)
         val view = binding.root
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutMovies)
@@ -67,7 +73,7 @@ class MoviesFragment : Fragment() {
     }
 
     private fun showError() {
-        Snackbar.make(binding.root, R.string.network_error , Snackbar.LENGTH_LONG).show()
+        Snackbar.make(binding.root, R.string.network_error, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setupAdapter() {

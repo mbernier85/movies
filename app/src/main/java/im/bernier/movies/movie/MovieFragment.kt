@@ -11,21 +11,27 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import im.bernier.movies.MainApplication
 import im.bernier.movies.R
 import im.bernier.movies.cast.ARG_CAST_ID
 import im.bernier.movies.cast.Cast
 import im.bernier.movies.cast.CastAdapter
 import im.bernier.movies.databinding.FragmentMovieBinding
+import im.bernier.movies.di.ViewModelFactory
+import javax.inject.Inject
 
 class MovieFragment : Fragment() {
 
-    private val viewModel: MovieViewModel by viewModels()
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel: MovieViewModel by viewModels(factoryProducer = { viewModelFactory })
     private lateinit var binding: FragmentMovieBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity?.application as MainApplication).appComponent.inject(this)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie, container, false)
         return binding.root
     }
@@ -42,7 +48,7 @@ class MovieFragment : Fragment() {
         }
         binding.viewModel = viewModel
         binding.executePendingBindings()
-        val movie: Int = arguments?.getInt("movie") ?: 0
+        val movie: Long = arguments?.getLong("movie") ?: 0
         viewModel.movieId = movie
 
         viewModel.getLiveData().observe(viewLifecycleOwner, Observer {
@@ -62,7 +68,7 @@ class MovieFragment : Fragment() {
 
     private fun showCastMember(cast: Cast) {
         findNavController().navigate(R.id.action_movieFragment_to_castFragment, Bundle().apply {
-            putInt(ARG_CAST_ID, cast.id)
+            putLong(ARG_CAST_ID, cast.id)
         })
     }
 }

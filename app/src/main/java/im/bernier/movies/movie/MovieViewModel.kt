@@ -4,23 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import im.bernier.movies.credits.Credits
 import im.bernier.movies.datasource.Repository
+import javax.inject.Inject
 
-class MovieViewModel: ViewModel() {
+class MovieViewModel @Inject constructor(private val repository: Repository): ViewModel() {
 
-    var movieId: Int = 0
+    var movieId: Long = 0
         set(value) {
-            Repository.fetchMovie(value)
+            repository.fetchMovie(value)
             field = value
         }
 
     var movie = Movie()
 
     fun getLiveData(): LiveData<Movie> {
-        return Repository.movie(movieId)
+        return repository.movie(movieId)
     }
 
     fun getCreditsLiveData(): LiveData<Credits> {
-        return Repository.credits
+        return repository.credits
     }
 
     val genreString: String

@@ -3,12 +3,14 @@ package im.bernier.movies.movie
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.toLiveData
+import im.bernier.movies.datasource.Repository
+import javax.inject.Inject
 
-class MoviesViewModel: ViewModel() {
+class MoviesViewModel @Inject constructor(repository: Repository): ViewModel() {
 
     var moviesDataSource: MoviesDataSource? = null
     private val _errors = MutableLiveData<Throwable>()
-    val sourceFactory = MoviesDataSourceFactory(_errors)
+    val sourceFactory = MoviesDataSourceFactory(_errors, repository)
     val liveData = sourceFactory.toLiveData(pageSize = 20, initialLoadKey = 1)
 
     val errors

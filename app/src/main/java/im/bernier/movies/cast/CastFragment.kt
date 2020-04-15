@@ -8,20 +8,30 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import im.bernier.movies.MainApplication
 import im.bernier.movies.R
 import im.bernier.movies.databinding.FragmentCastBinding
 import im.bernier.movies.datasource.Repository
+import im.bernier.movies.di.ViewModelFactory
+import javax.inject.Inject
 
 const val ARG_CAST_ID = "castId"
 
 class CastFragment : Fragment() {
-    private var castId: Int? = null
-    private val viewModel: CastViewModel by viewModels()
+
+    private var castId: Long? = null
+    private val viewModel: CastViewModel by viewModels(factoryProducer = { viewModelFactory })
     private lateinit var binding: FragmentCastBinding
+
+    @Inject
+    lateinit var repository: Repository
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            castId = savedInstanceState?.getInt(ARG_CAST_ID) ?: it.getInt(ARG_CAST_ID)
+            castId = savedInstanceState?.getLong(ARG_CAST_ID) ?: it.getLong(ARG_CAST_ID)
         }
     }
 
@@ -30,12 +40,13 @@ class CastFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity?.application as MainApplication).appComponent.inject(this)
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_cast, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
         castId?.let {
-            Repository.fetchPerson(it)
-            Repository.person(it).observe(viewLifecycleOwner, Observer { person ->
+            repository.fetchPerson(it)
+            repository.person(it).observe(viewLifecycleOwner, Observer { person ->
                 viewModel.update(person)
             })
         }
@@ -45,7 +56,7 @@ class CastFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         castId?.let {
-            outState.putInt(ARG_CAST_ID, it)
+            outState.putLong(ARG_CAST_ID, it)
         }
     }
 }

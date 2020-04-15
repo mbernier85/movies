@@ -12,14 +12,22 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import im.bernier.movies.MainApplication
 import im.bernier.movies.R
 import im.bernier.movies.cast.ARG_CAST_ID
 import im.bernier.movies.databinding.FragmentSearchBinding
 import im.bernier.movies.datasource.Repository
+import im.bernier.movies.di.ViewModelFactory
+import javax.inject.Inject
 
 class SearchFragment : Fragment() {
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel: SearchViewModel by viewModels()
+    @Inject
+    lateinit var repository: Repository
+
+    private val viewModel: SearchViewModel by viewModels(factoryProducer = { viewModelFactory })
     private lateinit var binding: FragmentSearchBinding
     private lateinit var adapter: SearchResultAdapter
 
@@ -27,6 +35,7 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity?.application as MainApplication).appComponent.inject(this)
         binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -34,15 +43,15 @@ class SearchFragment : Fragment() {
             when (resultItem.media_type) {
                 "movie", "tv" -> findNavController().navigate(
                     R.id.movieFragment,
-                    Bundle().apply { putInt("movie", resultItem.id) })
+                    Bundle().apply { putLong("movie", resultItem.id) })
                 "person" -> findNavController().navigate(
                     R.id.castFragment,
-                    Bundle().apply { putInt(ARG_CAST_ID, resultItem.id) })
+                    Bundle().apply { putLong(ARG_CAST_ID, resultItem.id) })
             }
         }
         binding.recyclerViewSearchResult.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewSearchResult.adapter = adapter
-        Repository.searchResult.observe(viewLifecycleOwner, Observer {
+        repository.searchResult.observe(viewLifecycleOwner, Observer {
             adapter.update(it)
         })
         requireActivity().onBackPressedDispatcher.addCallback(
