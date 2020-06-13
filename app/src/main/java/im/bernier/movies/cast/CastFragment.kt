@@ -15,8 +15,6 @@ import im.bernier.movies.datasource.Repository
 import im.bernier.movies.di.ViewModelFactory
 import javax.inject.Inject
 
-const val ARG_CAST_ID = "castId"
-
 class CastFragment : Fragment() {
 
     private var castId: Long? = null
@@ -58,5 +56,9 @@ class CastFragment : Fragment() {
         castId?.let {
             outState.putLong(ARG_CAST_ID, it)
         }
+    }
+
+    companion object {
+        const val ARG_CAST_ID = "castId"
     }
 }
