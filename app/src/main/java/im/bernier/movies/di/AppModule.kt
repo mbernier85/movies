@@ -1,14 +1,19 @@
 package im.bernier.movies.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import im.bernier.movies.datasource.Api
 import im.bernier.movies.datasource.AppDatabase
 import im.bernier.movies.datasource.Repository
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -20,7 +25,8 @@ import javax.inject.Singleton
  */
 
 @Module
-class AppModule(private val application: Application) {
+@InstallIn(ApplicationComponent::class)
+object AppModule {
 
     @Provides
     @Singleton
@@ -32,17 +38,18 @@ class AppModule(private val application: Application) {
             .addInterceptor(Repository.RequestInterceptor())
             .build()
         val contentType = "application/json".toMediaType()
+        val json = JsonConfiguration(ignoreUnknownKeys = true)
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl("https://api.themoviedb.org/3/")
             .client(client)
-            .addConverterFactory(Json.nonstrict.asConverterFactory(contentType))
+            .addConverterFactory(Json(json).asConverterFactory(contentType))
             .build()
         return retrofit.create(Api::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideDb(): AppDatabase {
-        return Room.databaseBuilder(application, AppDatabase::class.java, "movies").build()
+    fun provideDb(@ApplicationContext context: Context): AppDatabase {
+        return Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "movies").build()
     }
 }

@@ -12,22 +12,20 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import im.bernier.movies.MainApplication
+import dagger.hilt.android.AndroidEntryPoint
 import im.bernier.movies.R
-import im.bernier.movies.cast.ARG_CAST_ID
+import im.bernier.movies.cast.CastFragment.Companion.ARG_CAST_ID
 import im.bernier.movies.databinding.FragmentSearchBinding
 import im.bernier.movies.datasource.Repository
-import im.bernier.movies.di.ViewModelFactory
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
     lateinit var repository: Repository
 
-    private val viewModel: SearchViewModel by viewModels(factoryProducer = { viewModelFactory })
+    private val viewModel: SearchViewModel by viewModels()
     private lateinit var binding: FragmentSearchBinding
     private lateinit var adapter: SearchResultAdapter
 
@@ -35,7 +33,6 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity?.application as MainApplication).appComponent.inject(this)
         binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner

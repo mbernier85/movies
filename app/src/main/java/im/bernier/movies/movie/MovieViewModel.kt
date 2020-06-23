@@ -1,12 +1,13 @@
 package im.bernier.movies.movie
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import im.bernier.movies.credits.Credits
 import im.bernier.movies.datasource.Repository
 import javax.inject.Inject
 
-class MovieViewModel @Inject constructor(private val repository: Repository): ViewModel() {
+class MovieViewModel @ViewModelInject constructor(private val repository: Repository): ViewModel() {
 
     var movieId: Long = 0
         set(value) {

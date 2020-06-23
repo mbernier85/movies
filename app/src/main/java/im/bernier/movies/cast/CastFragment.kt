@@ -8,23 +8,21 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import im.bernier.movies.MainApplication
+import dagger.hilt.android.AndroidEntryPoint
 import im.bernier.movies.R
 import im.bernier.movies.databinding.FragmentCastBinding
 import im.bernier.movies.datasource.Repository
-import im.bernier.movies.di.ViewModelFactory
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class CastFragment : Fragment() {
 
     private var castId: Long? = null
-    private val viewModel: CastViewModel by viewModels(factoryProducer = { viewModelFactory })
+    private val viewModel: CastViewModel by viewModels()
     private lateinit var binding: FragmentCastBinding
 
     @Inject
     lateinit var repository: Repository
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +36,6 @@ class CastFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity?.application as MainApplication).appComponent.inject(this)
         binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_cast, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner

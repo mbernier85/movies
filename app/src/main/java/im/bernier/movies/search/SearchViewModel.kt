@@ -2,6 +2,7 @@ package im.bernier.movies.search
 
 import android.view.View
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import im.bernier.movies.datasource.Repository
@@ -11,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by Michael on 2020-01-22.
  */
-class SearchViewModel @Inject constructor(private val repository: Repository): ViewModel() {
+class SearchViewModel @ViewModelInject constructor(private val repository: Repository): ViewModel() {
 
     var searchText = MutableLiveData<String>("")
 

@@ -11,27 +11,24 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import im.bernier.movies.MainApplication
+import dagger.hilt.android.AndroidEntryPoint
 import im.bernier.movies.R
-import im.bernier.movies.cast.ARG_CAST_ID
 import im.bernier.movies.cast.Cast
 import im.bernier.movies.cast.CastAdapter
+import im.bernier.movies.cast.CastFragment.Companion.ARG_CAST_ID
 import im.bernier.movies.databinding.FragmentMovieBinding
-import im.bernier.movies.di.ViewModelFactory
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MovieFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private val viewModel: MovieViewModel by viewModels(factoryProducer = { viewModelFactory })
+    private val viewModel: MovieViewModel by viewModels()
     private lateinit var binding: FragmentMovieBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity?.application as MainApplication).appComponent.inject(this)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_movie, container, false)
         return binding.root
     }
