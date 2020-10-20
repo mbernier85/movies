@@ -13,7 +13,7 @@ import im.bernier.movies.datasource.Api
 import im.bernier.movies.datasource.AppDatabase
 import im.bernier.movies.datasource.Repository
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonBuilder
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -38,11 +38,13 @@ object AppModule {
             .addInterceptor(Repository.RequestInterceptor())
             .build()
         val contentType = "application/json".toMediaType()
-        val json = JsonConfiguration(ignoreUnknownKeys = true)
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl("https://api.themoviedb.org/3/")
             .client(client)
-            .addConverterFactory(Json(json).asConverterFactory(contentType))
+            .addConverterFactory(json.asConverterFactory(contentType))
             .build()
         return retrofit.create(Api::class.java)
     }

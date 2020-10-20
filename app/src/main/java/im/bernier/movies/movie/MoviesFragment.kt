@@ -16,9 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import im.bernier.movies.R
 import im.bernier.movies.databinding.FragmentMoviesBinding
-import kotlinx.android.synthetic.main.fragment_movies.view.*
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MoviesFragment : Fragment() {
@@ -43,7 +41,7 @@ class MoviesFragment : Fragment() {
         recyclerView.adapter = adapter
 
         setupLiveData()
-        view.floatingActionButton.setOnClickListener {
+        binding.floatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_moviesFragment_to_searchFragment)
         }
         return view
