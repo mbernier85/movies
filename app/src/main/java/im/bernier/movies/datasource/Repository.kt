@@ -14,7 +14,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class Repository @Inject constructor(val api: Api, val db: AppDatabase) {
 
     private val movieLiveData = hashMapOf<Long, MutableLiveData<Movie>>()
