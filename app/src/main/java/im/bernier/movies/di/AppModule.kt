@@ -1,23 +1,22 @@
 package im.bernier.movies.di
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import im.bernier.movies.datasource.Api
 import im.bernier.movies.datasource.AppDatabase
 import im.bernier.movies.datasource.Repository
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonBuilder
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import javax.inject.Singleton
 
 /**
@@ -25,7 +24,7 @@ import javax.inject.Singleton
  */
 
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     @Provides
@@ -45,6 +44,7 @@ object AppModule {
             .baseUrl("https://api.themoviedb.org/3/")
             .client(client)
             .addConverterFactory(json.asConverterFactory(contentType))
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
         return retrofit.create(Api::class.java)
     }

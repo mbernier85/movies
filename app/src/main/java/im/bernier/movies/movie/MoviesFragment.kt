@@ -7,15 +7,14 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import im.bernier.movies.R
 import im.bernier.movies.databinding.FragmentMoviesBinding
+import im.bernier.movies.util.showError
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -30,7 +29,7 @@ class MoviesFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMoviesBinding.inflate(layoutInflater)
         val view = binding.root
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayoutMovies)
@@ -48,16 +47,16 @@ class MoviesFragment : Fragment() {
     }
 
     private fun setupLiveData() {
-        viewModel.sourceFactory.sourceLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.sourceFactory.sourceLiveData.observe(viewLifecycleOwner, {
             viewModel.moviesDataSource = it
         })
 
-        viewModel.errors.observe(viewLifecycleOwner, Observer {
+        viewModel.errors.observe(viewLifecycleOwner, {
             Timber.e(it)
-            showError()
+            showError(R.string.network_error)
         })
 
-        viewModel.liveData.observe(viewLifecycleOwner, Observer {
+        viewModel.liveData.observe(viewLifecycleOwner, {
             adapter.submitList(it)
             swipeRefreshLayout.isRefreshing = false
         })
@@ -65,10 +64,6 @@ class MoviesFragment : Fragment() {
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.refresh()
         }
-    }
-
-    private fun showError() {
-        Snackbar.make(binding.root, R.string.network_error, Snackbar.LENGTH_LONG).show()
     }
 
     private fun setupAdapter() {

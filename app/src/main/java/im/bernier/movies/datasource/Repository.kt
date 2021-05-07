@@ -8,6 +8,7 @@ import im.bernier.movies.genre.Genres
 import im.bernier.movies.movie.Movie
 import im.bernier.movies.movie.Page
 import im.bernier.movies.search.SearchResultItem
+import io.reactivex.rxjava3.core.Observable
 import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.Call
@@ -19,14 +20,9 @@ import javax.inject.Singleton
 @Singleton
 class Repository @Inject constructor(val api: Api, val db: AppDatabase) {
 
-    private val movieLiveData = hashMapOf<Long, MutableLiveData<Movie>>()
     private val creditsLiveData = MutableLiveData<Credits>()
     private val searchLiveData = MutableLiveData<List<SearchResultItem>>()
     private val personLiveData = hashMapOf<Long, MutableLiveData<Person>>()
-
-    fun movie(id: Long): LiveData<Movie> {
-        return movieLiveData.getOrPut(id, { MutableLiveData() })
-    }
 
     fun person(id: Long): LiveData<Person> {
         return personLiveData.getOrPut(id, { MutableLiveData() })
@@ -48,18 +44,8 @@ class Repository @Inject constructor(val api: Api, val db: AppDatabase) {
         }
     }
 
-    fun fetchMovie(id: Long) {
-        api.getMovie(id).enqueue(object : Callback<Movie?> {
-            override fun onFailure(call: Call<Movie?>, t: Throwable) {
-                Timber.e(t)
-            }
-
-            override fun onResponse(call: Call<Movie?>, response: retrofit2.Response<Movie?>) {
-                if (response.isSuccessful) {
-                    movieLiveData.getOrPut(id, { MutableLiveData() }).postValue(response.body())
-                }
-            }
-        })
+    fun fetchMovie(id: Long): Observable<Movie> {
+        return api.getMovie(id)
     }
 
     fun fetchGenres() {

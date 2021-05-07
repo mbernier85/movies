@@ -5,6 +5,7 @@ import im.bernier.movies.genre.Genres
 import im.bernier.movies.movie.Movie
 import im.bernier.movies.movie.Page
 import im.bernier.movies.search.SearchResultItem
+import io.reactivex.rxjava3.core.Observable
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -18,7 +19,7 @@ interface Api {
     fun genres(): Call<Genres>
 
     @GET("movie/{movieId}?append_to_response=credits")
-    fun getMovie(@Path("movieId") movieId: Long): Call<Movie>
+    fun getMovie(@Path("movieId") movieId: Long): Observable<Movie>
 
     @GET("search/multi")
     fun search(@Query("query") query: String): Call<Page<SearchResultItem>>

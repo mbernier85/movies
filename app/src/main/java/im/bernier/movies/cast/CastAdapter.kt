@@ -7,7 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
-import im.bernier.movies.*
+import im.bernier.movies.BaseAdapter
+import im.bernier.movies.Diff
+import im.bernier.movies.GlideApp
+import im.bernier.movies.R
 import im.bernier.movies.databinding.ItemPersonBinding
 import im.bernier.movies.util.imageUrl
 
@@ -28,7 +31,7 @@ class CastAdapter(casts: List<Cast>, private val limit: Int = 0, private val onC
         val binding: ItemPersonBinding = DataBindingUtil.inflate(inflater, R.layout.item_person, parent, false)
         val holder = CastViewHolder(binding.root)
         binding.root.setOnClickListener {
-            onClick.invoke(list[holder.adapterPosition])
+            onClick.invoke(list[holder.bindingAdapterPosition])
         }
         return holder
     }

@@ -27,7 +27,7 @@ class SearchResultAdapter(list: List<SearchResultItem>, private val listener: (S
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
         val holder = SearchItemViewHolder(view)
         view.setOnClickListener {
-            listener.invoke(list[holder.adapterPosition])
+            listener.invoke(list[holder.bindingAdapterPosition])
         }
         return holder
     }

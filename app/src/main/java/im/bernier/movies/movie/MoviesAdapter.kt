@@ -32,7 +32,7 @@ class MoviesAdapter(private val listener: (Long) -> Unit): PagedListAdapter<Movi
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
         val holder = MovieViewHolder(view)
         view.setOnClickListener {
-            val movie = currentList?.get(holder.adapterPosition)
+            val movie = currentList?.get(holder.bindingAdapterPosition)
             if (movie != null) {
                 listener.invoke(movie.id)
             }

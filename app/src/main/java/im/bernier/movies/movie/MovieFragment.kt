@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,13 +15,18 @@ import im.bernier.movies.cast.Cast
 import im.bernier.movies.cast.CastAdapter
 import im.bernier.movies.cast.CastFragment.Companion.ARG_CAST_ID
 import im.bernier.movies.databinding.FragmentMovieBinding
-import javax.inject.Inject
+import im.bernier.movies.util.showError
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import timber.log.Timber
 
 @AndroidEntryPoint
-class MovieFragment : Fragment() {
+class MovieFragment : androidx.fragment.app.Fragment() {
 
     private val viewModel: MovieViewModel by viewModels()
     private lateinit var binding: FragmentMovieBinding
+    private val compositeDisposable = CompositeDisposable()
+    private lateinit var adapter: CastAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,7 +39,7 @@ class MovieFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = binding.recyclerViewCasts
-        val adapter = CastAdapter(listOf(), 5) {
+        adapter = CastAdapter(listOf(), 5) {
             if (it != null) {
                 showCastMember(it)
             } else {
@@ -48,15 +51,29 @@ class MovieFragment : Fragment() {
         val movie: Long = arguments?.getLong("movie") ?: 0
         viewModel.movieId = movie
 
-        viewModel.getLiveData().observe(viewLifecycleOwner, Observer {
-            viewModel.movie = it
-            adapter.update(it.credits.cast)
-            binding.invalidateAll()
-        })
-
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
+    }
+
+    override fun onStart() {
+        super.onStart()
+        compositeDisposable.add(
+            viewModel.observableMovie().observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    viewModel.movie = it
+                    adapter.update(it.credits.cast)
+                    binding.invalidateAll()
+                }, {
+                    Timber.e(it)
+                    showError(R.string.network_error)
+                })
+        )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        compositeDisposable.clear()
     }
 
     fun showFullCastList() {
