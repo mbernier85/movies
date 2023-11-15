@@ -11,6 +11,7 @@ import dagger.hilt.components.SingletonComponent
 import im.bernier.movies.datasource.Api
 import im.bernier.movies.datasource.AppDatabase
 import im.bernier.movies.datasource.Repository
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -27,6 +28,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    @OptIn(ExperimentalSerializationApi::class)
     @Provides
     @Singleton
     fun provideApi(): Api {

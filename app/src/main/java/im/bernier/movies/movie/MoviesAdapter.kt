@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import im.bernier.movies.GlideApp
+import com.bumptech.glide.Glide
 import im.bernier.movies.R
 import im.bernier.movies.util.imageUrl
 
@@ -49,7 +49,7 @@ class MoviesAdapter(private val listener: (Long) -> Unit): PagedListAdapter<Movi
             view.findViewById<TextView>(R.id.textViewMovieTitle).text = movie.title
             val imageView : ImageView = view.findViewById(R.id.imageViewMovie)
             val url = imageUrl(movie.poster_path)
-            GlideApp.with(imageView).load(url).dontTransform().into(imageView)
+            Glide.with(imageView).load(url).dontTransform().into(imageView)
             view.findViewById<TextView>(R.id.textViewMovieOverview).text = movie.overview
             view.findViewById<TextView>(R.id.textViewMovieGenres).text = movie.genreString
         }

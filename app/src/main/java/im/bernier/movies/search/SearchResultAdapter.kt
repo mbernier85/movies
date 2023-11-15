@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import im.bernier.movies.BaseAdapter
-import im.bernier.movies.GlideApp
 import im.bernier.movies.R
 import im.bernier.movies.util.imageUrl
 
@@ -39,7 +39,7 @@ class SearchResultAdapter(list: List<SearchResultItem>, private val listener: (S
 
             val imageView : ImageView = view.findViewById(R.id.imageViewMovie)
             val url = imageUrl(item.poster_path ?: item.profile_path ?: "")
-            GlideApp.with(imageView).load(url).dontTransform().into(imageView)
+            Glide.with(imageView).load(url).dontTransform().into(imageView)
         }
     }
 }

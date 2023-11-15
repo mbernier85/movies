@@ -7,9 +7,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
 import im.bernier.movies.BaseAdapter
 import im.bernier.movies.Diff
-import im.bernier.movies.GlideApp
 import im.bernier.movies.R
 import im.bernier.movies.databinding.ItemPersonBinding
 import im.bernier.movies.util.imageUrl
@@ -42,7 +42,7 @@ class CastAdapter(casts: List<Cast>, private val limit: Int = 0, private val onC
             itemView.findViewById<TextView>(R.id.textViewPersonCharacter).text = item.character
             val imageView = itemView.findViewById<ImageView>(R.id.imageViewPersonPicture)
             item.profile_path?.let {
-                GlideApp.with(imageView).load(imageUrl(it)).dontTransform().centerCrop().into(imageView)
+                Glide.with(imageView).load(imageUrl(it)).dontTransform().centerCrop().into(imageView)
             }
         }
     }
