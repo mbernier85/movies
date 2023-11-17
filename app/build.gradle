@@ -111,6 +111,9 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
+    def nav_version = "2.7.5"
+    implementation "androidx.navigation:navigation-compose:$nav_version"
+
     // Material Design 3
     implementation("androidx.compose.material3:material3")
 

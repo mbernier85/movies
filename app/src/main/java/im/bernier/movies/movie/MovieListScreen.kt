@@ -32,23 +32,27 @@ import im.bernier.movies.theme.AppTheme
 import im.bernier.movies.util.imageUrl
 
 @Composable
-fun MovieListScreen(viewModel: MoviesViewModel = viewModel()) {
+fun MovieListScreen(
+    viewModel: MoviesViewModel = viewModel(),
+    onNavigateToMovie: (Long) -> Unit,
+    onNavigateToSearch: () -> Unit,
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButton(onClick = { viewModel.search() }) {
+            FloatingActionButton(onClick = { onNavigateToSearch }) {
                 Icon(Icons.Filled.Search, contentDescription = "Search")
             }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            MovieList(pager = viewModel.pager)
+            MovieList(pager = viewModel.pager, onNavigateToMovie)
         }
     }
 }
 
 @Composable
-fun MovieList(pager: Pager<Int, Movie>) {
+fun MovieList(pager: Pager<Int, Movie>, onNavigateToMovie: (Long) -> Unit) {
     val lazyPagingItems = pager.flow.collectAsLazyPagingItems()
     LazyColumn(
         modifier = Modifier
@@ -61,7 +65,7 @@ fun MovieList(pager: Pager<Int, Movie>) {
         ) { index ->
             val movie = lazyPagingItems[index]
             if (movie != null) {
-                MovieItem(movie = movie)
+                MovieItem(movie = movie, onNavigateToMovie)
             }
         }
     }
@@ -69,12 +73,12 @@ fun MovieList(pager: Pager<Int, Movie>) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MovieItem(movie: Movie) {
+fun MovieItem(movie: Movie, onNavigateToMovie: (Long) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-
+                onNavigateToMovie(movie.id)
             },
     ) {
         Box(
@@ -118,10 +122,11 @@ fun MovieItem(movie: Movie) {
 fun MovieListScreenPreview() {
     AppTheme {
         MovieItem(
-            Movie(
+            onNavigateToMovie = {},
+            movie = Movie(
                 title = "The matrix",
                 overview = "",
-                genreString = "Action, Thriller"
+                genreString = "Action, Thriller",
             )
         )
     }
