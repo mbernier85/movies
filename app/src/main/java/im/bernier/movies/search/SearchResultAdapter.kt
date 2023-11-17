@@ -38,7 +38,7 @@ class SearchResultAdapter(list: List<SearchResultItem>, private val listener: (S
             view.findViewById<TextView>(R.id.textViewMovieTitle).text = item.title ?: item.name
 
             val imageView : ImageView = view.findViewById(R.id.imageViewMovie)
-            val url = imageUrl(item.poster_path ?: item.profile_path ?: "")
+            val url = item.poster_path?.imageUrl() ?: item.profile_path ?: ""
             Glide.with(imageView).load(url).dontTransform().into(imageView)
         }
     }

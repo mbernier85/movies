@@ -7,6 +7,6 @@ import com.bumptech.glide.Glide
 @BindingAdapter("android:src")
 fun src(view: ImageView, url: String?) {
     url?.let {
-        Glide.with(view.context).load(imageUrl(it)).dontTransform().into(view)
+        Glide.with(view.context).load(it.imageUrl()).dontTransform().into(view)
     }
 }

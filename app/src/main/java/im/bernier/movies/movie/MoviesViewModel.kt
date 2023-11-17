@@ -2,23 +2,27 @@ package im.bernier.movies.movie
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.paging.toLiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
-import im.bernier.movies.datasource.Repository
 import javax.inject.Inject
 
 @HiltViewModel
-class MoviesViewModel @Inject constructor(repository: Repository): ViewModel() {
+class MoviesViewModel @Inject constructor(
+    private val moviesDataSource: MoviesDataSource
+) : ViewModel() {
 
-    var moviesDataSource: MoviesDataSource? = null
     private val _errors = MutableLiveData<Throwable>()
-    val sourceFactory = MoviesDataSourceFactory(_errors, repository)
-    val liveData = sourceFactory.toLiveData(pageSize = 20, initialLoadKey = 1)
+    val pager = Pager(
+        config = PagingConfig(20, initialLoadSize = 20)
+    ) {
+        moviesDataSource
+    }
 
     val errors
         get() = _errors
 
-    fun refresh() {
-        moviesDataSource?.invalidate()
+    fun search() {
+
     }
 }

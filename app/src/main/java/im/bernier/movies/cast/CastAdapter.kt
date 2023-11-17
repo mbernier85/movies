@@ -42,7 +42,7 @@ class CastAdapter(casts: List<Cast>, private val limit: Int = 0, private val onC
             itemView.findViewById<TextView>(R.id.textViewPersonCharacter).text = item.character
             val imageView = itemView.findViewById<ImageView>(R.id.imageViewPersonPicture)
             item.profile_path?.let {
-                Glide.with(imageView).load(imageUrl(it)).dontTransform().centerCrop().into(imageView)
+                Glide.with(imageView).load(it.imageUrl()).dontTransform().centerCrop().into(imageView)
             }
         }
     }

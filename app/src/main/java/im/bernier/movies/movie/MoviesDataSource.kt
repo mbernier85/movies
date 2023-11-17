@@ -1,62 +1,49 @@
 package im.bernier.movies.movie
 
-import androidx.lifecycle.MutableLiveData
-import androidx.paging.PageKeyedDataSource
+import androidx.paging.PagingState
+import androidx.paging.rxjava3.RxPagingSource
 import im.bernier.movies.datasource.Repository
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.HttpException
-import retrofit2.Response
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
 
-class MoviesDataSource constructor(val errors: MutableLiveData<Throwable>, private val repository: Repository): PageKeyedDataSource<Int, Movie>() {
+class MoviesDataSource @Inject constructor(
+    private val repository: Repository
+) : RxPagingSource<Int, Movie>() {
+    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+        val anchorPosition: Int = state.anchorPosition ?: return null
 
-    override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Movie>) {
-        repository.api.discover(1).enqueue(object: Callback<Page<Movie>?> {
-            override fun onFailure(call: Call<Page<Movie>?>, t: Throwable) {
-                errors.postValue(t)
-            }
+        val (_, prevKey, nextKey) = state.closestPageToPosition(anchorPosition)
+            ?: return null
 
-            override fun onResponse(call: Call<Page<Movie>?>, response: Response<Page<Movie>?>) {
-                val page = response.body()
-                if (response.isSuccessful && page != null) {
-                    addGenre(page.results)
-                    callback.onResult(page.results, page.page - 1, page.page + 1)
-                } else {
-                    errors.postValue(HttpException(response))
+        if (prevKey != null) {
+            return prevKey + 1
+        }
+
+        return if (nextKey != null) {
+            nextKey - 1
+        } else null
+
+    }
+
+    override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, Movie>> {
+        return repository.api.discover(params.key ?: 1)
+            .subscribeOn(Schedulers.io())
+            .map {
+                it.results.forEach { movie ->
+                    movie.genreString =
+                        repository.db.genreDao().loadAllByIds(movie.genre_ids.toIntArray())
+                            .joinToString { genre -> genre.name }
                 }
+                it
+            }.map {
+                val result: LoadResult<Int, Movie> = LoadResult.Page(
+                    data = it.results,
+                    prevKey = null,
+                    nextKey = it.page + 1
+                )
+                result
             }
-        })
-    }
-
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
-        repository.api.discover(params.key).enqueue(object: Callback<Page<Movie>?> {
-            override fun onFailure(call: Call<Page<Movie>?>, t: Throwable) {
-                errors.postValue(t)
-            }
-
-            override fun onResponse(call: Call<Page<Movie>?>, response: Response<Page<Movie>?>) {
-                val page = response.body()
-                if (response.isSuccessful && page != null) {
-                    addGenre(page.results)
-                    callback.onResult(page.results, page.page + 1)
-                } else {
-                    errors.postValue(HttpException(response))
-                }
-            }
-        })
-    }
-
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
-        // We only append data
-    }
-
-    private fun addGenre(movies: List<Movie>) {
-        Thread {
-            movies.forEach {
-                val genres =
-                    repository.db.genreDao().loadAllByIds(it.genre_ids.toIntArray()).joinToString { genre -> genre.name }
-                it.genreString = genres
-            }
-        }.start()
+            .onErrorReturn { LoadResult.Error(it) }
     }
 }
