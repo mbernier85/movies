@@ -25,7 +25,7 @@ class Repository @Inject constructor(val api: Api, val db: AppDatabase) {
     private val personLiveData = hashMapOf<Long, MutableLiveData<Person>>()
 
     fun person(id: Long): LiveData<Person> {
-        return personLiveData.getOrPut(id, { MutableLiveData() })
+        return personLiveData.getOrPut(id) { MutableLiveData() }
     }
 
     val credits: LiveData<Credits>

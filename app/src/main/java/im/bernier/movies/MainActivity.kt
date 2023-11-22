@@ -9,7 +9,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import im.bernier.movies.datasource.Repository
-import im.bernier.movies.movie.MovieListScreen
 import im.bernier.movies.theme.AppTheme
 import javax.inject.Inject
 
@@ -21,15 +20,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //setContentView(R.layout.activity_main)
         setContent {
             AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MovieListScreen()
+                    MoviesNavHost()
+                    //MovieListScreen()
                 }
             }
         }

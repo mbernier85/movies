@@ -12,8 +12,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CastViewModel @Inject constructor(): ViewModel() {
     private val personLiveData = MutableLiveData<Person>()
-    val person: LiveData<Person>
-        get() = personLiveData
+
+    val person: LiveData<Person> = personLiveData
 
     fun update(person: Person) {
         personLiveData.value = person

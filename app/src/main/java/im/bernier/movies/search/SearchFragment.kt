@@ -13,8 +13,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import im.bernier.movies.R
-import im.bernier.movies.cast.CastFragment.Companion.ARG_CAST_ID
 import im.bernier.movies.databinding.FragmentSearchBinding
 import im.bernier.movies.datasource.Repository
 import javax.inject.Inject
@@ -27,7 +25,6 @@ class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by viewModels()
     private lateinit var binding: FragmentSearchBinding
-    private lateinit var adapter: SearchResultAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,20 +33,9 @@ class SearchFragment : Fragment() {
         binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        adapter = SearchResultAdapter(listOf()) { resultItem ->
-            when (resultItem.media_type) {
-                "movie", "tv" -> findNavController().navigate(
-                    R.id.movieFragment,
-                    Bundle().apply { putLong("movie", resultItem.id) })
-                "person" -> findNavController().navigate(
-                    R.id.castFragment,
-                    Bundle().apply { putLong(ARG_CAST_ID, resultItem.id) })
-            }
-        }
+
         binding.recyclerViewSearchResult.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewSearchResult.adapter = adapter
         repository.searchResult.observe(viewLifecycleOwner, Observer {
-            adapter.update(it)
         })
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,

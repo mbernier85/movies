@@ -1,6 +1,7 @@
 package im.bernier.movies.movie
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import im.bernier.movies.credits.Credits
@@ -9,27 +10,22 @@ import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(private val repository: Repository): ViewModel() {
-
-    var movieId: Long = 0
-    private var _movie = Movie()
+class MovieViewModel @Inject constructor(
+    private val repository: Repository,
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    private val movieId: String = checkNotNull(savedStateHandle["movieId"])
 
     fun observableMovie(): Observable<Movie> {
-        return repository.fetchMovie(movieId)
-    }
-
-    var movie: Movie = _movie
-        set(value) {
-            _movie = value
-            field = value
+        return repository.fetchMovie(movieId.toLong()).map {
+            it.genreString = it.genres.joinToString { genre ->
+                genre.name
+            }
+            it
         }
+    }
 
     fun getCreditsLiveData(): LiveData<Credits> {
         return repository.credits
     }
-
-    val genreString: String
-        get() {
-            return _movie.genres.joinToString { genre -> genre.name }
-        }
 }

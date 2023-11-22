@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.Pager
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -33,7 +32,7 @@ import im.bernier.movies.util.imageUrl
 
 @Composable
 fun MovieListScreen(
-    viewModel: MoviesViewModel = viewModel(),
+    viewModel: MoviesViewModel,
     onNavigateToMovie: (Long) -> Unit,
     onNavigateToSearch: () -> Unit,
 ) {
