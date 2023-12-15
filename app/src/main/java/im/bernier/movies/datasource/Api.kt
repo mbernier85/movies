@@ -26,5 +26,5 @@ interface Api {
     fun search(@Query("query") query: String): Call<Page<SearchResultItem>>
 
     @GET("person/{person_id}")
-    fun getCastById(@Path("person_id") id: Long): Call<Person>
+    fun getCastById(@Path("person_id") id: Long): Observable<Person>
 }

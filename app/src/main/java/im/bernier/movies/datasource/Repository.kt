@@ -2,7 +2,6 @@ package im.bernier.movies.datasource
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import im.bernier.movies.cast.Person
 import im.bernier.movies.credits.Credits
 import im.bernier.movies.genre.Genres
 import im.bernier.movies.movie.Movie
@@ -22,11 +21,6 @@ class Repository @Inject constructor(val api: Api, val db: AppDatabase) {
 
     private val creditsLiveData = MutableLiveData<Credits>()
     private val searchLiveData = MutableLiveData<List<SearchResultItem>>()
-    private val personLiveData = hashMapOf<Long, MutableLiveData<Person>>()
-
-    fun person(id: Long): LiveData<Person> {
-        return personLiveData.getOrPut(id) { MutableLiveData() }
-    }
 
     val credits: LiveData<Credits>
         get() = creditsLiveData
@@ -60,20 +54,6 @@ class Repository @Inject constructor(val api: Api, val db: AppDatabase) {
                     Thread {
                         db.genreDao().insertAll(genres.genres)
                     }.start()
-                }
-            }
-        })
-    }
-
-    fun fetchPerson(id: Long) {
-        api.getCastById(id).enqueue(object : Callback<Person?> {
-            override fun onFailure(call: Call<Person?>, t: Throwable) {
-                Timber.e(t)
-            }
-
-            override fun onResponse(call: Call<Person?>, response: retrofit2.Response<Person?>) {
-                if (response.isSuccessful) {
-                    personLiveData.getOrPut(id, { MutableLiveData() }).postValue(response.body())
                 }
             }
         })

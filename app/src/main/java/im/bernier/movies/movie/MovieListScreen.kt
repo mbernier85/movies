@@ -39,7 +39,7 @@ fun MovieListScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButton(onClick = { onNavigateToSearch }) {
+            FloatingActionButton(onClick = { onNavigateToSearch() }) {
                 Icon(Icons.Filled.Search, contentDescription = "Search")
             }
         }

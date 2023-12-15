@@ -26,39 +26,43 @@ import im.bernier.movies.util.imageUrl
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MovieScreen(viewModel: MovieViewModel) {
-    val movie by viewModel.observableMovie().subscribeAsState(initial = null)
+fun MovieScreen(viewModel: MovieViewModel, onNavigateToCast: ((Long) -> Unit)) {
+    val movie by viewModel.movie.subscribeAsState(initial = null)
     Column {
-        GlideImage(
-            model = movie?.poster_path?.imageUrl(),
-            contentDescription = movie?.title,
-            modifier = Modifier
-                .size(140.dp, 240.dp)
-                .padding(8.dp)
-        )
-        Text(
-            text = movie?.title ?: "",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier
-                .padding(8.dp)
-        )
-        Text(
-            text = movie?.genreString ?: "",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .padding(8.dp)
-        )
-        Text(
-            text = movie?.overview ?: "",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .padding(8.dp)
-        )
-        Divider()
-        if (movie?.credits?.cast?.isNotEmpty() == true) {
-            LazyColumn {
-                items(items = movie!!.credits.cast) {
-                    CastItem(person = it)
+        LazyColumn {
+            item {
+                Column {
+                    GlideImage(
+                        model = movie?.poster_path?.imageUrl(),
+                        contentDescription = movie?.title,
+                        modifier = Modifier
+                            .size(140.dp, 240.dp)
+                            .padding(8.dp)
+                    )
+                    Text(
+                        text = movie?.title ?: "",
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                    Text(
+                        text = movie?.genreString ?: "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                    Text(
+                        text = movie?.overview ?: "",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                    Divider()
+                }
+            }
+            movie?.credits?.cast?.let {
+                items(items = it) { cast ->
+                    CastItem(person = cast, onNavigateToCast)
                 }
             }
         }
@@ -67,11 +71,14 @@ fun MovieScreen(viewModel: MovieViewModel) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CastItem(person: Cast) {
+fun CastItem(
+    person: Cast,
+    onNavigateToCast: ((Long) -> Unit)
+) {
     Row(
         modifier = Modifier
             .clickable {
-                // Do something when the item is clicked
+                onNavigateToCast(person.id)
             }
             .fillMaxWidth()
             .padding(8.dp)

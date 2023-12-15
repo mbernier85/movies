@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     MoviesNavHost()
-                    //MovieListScreen()
                 }
             }
         }
