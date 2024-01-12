@@ -1,4 +1,4 @@
-package im.bernier.movies.cast
+package im.bernier.movies.feature.cast
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

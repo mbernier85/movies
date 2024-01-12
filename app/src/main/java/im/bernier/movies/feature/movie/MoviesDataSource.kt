@@ -1,4 +1,4 @@
-package im.bernier.movies.movie
+package im.bernier.movies.feature.movie
 
 import androidx.paging.PagingState
 import androidx.paging.rxjava3.RxPagingSource

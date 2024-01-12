@@ -1,7 +1,7 @@
-package im.bernier.movies.credits
+package im.bernier.movies.feature.credits
 
-import im.bernier.movies.cast.Cast
-import im.bernier.movies.crew.Crew
+import im.bernier.movies.feature.cast.Cast
+import im.bernier.movies.feature.crew.Crew
 import kotlinx.serialization.Serializable
 
 @Serializable

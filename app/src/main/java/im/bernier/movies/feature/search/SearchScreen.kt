@@ -1,4 +1,4 @@
-package im.bernier.movies.search
+package im.bernier.movies.feature.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

@@ -1,4 +1,4 @@
-package im.bernier.movies.cast
+package im.bernier.movies.feature.cast
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

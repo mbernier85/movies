@@ -1,4 +1,4 @@
-package im.bernier.movies.movie
+package im.bernier.movies.feature.movie
 
 import androidx.lifecycle.ViewModel
 import androidx.paging.Pager

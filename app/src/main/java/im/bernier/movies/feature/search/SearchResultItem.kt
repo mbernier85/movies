@@ -1,4 +1,4 @@
-package im.bernier.movies.search
+package im.bernier.movies.feature.search
 
 import kotlinx.serialization.Serializable
 

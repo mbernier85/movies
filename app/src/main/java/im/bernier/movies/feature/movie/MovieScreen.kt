@@ -1,4 +1,4 @@
-package im.bernier.movies.movie
+package im.bernier.movies.feature.movie
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -21,7 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
-import im.bernier.movies.cast.Cast
+import im.bernier.movies.feature.cast.Cast
 import im.bernier.movies.util.imageUrl
 
 @OptIn(ExperimentalGlideComposeApi::class)

@@ -2,14 +2,12 @@ package im.bernier.movies.datasource
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import im.bernier.movies.credits.Credits
-import im.bernier.movies.genre.Genres
-import im.bernier.movies.movie.Movie
-import im.bernier.movies.movie.Page
-import im.bernier.movies.search.SearchResultItem
+import im.bernier.movies.feature.credits.Credits
+import im.bernier.movies.feature.genre.Genres
+import im.bernier.movies.feature.movie.Movie
+import im.bernier.movies.feature.movie.Page
+import im.bernier.movies.feature.search.SearchResultItem
 import io.reactivex.rxjava3.core.Observable
-import okhttp3.Interceptor
-import okhttp3.Response
 import retrofit2.Call
 import retrofit2.Callback
 import timber.log.Timber
@@ -27,16 +25,6 @@ class Repository @Inject constructor(val api: Api, val db: AppDatabase) {
 
     val searchResult: LiveData<List<SearchResultItem>>
         get() = searchLiveData
-
-    class RequestInterceptor : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val request = chain.request()
-            val newUrl = request.url.newBuilder()
-                .addQueryParameter("api_key", "a6534fdec1ef0b0d5e392dae172e5a42").build()
-            val newRequest = request.newBuilder().url(newUrl).build()
-            return chain.proceed(newRequest)
-        }
-    }
 
     fun fetchMovie(id: Long): Observable<Movie> {
         return api.getMovie(id)

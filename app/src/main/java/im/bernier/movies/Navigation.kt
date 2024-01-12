@@ -7,10 +7,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import im.bernier.movies.cast.CastScreen
-import im.bernier.movies.movie.MovieListScreen
-import im.bernier.movies.movie.MovieScreen
-import im.bernier.movies.search.SearchScreen
+import im.bernier.movies.feature.cast.CastScreen
+import im.bernier.movies.feature.movie.MovieListScreen
+import im.bernier.movies.feature.movie.MovieScreen
+import im.bernier.movies.feature.search.SearchScreen
 
 const val movieIdArg = "movieId"
 const val castIdArg = "personId"

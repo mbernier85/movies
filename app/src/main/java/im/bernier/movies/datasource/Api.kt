@@ -1,10 +1,10 @@
 package im.bernier.movies.datasource
 
-import im.bernier.movies.cast.Person
-import im.bernier.movies.genre.Genres
-import im.bernier.movies.movie.Movie
-import im.bernier.movies.movie.Page
-import im.bernier.movies.search.SearchResultItem
+import im.bernier.movies.feature.cast.Person
+import im.bernier.movies.feature.genre.Genres
+import im.bernier.movies.feature.movie.Movie
+import im.bernier.movies.feature.movie.Page
+import im.bernier.movies.feature.search.SearchResultItem
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import retrofit2.Call

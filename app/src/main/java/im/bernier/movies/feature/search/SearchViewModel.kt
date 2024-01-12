@@ -1,4 +1,4 @@
-package im.bernier.movies.search
+package im.bernier.movies.feature.search
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

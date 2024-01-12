@@ -1,4 +1,4 @@
-package im.bernier.movies.cast
+package im.bernier.movies.feature.cast
 
 import kotlinx.serialization.Serializable
 

@@ -1,4 +1,4 @@
-package im.bernier.movies.crew
+package im.bernier.movies.feature.crew
 
 import kotlinx.serialization.Serializable
 
