@@ -1,5 +1,6 @@
 [versions]
 activityCompose = "1.8.2"
+androidxComposeBom = "2023.10.01"
 androidGradlePlugin = "8.2.0"
 annotation = "1.7.1"
 appcompat = "1.6.1"
@@ -10,7 +11,7 @@ firebaseAppdistributionGradle = "4.0.1"
 fragmentKtx = "1.6.2"
 glide = "4.16.0"
 googleServices = "4.4.0"
-gradle = "8.2.0"
+gradle = "8.2.1"
 hiltNavigationCompose = "1.1.0"
 hiltVersion = "2.48.1"
 junit = "4.13.2"
@@ -37,6 +38,7 @@ timber = "4.7.1"
 [libraries]
 adapter-rxjava3 = { module = "com.squareup.retrofit2:adapter-rxjava3", version.ref = "retrofit" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleCommonJava8" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
@@ -46,7 +48,7 @@ androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", v
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "roomRuntime" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-compose = { module = "com.github.bumptech.glide:compose", version.ref = "compose" }
+glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "compose" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 dagger-android = { module = "com.google.dagger:dagger-android", version.ref = "hiltVersion" }

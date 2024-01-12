@@ -58,8 +58,6 @@ dependencies {
     implementation(libs.fragment.ktx)
     implementation(libs.lifecycle.extensions)
     implementation(libs.lifecycle.common.java8)
-    implementation(libs.recyclerview)
-    implementation(libs.swiperefreshlayout)
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
 
@@ -74,7 +72,6 @@ dependencies {
     implementation(libs.rxjava)
     implementation(libs.rxandroid)
 
-    implementation(libs.legacy.support.v4)
     implementation(libs.room.runtime)
     implementation(libs.junit.ktx)
     ksp(libs.androidx.room.compiler)
@@ -84,9 +81,8 @@ dependencies {
     implementation(libs.androidx.paging.rxjava3)
 
     implementation(libs.timber)
-    implementation(libs.androidx.annotation)
     implementation(libs.glide)
-    implementation(libs.compose)
+    implementation(libs.glide.compose)
     implementation(libs.dagger.android)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -94,23 +90,21 @@ dependencies {
 
     debugImplementation(libs.leakcanary.android)
 
-    val composeBom = platform("androidx.compose:compose-bom:2023.10.01")
+    val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation(libs.androidx.navigation.compose)
     implementation("androidx.compose.material3:material3")
-
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation("androidx.compose.runtime:runtime-livedata")
     implementation("androidx.compose.runtime:runtime-rxjava3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     testImplementation(libs.junit)
 
