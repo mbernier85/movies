@@ -4,12 +4,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Cast(
-    val cast_id: Int,
     val character: String,
     val credit_id: String,
-    val gender: Int?,
     val id: Long,
-    val name: String,
-    val order: Int,
-    val profile_path: String?
+    val title: String = "",
+    val name: String = "",
+    val cast_id: Int? = null,
+    val gender: Int? = null,
+    val profile_path: String? = null,
+    val order: Int? = null,
 )

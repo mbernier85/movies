@@ -3,16 +3,18 @@ package im.bernier.movies.feature.movie
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
@@ -26,9 +28,18 @@ import im.bernier.movies.util.imageUrl
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MovieScreen(viewModel: MovieViewModel, onNavigateToCast: ((Long) -> Unit)) {
+fun MovieScreen(
+    viewModel: MovieViewModel,
+    onNavigateToCast: ((Long) -> Unit),
+    onTitleChanged: (String) -> Unit,
+) {
     val movie by viewModel.movie.subscribeAsState(initial = null)
-    Column {
+    LaunchedEffect(key1 = movie) {
+        movie?.let {
+            onTitleChanged.invoke(it.title)
+        }
+    }
+    Column(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
             item {
                 Column {
@@ -57,7 +68,7 @@ fun MovieScreen(viewModel: MovieViewModel, onNavigateToCast: ((Long) -> Unit)) {
                         modifier = Modifier
                             .padding(8.dp)
                     )
-                    Divider()
+                    HorizontalDivider()
                 }
             }
             movie?.credits?.cast?.let {

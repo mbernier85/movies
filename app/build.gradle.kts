@@ -11,17 +11,27 @@ plugins {
 
 android {
     compileSdk = 34
+    namespace = "im.bernier.movies"
     defaultConfig {
         applicationId = "im.bernier.movies"
-        minSdk = 23
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file("release.keystore")
+            storePassword = "onion-scrubber-fling-pension9"
+            keyAlias = "movies"
+            keyPassword = "onion-scrubber-fling-pension9"
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -36,7 +46,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
 
     kotlinOptions {
@@ -45,8 +55,6 @@ android {
     room {
         schemaDirectory("$projectDir/schemas")
     }
-
-    namespace = "im.bernier.movies"
 }
 
 dependencies {
@@ -60,12 +68,12 @@ dependencies {
     implementation(libs.lifecycle.common.java8)
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
+    implementation(libs.androidx.security.crypto)
 
     implementation(libs.hilt.navigation.compose)
 
     implementation(libs.logging.interceptor)
     implementation(libs.retrofit)
-    implementation(libs.converter.moshi)
     implementation(libs.adapter.rxjava3)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
 
@@ -94,13 +102,13 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.runtime:runtime-livedata")
-    implementation("androidx.compose.runtime:runtime-rxjava3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.runtime.rxjava3)
+    implementation(libs.androidx.compose.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.manifest)
+    androidTestImplementation(libs.androidx.compose.junit4)
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.activity.compose)

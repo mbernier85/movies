@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,26 +34,43 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import im.bernier.movies.R
 import im.bernier.movies.util.imageUrl
+import im.bernier.movies.util.setTitle
+import timber.log.Timber
 
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
+    onTitleChanged: (String) -> Unit,
+    onNavigateToTvShow: (Long) -> Unit
 ) {
-    SearchContent(viewModel = viewModel, onNavigateToMovie, onNavigateToCast)
+    val searchResult by viewModel.searchResults.observeAsState(listOf())
+    SearchContent(
+        onNavigateToMovie,
+        onNavigateToCast,
+        onTitleChanged,
+        onNavigateToTvShow,
+        viewModel::submit,
+        searchResult
+    )
 }
 
 @Composable
 fun SearchContent(
-    viewModel: SearchViewModel,
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
+    onTitleChanged: (String) -> Unit,
+    onNavigateToTvShow: (Long) -> Unit,
+    onSubmit: (String) -> Unit,
+    searchResult: List<SearchResultItem>
 ) {
+    setTitle(stringId = R.string.search_title, onTitleChanged = onTitleChanged)
     var text by rememberSaveable { mutableStateOf("") }
-    val searchResult by viewModel.searchResults.observeAsState(listOf())
-    Column {
+
+    Column(modifier = Modifier.fillMaxSize()) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = text,
@@ -61,7 +79,7 @@ fun SearchContent(
                 Text(text = "Search")
             },
             keyboardActions = KeyboardActions(onSearch = {
-                viewModel.submit(text)
+                onSubmit(text)
             }),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             placeholder = { Text(text = "The matrix") },
@@ -80,7 +98,12 @@ fun SearchContent(
             items(
                 items = searchResult,
             ) { searchResult ->
-                SearchResultItem(searchResult, onNavigateToMovie, onNavigateToCast)
+                SearchResultItem(
+                    searchResult,
+                    onNavigateToMovie,
+                    onNavigateToCast,
+                    onNavigateToTvShow
+                )
             }
         }
     }
@@ -92,15 +115,17 @@ fun SearchResultItem(
     searchResult: SearchResultItem,
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
+    onNavigateToTvShow: ((Long) -> Unit)
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (searchResult.title?.isNotEmpty() == true) {
-                    onNavigateToMovie(searchResult.id)
-                } else {
-                    onNavigateToCast(searchResult.id)
+                when (searchResult.media_type) {
+                    "movie" -> onNavigateToMovie(searchResult.id)
+                    "tv" -> onNavigateToTvShow(searchResult.id)
+                    "person" -> onNavigateToCast(searchResult.id)
+                    else -> Timber.e("Unknown media type: ${searchResult.media_type}")
                 }
             },
     ) {
@@ -132,5 +157,31 @@ fun SearchResultItem(
 @Composable
 @Preview
 fun SearchScreenPreview() {
-    SearchScreen(onNavigateToMovie = {}, onNavigateToCast = {})
+    SearchContent(
+        onNavigateToMovie = {},
+        onNavigateToCast = {},
+        onTitleChanged = {},
+        onNavigateToTvShow = {},
+        onSubmit = {},
+        searchResult = listOf(
+            SearchResultItem(
+                id = 1,
+                media_type = "movie",
+                title = "The Matrix",
+                poster_path = "/lZpWprJqbIFpEV5uoHfoK0KCnTW.jpg"
+            ),
+            SearchResultItem(
+                id = 2,
+                media_type = "tv",
+                name = "The Matrix",
+                poster_path = "/lZpWprJqbIFpEV5uoHfoK0KCnTW.jpg"
+            ),
+            SearchResultItem(
+                id = 3,
+                media_type = "person",
+                name = "Keanu Reeves",
+                profile_path = "/lZpWprJqbIFpEV5uoHfoK0KCnTW.jpg"
+            )
+        )
+    )
 }

@@ -3,13 +3,18 @@ package im.bernier.movies.di
 import android.content.Context
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import im.bernier.movies.BuildConfig
 import im.bernier.movies.datasource.Api
 import im.bernier.movies.datasource.AppDatabase
+import im.bernier.movies.datasource.CryptographyManager
+import im.bernier.movies.datasource.CryptographyManagerImpl
+import im.bernier.movies.datasource.LogApi
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -26,7 +31,20 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
+abstract class CryptoModule {
+    @Binds
+    abstract fun bindsCryptographyManager(impl: CryptographyManagerImpl) : CryptographyManager
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideLogApi(retrofit: Retrofit): LogApi{
+        return retrofit.create(LogApi::class.java)
+    }
 
     @Provides
     @Singleton
@@ -70,7 +88,11 @@ object AppModule {
         requestInterceptor: Interceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addNetworkInterceptor(loggingInterceptor)
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    addNetworkInterceptor(loggingInterceptor)
+                }
+            }
             .addInterceptor(requestInterceptor)
             .build()
     }
@@ -81,7 +103,8 @@ object AppModule {
         return Interceptor {
             val request = it.request()
             val newUrl = request.url.newBuilder()
-                .addQueryParameter("api_key", "a6534fdec1ef0b0d5e392dae172e5a42").build()
+                .addQueryParameter("api_key", "a6534fdec1ef0b0d5e392dae172e5a42")
+                .build()
             val newRequest = request.newBuilder().url(newUrl).build()
             it.proceed(newRequest)
         }
@@ -90,6 +113,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDb(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "movies").build()
+        return Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "movies")
+            .build()
     }
 }
