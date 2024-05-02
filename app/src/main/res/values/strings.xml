@@ -17,4 +17,5 @@
     <string name="search_icon_text">Search</string>
     <string name="discover">Discover</string>
     <string name="tv_show">Tv show</string>
+    <string name="tv_show_poster">Tv show poster</string>
 </resources>
