@@ -1,12 +1,13 @@
 plugins {
     id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.org.jetbrains.kotlin.android)
     kotlin("plugin.serialization")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
     id("com.google.firebase.appdistribution")
     id("androidx.room")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -44,11 +45,6 @@ android {
         compose = true
         buildConfig = true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
-    }
-
     kotlinOptions {
         jvmTarget = "17"
     }

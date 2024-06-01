@@ -1,28 +1,28 @@
 [versions]
 activityCompose = "1.9.0"
-androidxComposeBom = "2024.04.01"
+androidxComposeBom = "2024.05.00"
 androidGradlePlugin = "8.2.2"
-appcompat = "1.6.1"
+appcompat = "1.7.0"
 compose = "1.0.0-beta01"
-coreKtx = "1.13.0"
+coreKtx = "1.13.1"
 espressoCore = "3.5.1"
 firebaseAppdistributionGradle = "4.2.0"
-fragmentKtx = "1.6.2"
+fragmentKtx = "1.7.1"
 glide = "4.16.0"
-googleServices = "4.4.1"
-gradle = "8.4.0"
+googleServices = "4.4.2"
+gradle = "8.4.1"
 hiltNavigationCompose = "1.2.0"
 hiltVersion = "2.50"
 junit = "4.13.2"
 junitVersion = "1.1.5"
-kotlinGradlePlugin = "1.9.22"
+kotlin = "2.0.0"
 kotlinxSerializationJson = "1.6.0"
 leakcanaryAndroid = "2.10"
-lifecycleCommonJava8 = "2.7.0"
+lifecycleCommonJava8 = "2.8.1"
 lifecycleExtensions = "2.2.0"
 loggingInterceptor = "4.12.0"
 navigation = "2.7.7"
-paging = "3.2.1"
+paging = "3.3.0"
 retrofit = "2.9.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
 roomRuntime = "2.6.1"
@@ -69,9 +69,9 @@ hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-p
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 junit = { module = "junit:junit", version.ref = "junit" }
 junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitVersion" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
-kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinGradlePlugin" }
-kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlinGradlePlugin" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "lifecycleCommonJava8" }
@@ -90,4 +90,6 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 [bundles]
 
 [plugins]
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
