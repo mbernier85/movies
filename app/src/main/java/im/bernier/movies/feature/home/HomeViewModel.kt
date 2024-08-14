@@ -14,7 +14,7 @@ class HomeViewModel @Inject constructor(
     val uiState = mutableStateOf(UiState())
 
     fun openAccount() {
-        if (repository.loggedIn()) {
+        if (repository.loggedIn) {
             uiState.value = uiState.value.copy(openAccount = true)
         } else {
             uiState.value = uiState.value.copy(openLogin = true)

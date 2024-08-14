@@ -10,6 +10,8 @@ import im.bernier.movies.datasource.Repository
 import im.bernier.movies.feature.movie.Movie
 import im.bernier.movies.feature.movie.MoviesDataSource
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,6 +30,8 @@ class MoviesDiscoverViewModel @Inject constructor(
         moviesDataSource
     }.flow.cachedIn(viewModelScope)
 
+    val isLoggedIn = repository.loggedIn
+
     fun onAddToWatchList(id: Long, mediaType: String) {
         compositeDisposable.add(repository.addToWatchList(id, true, mediaType)
             .subscribe({
@@ -36,11 +40,15 @@ class MoviesDiscoverViewModel @Inject constructor(
                 Timber.e(it)
                 if (it is HttpException) {
                     if (it.code() == 401) {
-                        // uiState.value = uiState.value.copy(navigateToLogin = true)
+                        navigateToLogin()
                     }
                 }
-            }
-            ))
+            })
+        )
+    }
+
+    private fun navigateToLogin() {
+
     }
 
     override fun onCleared() {
@@ -48,6 +56,10 @@ class MoviesDiscoverViewModel @Inject constructor(
         super.onCleared()
     }
 }
+
+data class Actions(
+    val navigateToLogin: () -> Unit
+)
 
 fun Movie.toMediaUiStateItem(): MediaUiStateItem {
     return MediaUiStateItem(

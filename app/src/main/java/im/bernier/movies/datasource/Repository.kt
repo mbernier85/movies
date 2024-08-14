@@ -35,6 +35,11 @@ class Repository @Inject constructor(
     val searchResult: LiveData<List<SearchResultItem>>
         get() = searchLiveData
 
+    val loggedIn: Boolean
+        get() {
+            return storage.getSessionId().isNotEmpty()
+        }
+
     fun validateToken(
         token: String,
         username: String,
@@ -105,8 +110,6 @@ class Repository @Inject constructor(
             }
         })
     }
-
-    fun loggedIn(): Boolean = storage.getSessionId().isNotEmpty()
 
     fun addToWatchList(mediaId: Long, watchlist: Boolean, mediaType: String): Single<AddToWatchListResponse> {
         return api.addToWatchlist(
