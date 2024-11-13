@@ -2,6 +2,7 @@ package im.bernier.movies.feature.tv
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import im.bernier.movies.datasource.Repository
 import timber.log.Timber
@@ -12,7 +13,7 @@ class TvShowViewModel @Inject constructor(
     repository: Repository,
     savedStateHandle: SavedStateHandle
 ):ViewModel() {
-    private val movieId: String = checkNotNull(savedStateHandle[tvShowIdArg])
-    val tvShow = repository.fetchTv(movieId.toLong()).doOnError { Timber.e(it) }
+    private val movieId: Long = (savedStateHandle.toRoute() as TvShowRoute).id
+    val tvShow = repository.fetchTv(movieId).doOnError { Timber.e(it) }
 
 }

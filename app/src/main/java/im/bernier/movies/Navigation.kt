@@ -18,29 +18,34 @@ import im.bernier.movies.feature.movie.MovieScreen
 import im.bernier.movies.feature.search.SearchScreen
 import im.bernier.movies.feature.tv.navigateToTvShow
 import im.bernier.movies.feature.tv.tvShowScreen
-
-const val movieIdArg = "movieId"
-const val castIdArg = "personId"
+import kotlinx.serialization.Serializable
 
 fun NavController.navigateToMovie(id: Long) {
-    this.navigate("movie/$id")
+    this.navigate(MovieRoute(id))
 }
 
 fun NavController.navigateToSearch() {
-    this.navigate("search")
+    this.navigate(SearchRoute)
 }
 
 fun NavController.navigateToCast(id: Long) {
-    this.navigate("cast/$id")
+    this.navigate(CastRoute(id))
 }
 
-const val DISCOVER_ROUTE = "discover"
+@Serializable
+data object DiscoverRoute
+@Serializable
+data class MovieRoute(val id: Long)
+@Serializable
+data class CastRoute(val id: Long)
+@Serializable
+data object SearchRoute
 
 @Composable
 fun MoviesNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = DISCOVER_ROUTE,
+    startDestination: Any = DiscoverRoute,
     onTitleChanged: (String) -> Unit,
 ) {
     NavHost(
@@ -50,13 +55,13 @@ fun MoviesNavHost(
         enterTransition = { fadeIn() },
         exitTransition = { fadeOut() }
     ) {
-        composable(DISCOVER_ROUTE) {
+        composable<DiscoverRoute> {
             DiscoverRoute(
                 onTitleChanged = onTitleChanged,
                 navController = navController
             )
         }
-        composable("movie/{$movieIdArg}") {
+        composable<MovieRoute> {
             MovieScreen(
                 viewModel = hiltViewModel(),
                 onTitleChanged = onTitleChanged,
@@ -65,7 +70,7 @@ fun MoviesNavHost(
                 }
             )
         }
-        composable("search") {
+        composable<SearchRoute> {
             SearchScreen(
                 onNavigateToMovie = { navController.navigateToMovie(it) },
                 onNavigateToCast = { navController.navigateToCast(it) },
@@ -73,7 +78,7 @@ fun MoviesNavHost(
                 onTitleChanged = onTitleChanged
             )
         }
-        composable("cast/{$castIdArg}") {
+        composable<CastRoute> {
             CastScreen(
                 viewModel = hiltViewModel(),
                 onTitleChanged = onTitleChanged

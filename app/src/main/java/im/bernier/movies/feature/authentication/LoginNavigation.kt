@@ -3,18 +3,20 @@ package im.bernier.movies.feature.authentication
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import kotlinx.serialization.Serializable
 
-const val LOGIN_ROUTE = "login"
+@Serializable
+data object LoginRoute
 
 fun NavController.navigateToLogin() {
-    navigate(route = LOGIN_ROUTE)
+    navigate(LoginRoute)
 }
 
 fun NavGraphBuilder.loginScreen(
     navController: NavController,
     onTitleChanged: (String) -> Unit
 ) {
-    composable(route = LOGIN_ROUTE) {
+    composable<LoginRoute> {
         LoginRoute(navController, onTitleChanged = onTitleChanged)
     }
 }

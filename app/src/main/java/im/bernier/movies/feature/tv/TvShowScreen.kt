@@ -23,11 +23,13 @@ import com.bumptech.glide.integration.compose.GlideImage
 import im.bernier.movies.R
 import im.bernier.movies.util.imageUrl
 import im.bernier.movies.util.setTitle
+import kotlinx.serialization.Serializable
 
-const val tvShowIdArg = "tvShowId"
+@Serializable
+data class TvShowRoute(val id: Long)
 
 fun NavGraphBuilder.tvShowScreen(onTitleChanged: (String) -> Unit) {
-    composable("tvShow/{$tvShowIdArg}") { _ ->
+    composable<TvShowRoute> { _ ->
         TvShowScreen(
             onTitleChanged = onTitleChanged,
         )
@@ -35,7 +37,7 @@ fun NavGraphBuilder.tvShowScreen(onTitleChanged: (String) -> Unit) {
 }
 
 fun NavController.navigateToTvShow(id: Long) {
-    this.navigate("tvShow/$id")
+    this.navigate(TvShowRoute(id))
 }
 
 @Composable

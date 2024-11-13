@@ -3,15 +3,17 @@ package im.bernier.movies.feature.account
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import kotlinx.serialization.Serializable
 
-const val ACCOUNT_ROUTE = "account"
+@Serializable
+data object AccountRoute
 
-fun NavController.navigateToAccount() = navigate(ACCOUNT_ROUTE)
+fun NavController.navigateToAccount() = navigate(AccountRoute)
 
 fun NavGraphBuilder.accountScreen(
     onTitleChanged: (String) -> Unit
 ) {
-    composable(route = ACCOUNT_ROUTE) {
+    composable<AccountRoute> {
         AccountRoute(onTitleChanged = onTitleChanged)
     }
 }
