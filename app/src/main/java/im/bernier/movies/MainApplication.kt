@@ -9,7 +9,6 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class MainApplication : Application() {
-
     @Inject
     lateinit var prodTree: ProdTree
 
@@ -23,16 +22,25 @@ class MainApplication : Application() {
     }
 }
 
-class ProdTree @Inject constructor(private val logApi: LogApi) : Timber.Tree() {
-    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        logApi.putLog(
-            "",
-            LogItem(
-                priority = priority,
-                tag = tag,
-                message = message,
-                throwableMessage = t?.message
+class ProdTree
+    @Inject
+    constructor(
+        private val logApi: LogApi,
+    ) : Timber.Tree() {
+        override fun log(
+            priority: Int,
+            tag: String?,
+            message: String,
+            t: Throwable?,
+        ) {
+            logApi.putLog(
+                "",
+                LogItem(
+                    priority = priority,
+                    tag = tag,
+                    message = message,
+                    throwableMessage = t?.message,
+                ),
             )
-        )
+        }
     }
-}

@@ -16,6 +16,7 @@ data class Person(
     val movie_credits: Casts? = null,
     val tv_credits: Casts? = null,
 )
+
 @Serializable
 data class Casts(
     val cast: List<Cast>?,

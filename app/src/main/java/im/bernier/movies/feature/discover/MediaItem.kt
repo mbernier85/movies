@@ -28,38 +28,39 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import im.bernier.movies.util.imageUrl
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MediaItem(
     item: MediaUiStateItem,
     onNavigateToMedia: (Long) -> Unit,
-    onAddToWatchList: (Long, String) -> Unit
+    onAddToWatchList: (Long, String) -> Unit,
 ) {
     Card(
-        modifier = Modifier.padding(4.dp)
+        modifier = Modifier.padding(4.dp),
     ) {
         Column(
-            modifier = Modifier
-                .padding(4.dp)
-                .fillMaxWidth()
-                .clickable {
-                    onNavigateToMedia(item.id)
-                }
+            modifier =
+                Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        onNavigateToMedia(item.id)
+                    },
         ) {
             Row(
-                modifier = Modifier
+                modifier = Modifier,
             ) {
                 Box(
-                    modifier = Modifier
-                        .width(140.dp)
-                        .height(200.dp)
-                        .padding(horizontal = 8.dp)
+                    modifier =
+                        Modifier
+                            .width(140.dp)
+                            .height(200.dp)
+                            .padding(horizontal = 8.dp),
                 ) {
                     GlideImage(
                         model = item.posterPath.imageUrl(),
                         contentDescription = "Movie poster",
-                        modifier = Modifier.clip(ShapeDefaults.Small)
+                        modifier = Modifier.clip(ShapeDefaults.Small),
                     )
                 }
 
@@ -68,20 +69,20 @@ fun MediaItem(
                         text = item.title,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                     Text(
                         text = item.genreString,
                         modifier = Modifier.padding(vertical = 8.dp),
                         maxLines = 1,
                         overflow = TextOverflow.Clip,
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.labelSmall,
                     )
                     Text(
                         text = item.overview,
                         maxLines = 5,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }
@@ -101,16 +102,17 @@ fun MediaItem(
 @Preview
 fun MediaItemPreview() {
     MediaItem(
-        item = MediaUiStateItem(
-            id = 1,
-            title = "Title",
-            overview = "Overview",
-            posterPath = "https://image.tmdb.org/t/p/w500/8bRIfPGDk2n3k3YGuI8q0d3i5xM.jpg",
-            genreString = "Action",
-            watchlist = false,
-            mediaType = "movie"
-        ),
-        onNavigateToMedia = { }
+        item =
+            MediaUiStateItem(
+                id = 1,
+                title = "Title",
+                overview = "Overview",
+                posterPath = "https://image.tmdb.org/t/p/w500/8bRIfPGDk2n3k3YGuI8q0d3i5xM.jpg",
+                genreString = "Action",
+                watchlist = false,
+                mediaType = "movie",
+            ),
+        onNavigateToMedia = { },
     ) { _, _ -> }
 }
 
@@ -121,5 +123,5 @@ data class MediaUiStateItem(
     val posterPath: String,
     val genreString: String = "",
     val watchlist: Boolean = false,
-    val mediaType: String
+    val mediaType: String,
 )

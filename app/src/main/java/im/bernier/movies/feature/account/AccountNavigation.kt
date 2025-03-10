@@ -10,9 +10,7 @@ data object AccountRoute
 
 fun NavController.navigateToAccount() = navigate(AccountRoute)
 
-fun NavGraphBuilder.accountScreen(
-    onTitleChanged: (String) -> Unit
-) {
+fun NavGraphBuilder.accountScreen(onTitleChanged: (String) -> Unit) {
     composable<AccountRoute> {
         AccountRoute(onTitleChanged = onTitleChanged)
     }

@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class WatchlistRequest(
     val media_type: String,
     val media_id: Long,
-    val watchlist: Boolean
+    val watchlist: Boolean,
 )

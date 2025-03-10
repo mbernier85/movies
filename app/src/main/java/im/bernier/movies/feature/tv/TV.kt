@@ -16,5 +16,5 @@ data class TV(
     val genres: List<Genre> = listOf(),
     val credits: Credits = Credits(),
     val first_air_date: String = "",
-    val original_name: String = ""
+    val original_name: String = "",
 )

@@ -10,5 +10,5 @@ data class ListsItem(
     val item_count: Int = 0,
     val list_type: String = "",
     val name: String = "",
-    val poster_path: String = ""
+    val poster_path: String = "",
 )

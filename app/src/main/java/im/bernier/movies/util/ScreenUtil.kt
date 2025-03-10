@@ -10,7 +10,10 @@ import androidx.compose.ui.res.stringResource
 
 @SuppressLint("ComposableNaming")
 @Composable
-inline fun setTitle(stringId: Int, crossinline onTitleChanged: (String) -> Unit) {
+inline fun setTitle(
+    stringId: Int,
+    crossinline onTitleChanged: (String) -> Unit,
+) {
     val titleValue = stringResource(id = stringId)
     val title by remember {
         mutableStateOf(titleValue)

@@ -24,9 +24,11 @@ import com.bumptech.glide.integration.compose.GlideImage
 import im.bernier.movies.theme.AppTheme
 import im.bernier.movies.util.imageUrl
 
-
 @Composable
-fun CastScreen(viewModel: CastViewModel = hiltViewModel(), onTitleChanged: (String) -> Unit) {
+fun CastScreen(
+    viewModel: CastViewModel = hiltViewModel(),
+    onTitleChanged: (String) -> Unit,
+) {
     val person by viewModel.person.subscribeAsState(initial = null)
     val tvShowCredits: List<Cast> = person?.tv_credits?.cast ?: listOf()
     val movieCredits: List<Cast> = person?.movie_credits?.cast ?: listOf()
@@ -51,29 +53,31 @@ fun CastComponent(person: Person) {
         GlideImage(
             model = person.profile_path?.imageUrl(),
             contentDescription = person.name,
-            modifier = Modifier
-                .size(120.dp, 180.dp)
-                .clip(CircleShape)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .size(120.dp, 180.dp)
+                    .clip(CircleShape)
+                    .padding(16.dp),
         )
         Text(
             text = person.name,
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .padding(16.dp),
         )
         Text(
             text = person.biography,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .padding(16.dp),
         )
     }
 }
 
 @Composable
 fun CreditsList(credits: List<Cast>) {
-
 }
 
 @Composable
@@ -85,7 +89,7 @@ fun CastScreenPreview() {
                 Person(
                     id = 1,
                     name = "Keanu Reeves",
-                )
+                ),
             )
         }
     }

@@ -7,15 +7,21 @@ import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 @HiltViewModel
-class AccountViewModel @Inject constructor(
-    repository: Repository
-): ViewModel() {
-    val uiState: Single<UiState> = repository.getAccount().map {
-        val uiState = UiState(
-            it.username
-        )
-        uiState
+class AccountViewModel
+    @Inject
+    constructor(
+        repository: Repository,
+    ) : ViewModel() {
+        val uiState: Single<UiState> =
+            repository.getAccount().map {
+                val uiState =
+                    UiState(
+                        it.username,
+                    )
+                uiState
+            }
     }
-}
 
-data class UiState(val name: String)
+data class UiState(
+    val name: String,
+)

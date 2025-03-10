@@ -15,15 +15,14 @@ import im.bernier.movies.R
 import im.bernier.movies.util.setTitle
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun DiscoverRoute(
     onTitleChanged: (String) -> Unit,
-    navController: NavController
+    navController: NavController,
 ) {
     DiscoverScreen(
         onTitleChanged = onTitleChanged,
-        navController = navController
+        navController = navController,
     )
 }
 
@@ -31,7 +30,7 @@ fun DiscoverRoute(
 @Composable
 fun DiscoverScreen(
     onTitleChanged: (String) -> Unit,
-    navController: NavController
+    navController: NavController,
 ) {
     setTitle(stringId = R.string.discover) {
         onTitleChanged.invoke(it)
@@ -51,20 +50,21 @@ fun DiscoverScreen(
                         scope.launch {
                             pagerState.animateScrollToPage(index)
                         }
-                    }
+                    },
                 )
             }
         }
         HorizontalPager(state = pagerState) { index ->
             when (index) {
-                0 -> DiscoverMovieScreen(
-                    navController = navController,
-                )
-                1 -> DiscoverTvScreen(
-                    navController = navController,
-                )
+                0 ->
+                    DiscoverMovieScreen(
+                        navController = navController,
+                    )
+                1 ->
+                    DiscoverTvScreen(
+                        navController = navController,
+                    )
             }
         }
-
     }
 }

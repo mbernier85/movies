@@ -12,5 +12,5 @@ data class SearchResultItem(
     val name: String? = null,
     val title: String? = null,
     val poster_path: String? = null,
-    val profile_path: String? = null
+    val profile_path: String? = null,
 )

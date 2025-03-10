@@ -14,5 +14,5 @@ data class Movie(
     val genre_ids: List<Int> = listOf(),
     var genreString: String = "",
     val genres: List<Genre> = listOf(),
-    val credits: Credits = Credits()
+    val credits: Credits = Credits(),
 )

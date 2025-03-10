@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun DiscoverTvScreen(
     viewModel: DiscoverTvViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
 ) {
     val pager: Flow<PagingData<TV>> = viewModel.pager
     TvList(
@@ -38,9 +38,10 @@ fun TvList(
 ) {
     val lazyPagingItems = pager.collectAsLazyPagingItems()
     LazyColumn(
-        modifier = Modifier
-            .padding(4.dp)
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .padding(4.dp)
+                .fillMaxWidth(),
     ) {
         items(
             count = lazyPagingItems.itemCount,
@@ -53,7 +54,7 @@ fun TvList(
                     onNavigateToMedia = {
                         onNavigateToTvShow(it)
                     },
-                    onAddToWatchList = onAddToWatchList
+                    onAddToWatchList = onAddToWatchList,
                 )
             }
         }

@@ -9,18 +9,20 @@ import im.bernier.movies.datasource.Repository
 import javax.inject.Inject
 
 @HiltViewModel
-class MovieViewModel @Inject constructor(
-    repository: Repository,
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
-    private val movieId: Long = (savedStateHandle.toRoute() as MovieRoute).id
+class MovieViewModel
+    @Inject
+    constructor(
+        repository: Repository,
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        private val movieId: Long = (savedStateHandle.toRoute() as MovieRoute).id
 
-    val movie =
-        repository.fetchMovie(movieId).map {
-            it.genreString = it.genres.joinToString { genre ->
-                genre.name
+        val movie =
+            repository.fetchMovie(movieId).map {
+                it.genreString =
+                    it.genres.joinToString { genre ->
+                        genre.name
+                    }
+                it
             }
-            it
-        }
-
-}
+    }

@@ -4,9 +4,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,7 +20,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun DiscoverMovieScreen(
     viewModel: MoviesDiscoverViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
 ) {
     val pager: Flow<PagingData<Movie>> = viewModel.pager
 
@@ -38,7 +35,7 @@ fun DiscoverMovieScreen(
             } else {
                 navController.navigateToLogin()
             }
-        }
+        },
     )
 }
 
@@ -47,13 +44,13 @@ fun MediaList(
     pager: Flow<PagingData<Movie>>,
     onNavigateToMovie: (Long) -> Unit,
     onAddToWatchList: (Long, String) -> Unit,
-
 ) {
     val lazyPagingItems = pager.collectAsLazyPagingItems()
     LazyColumn(
-        modifier = Modifier
-            .padding(4.dp)
-            .fillMaxWidth()
+        modifier =
+            Modifier
+                .padding(4.dp)
+                .fillMaxWidth(),
     ) {
         items(
             count = lazyPagingItems.itemCount,
@@ -64,7 +61,7 @@ fun MediaList(
                 MediaItem(
                     item = movie.toMediaUiStateItem(),
                     onNavigateToMovie,
-                    onAddToWatchList = onAddToWatchList
+                    onAddToWatchList = onAddToWatchList,
                 )
             }
         }

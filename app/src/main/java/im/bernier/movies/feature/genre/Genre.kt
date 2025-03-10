@@ -6,4 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Entity
 @Serializable
-data class Genre(@PrimaryKey(autoGenerate = false) val id: Int, val name: String)
+data class Genre(
+    @PrimaryKey(autoGenerate = false) val id: Int,
+    val name: String,
+)

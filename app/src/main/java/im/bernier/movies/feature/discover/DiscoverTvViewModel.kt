@@ -15,47 +15,57 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class DiscoverTvViewModel @Inject constructor(
-    tvDataSource: TVDataSource,
-    private val repository: Repository,
-) : ViewModel() {
-    private val compositeDisposable = CompositeDisposable()
+class DiscoverTvViewModel
+    @Inject
+    constructor(
+        tvDataSource: TVDataSource,
+        private val repository: Repository,
+    ) : ViewModel() {
+        private val compositeDisposable = CompositeDisposable()
 
-    val pager = Pager(
-        config = PagingConfig(20, initialLoadSize = 20)
-    ) {
-        tvDataSource
-    }.flow.cachedIn(viewModelScope)
+        val pager =
+            Pager(
+                config = PagingConfig(20, initialLoadSize = 20),
+            ) {
+                tvDataSource
+            }.flow.cachedIn(viewModelScope)
 
-    fun onAddToWatchList(id: Long, mediaType: String) {
-        compositeDisposable.add(repository.addToWatchList(id, true, mediaType)
-            .subscribe({
-                // Do nothing for now
-            }, {
-                Timber.e(it)
-                if (it is HttpException) {
-                    if (it.code() == 401) {
-                        // uiState.value = uiState.value.copy(navigateToLogin = true)
-                    }
-                }
-            }
-            ))
+        fun onAddToWatchList(
+            id: Long,
+            mediaType: String,
+        ) {
+            compositeDisposable.add(
+                repository
+                    .addToWatchList(id, true, mediaType)
+                    .subscribe(
+                        {
+                            // Do nothing for now
+                        },
+                        {
+                            Timber.e(it)
+                            if (it is HttpException) {
+                                if (it.code() == 401) {
+                                    // uiState.value = uiState.value.copy(navigateToLogin = true)
+                                }
+                            }
+                        },
+                    ),
+            )
+        }
+
+        override fun onCleared() {
+            compositeDisposable.clear()
+            super.onCleared()
+        }
     }
 
-    override fun onCleared() {
-        compositeDisposable.clear()
-        super.onCleared()
-    }
-}
-
-fun TV.toMediaUiStateItem(): MediaUiStateItem {
-    return MediaUiStateItem(
+fun TV.toMediaUiStateItem(): MediaUiStateItem =
+    MediaUiStateItem(
         id = id,
         title = name,
         overview = overview,
         posterPath = poster_path,
         genreString = genreString,
         watchlist = false,
-        mediaType = "tv"
+        mediaType = "tv",
     )
-}

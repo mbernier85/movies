@@ -45,7 +45,7 @@ fun SearchScreen(
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
     onTitleChanged: (String) -> Unit,
-    onNavigateToTvShow: (Long) -> Unit
+    onNavigateToTvShow: (Long) -> Unit,
 ) {
     val searchResult by viewModel.searchResults.observeAsState(listOf())
     SearchContent(
@@ -54,7 +54,7 @@ fun SearchScreen(
         onTitleChanged,
         onNavigateToTvShow,
         viewModel::submit,
-        searchResult
+        searchResult,
     )
 }
 
@@ -65,7 +65,7 @@ fun SearchContent(
     onTitleChanged: (String) -> Unit,
     onNavigateToTvShow: (Long) -> Unit,
     onSubmit: (String) -> Unit,
-    searchResult: List<SearchResultItem>
+    searchResult: List<SearchResultItem>,
 ) {
     setTitle(stringId = R.string.search_title, onTitleChanged = onTitleChanged)
     var text by rememberSaveable { mutableStateOf("") }
@@ -78,19 +78,21 @@ fun SearchContent(
             label = {
                 Text(text = "Search")
             },
-            keyboardActions = KeyboardActions(onSearch = {
-                onSubmit(text)
-            }),
+            keyboardActions =
+                KeyboardActions(onSearch = {
+                    onSubmit(text)
+                }),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             placeholder = { Text(text = "The matrix") },
             trailingIcon = {
                 Icon(
                     Icons.Filled.Clear,
                     contentDescription = "Clear icon",
-                    modifier = Modifier.clickable { text = "" })
+                    modifier = Modifier.clickable { text = "" },
+                )
             },
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "search icon") },
-            singleLine = true
+            singleLine = true,
         )
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
@@ -102,7 +104,7 @@ fun SearchContent(
                     searchResult,
                     onNavigateToMovie,
                     onNavigateToCast,
-                    onNavigateToTvShow
+                    onNavigateToTvShow,
                 )
             }
         }
@@ -115,31 +117,33 @@ fun SearchResultItem(
     searchResult: SearchResultItem,
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
-    onNavigateToTvShow: ((Long) -> Unit)
+    onNavigateToTvShow: ((Long) -> Unit),
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                when (searchResult.media_type) {
-                    "movie" -> onNavigateToMovie(searchResult.id)
-                    "tv" -> onNavigateToTvShow(searchResult.id)
-                    "person" -> onNavigateToCast(searchResult.id)
-                    else -> Timber.e("Unknown media type: ${searchResult.media_type}")
-                }
-            },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable {
+                    when (searchResult.media_type) {
+                        "movie" -> onNavigateToMovie(searchResult.id)
+                        "tv" -> onNavigateToTvShow(searchResult.id)
+                        "person" -> onNavigateToCast(searchResult.id)
+                        else -> Timber.e("Unknown media type: ${searchResult.media_type}")
+                    }
+                },
     ) {
         Box(
-            modifier = Modifier
-                .width(140.dp)
-                .height(240.dp)
-                .padding(horizontal = 8.dp)
+            modifier =
+                Modifier
+                    .width(140.dp)
+                    .height(240.dp)
+                    .padding(horizontal = 8.dp),
         ) {
             val imagePath =
                 searchResult.profile_path?.imageUrl() ?: searchResult.poster_path?.imageUrl() ?: ""
             GlideImage(
                 model = imagePath,
-                contentDescription = "Movie poster or profile picture"
+                contentDescription = "Movie poster or profile picture",
             )
         }
 
@@ -148,7 +152,7 @@ fun SearchResultItem(
                 text = searchResult.title ?: searchResult.name ?: "",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
             )
         }
     }
@@ -163,25 +167,26 @@ fun SearchScreenPreview() {
         onTitleChanged = {},
         onNavigateToTvShow = {},
         onSubmit = {},
-        searchResult = listOf(
-            SearchResultItem(
-                id = 1,
-                media_type = "movie",
-                title = "The Matrix",
-                poster_path = "/lZpWprJqbIFpEV5uoHfoK0KCnTW.jpg"
+        searchResult =
+            listOf(
+                SearchResultItem(
+                    id = 1,
+                    media_type = "movie",
+                    title = "The Matrix",
+                    poster_path = "/lZpWprJqbIFpEV5uoHfoK0KCnTW.jpg",
+                ),
+                SearchResultItem(
+                    id = 2,
+                    media_type = "tv",
+                    name = "The Matrix",
+                    poster_path = "/lZpWprJqbIFpEV5uoHfoK0KCnTW.jpg",
+                ),
+                SearchResultItem(
+                    id = 3,
+                    media_type = "person",
+                    name = "Keanu Reeves",
+                    profile_path = "/lZpWprJqbIFpEV5uoHfoK0KCnTW.jpg",
+                ),
             ),
-            SearchResultItem(
-                id = 2,
-                media_type = "tv",
-                name = "The Matrix",
-                poster_path = "/lZpWprJqbIFpEV5uoHfoK0KCnTW.jpg"
-            ),
-            SearchResultItem(
-                id = 3,
-                media_type = "person",
-                name = "Keanu Reeves",
-                profile_path = "/lZpWprJqbIFpEV5uoHfoK0KCnTW.jpg"
-            )
-        )
     )
 }

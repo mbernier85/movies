@@ -39,3 +39,6 @@ hs_err_pid*
 /.idea/deploymentTargetSelector.xml
 /.idea/kotlinc.xml
 /.idea/runConfigurations.xml
+/.idea/AndroidProjectSystem.xml
+/.idea/.name
+/.idea/ktlint-plugin.xml

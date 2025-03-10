@@ -38,9 +38,7 @@ import im.bernier.movies.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    homeViewModel: HomeViewModel = hiltViewModel(),
-) {
+fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val navController = rememberNavController()
     val openAccount = homeViewModel.uiState.value.openAccount
     val openLogin = homeViewModel.uiState.value.openLogin
@@ -66,7 +64,7 @@ fun HomeScreen(
     AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             Scaffold(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -77,12 +75,12 @@ fun HomeScreen(
                         openAccount = {
                             homeViewModel.openAccount()
                         },
-                        scrollBehavior = scrollBehavior
+                        scrollBehavior = scrollBehavior,
                     )
-                }
+                },
             ) { paddingValues ->
                 Column(
-                    modifier = Modifier.padding(paddingValues)
+                    modifier = Modifier.padding(paddingValues),
                 ) {
                     MoviesNavHost(
                         navController = navController,
@@ -102,7 +100,7 @@ fun HomeTopBar(
     title: String,
     navController: NavController,
     openAccount: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
@@ -115,7 +113,7 @@ fun HomeTopBar(
             }) {
                 Icon(
                     imageVector = Icons.Outlined.Search,
-                    contentDescription = stringResource(id = R.string.search_icon_text)
+                    contentDescription = stringResource(id = R.string.search_icon_text),
                 )
             }
             IconButton(onClick = {
@@ -123,10 +121,10 @@ fun HomeTopBar(
             }) {
                 Icon(
                     imageVector = Icons.Outlined.Person,
-                    contentDescription = stringResource(id = R.string.login_icon_text)
+                    contentDescription = stringResource(id = R.string.login_icon_text),
                 )
             }
-        }
+        },
     )
 }
 

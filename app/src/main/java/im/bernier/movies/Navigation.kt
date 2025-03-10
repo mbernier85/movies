@@ -34,10 +34,17 @@ fun NavController.navigateToCast(id: Long) {
 
 @Serializable
 data object DiscoverRoute
+
 @Serializable
-data class MovieRoute(val id: Long)
+data class MovieRoute(
+    val id: Long,
+)
+
 @Serializable
-data class CastRoute(val id: Long)
+data class CastRoute(
+    val id: Long,
+)
+
 @Serializable
 data object SearchRoute
 
@@ -53,12 +60,12 @@ fun MoviesNavHost(
         navController = navController,
         startDestination = startDestination,
         enterTransition = { fadeIn() },
-        exitTransition = { fadeOut() }
+        exitTransition = { fadeOut() },
     ) {
         composable<DiscoverRoute> {
             DiscoverRoute(
                 onTitleChanged = onTitleChanged,
-                navController = navController
+                navController = navController,
             )
         }
         composable<MovieRoute> {
@@ -67,7 +74,7 @@ fun MoviesNavHost(
                 onTitleChanged = onTitleChanged,
                 onNavigateToCast = {
                     navController.navigateToCast(it)
-                }
+                },
             )
         }
         composable<SearchRoute> {
@@ -75,13 +82,13 @@ fun MoviesNavHost(
                 onNavigateToMovie = { navController.navigateToMovie(it) },
                 onNavigateToCast = { navController.navigateToCast(it) },
                 onNavigateToTvShow = { navController.navigateToTvShow(it) },
-                onTitleChanged = onTitleChanged
+                onTitleChanged = onTitleChanged,
             )
         }
         composable<CastRoute> {
             CastScreen(
                 viewModel = hiltViewModel(),
-                onTitleChanged = onTitleChanged
+                onTitleChanged = onTitleChanged,
             )
         }
         loginScreen(navController, onTitleChanged)

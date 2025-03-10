@@ -12,10 +12,12 @@ import javax.inject.Inject
  * Created by Michael on 2020-02-24.
  */
 @HiltViewModel
-class CastViewModel @Inject constructor(
-    val repository: Repository,
-    savedStateHandle: SavedStateHandle,
-) : ViewModel() {
-    private val personId: Long = (savedStateHandle.toRoute() as CastRoute).id
-    val person = repository.api.getCastById(personId)
-}
+class CastViewModel
+    @Inject
+    constructor(
+        val repository: Repository,
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        private val personId: Long = (savedStateHandle.toRoute() as CastRoute).id
+        val person = repository.api.getCastById(personId)
+    }

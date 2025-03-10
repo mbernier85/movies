@@ -33,31 +33,30 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class CryptoModule {
     @Binds
-    abstract fun bindsCryptographyManager(impl: CryptographyManagerImpl) : CryptographyManager
+    abstract fun bindsCryptographyManager(impl: CryptographyManagerImpl): CryptographyManager
 }
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    @Provides
+    @Singleton
+    fun provideLogApi(retrofit: Retrofit): LogApi = retrofit.create(LogApi::class.java)
 
     @Provides
     @Singleton
-    fun provideLogApi(retrofit: Retrofit): LogApi{
-        return retrofit.create(LogApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideApi(retrofit: Retrofit): Api {
-        return retrofit.create(Api::class.java)
-    }
+    fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
 
     @OptIn(ExperimentalSerializationApi::class)
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient, json: Json): Retrofit {
+    fun provideRetrofit(
+        client: OkHttpClient,
+        json: Json,
+    ): Retrofit {
         val contentType = "application/json".toMediaType()
-        return Retrofit.Builder()
+        return Retrofit
+            .Builder()
             .baseUrl("https://api.themoviedb.org/3/")
             .client(client)
             .addConverterFactory(json.asConverterFactory(contentType))
@@ -67,11 +66,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideJson(): Json {
-        return Json {
+    fun provideJson(): Json =
+        Json {
             ignoreUnknownKeys = true
         }
-    }
 
     @Provides
     @Singleton
@@ -85,35 +83,37 @@ object AppModule {
     @Singleton
     fun provideOkHttp(
         loggingInterceptor: HttpLoggingInterceptor,
-        requestInterceptor: Interceptor
-    ): OkHttpClient {
-        return OkHttpClient.Builder()
+        requestInterceptor: Interceptor,
+    ): OkHttpClient =
+        OkHttpClient
+            .Builder()
             .apply {
                 if (BuildConfig.DEBUG) {
                     addNetworkInterceptor(loggingInterceptor)
                 }
-            }
-            .addInterceptor(requestInterceptor)
+            }.addInterceptor(requestInterceptor)
             .build()
-    }
 
     @Provides
     @Singleton
-    fun provideRequestInterceptor(): Interceptor {
-        return Interceptor {
+    fun provideRequestInterceptor(): Interceptor =
+        Interceptor {
             val request = it.request()
-            val newUrl = request.url.newBuilder()
-                .addQueryParameter("api_key", "a6534fdec1ef0b0d5e392dae172e5a42")
-                .build()
+            val newUrl =
+                request.url
+                    .newBuilder()
+                    .addQueryParameter("api_key", "a6534fdec1ef0b0d5e392dae172e5a42")
+                    .build()
             val newRequest = request.newBuilder().url(newUrl).build()
             it.proceed(newRequest)
         }
-    }
 
     @Provides
     @Singleton
-    fun provideDb(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "movies")
+    fun provideDb(
+        @ApplicationContext context: Context,
+    ): AppDatabase =
+        Room
+            .databaseBuilder(context.applicationContext, AppDatabase::class.java, "movies")
             .build()
-    }
 }

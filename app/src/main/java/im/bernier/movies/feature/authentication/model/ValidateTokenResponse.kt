@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class ValidateTokenResponse(
     val success: Boolean,
     val request_token: String,
-    val expires_at: String
+    val expires_at: String,
 )

@@ -14,7 +14,7 @@ fun NavController.navigateToLogin() {
 
 fun NavGraphBuilder.loginScreen(
     navController: NavController,
-    onTitleChanged: (String) -> Unit
+    onTitleChanged: (String) -> Unit,
 ) {
     composable<LoginRoute> {
         LoginRoute(navController, onTitleChanged = onTitleChanged)

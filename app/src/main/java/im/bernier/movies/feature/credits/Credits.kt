@@ -8,5 +8,5 @@ import kotlinx.serialization.Serializable
 data class Credits(
     val id: Int = 0,
     val cast: List<Cast> = listOf(),
-    val crew: List<Crew> = listOf()
+    val crew: List<Crew> = listOf(),
 )

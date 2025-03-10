@@ -17,11 +17,11 @@ import im.bernier.movies.theme.AppTheme
 @Composable
 fun AccountRoute(
     accountViewModel: AccountViewModel = hiltViewModel(),
-    onTitleChanged: (String) -> Unit
+    onTitleChanged: (String) -> Unit,
 ) {
     AccountScreen(
         accountViewModel = accountViewModel,
-        onTitleChanged = onTitleChanged
+        onTitleChanged = onTitleChanged,
     )
 }
 
@@ -38,13 +38,12 @@ fun AccountScreen(
 }
 
 @Composable
-fun AccountContent(
-    uiState: UiState
-) {
+fun AccountContent(uiState: UiState) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
     ) {
         Text(text = uiState.name)
     }

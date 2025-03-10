@@ -46,27 +46,31 @@ fun MovieScreen(
                     GlideImage(
                         model = movie?.poster_path?.imageUrl(),
                         contentDescription = movie?.title,
-                        modifier = Modifier
-                            .size(140.dp, 240.dp)
-                            .padding(8.dp)
+                        modifier =
+                            Modifier
+                                .size(140.dp, 240.dp)
+                                .padding(8.dp),
                     )
                     Text(
                         text = movie?.title ?: "",
                         style = MaterialTheme.typography.headlineMedium,
-                        modifier = Modifier
-                            .padding(8.dp)
+                        modifier =
+                            Modifier
+                                .padding(8.dp),
                     )
                     Text(
                         text = movie?.genreString ?: "",
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .padding(8.dp)
+                        modifier =
+                            Modifier
+                                .padding(8.dp),
                     )
                     Text(
                         text = movie?.overview ?: "",
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .padding(8.dp)
+                        modifier =
+                            Modifier
+                                .padding(8.dp),
                     )
                     HorizontalDivider()
                 }
@@ -84,35 +88,38 @@ fun MovieScreen(
 @Composable
 fun CastItem(
     person: Cast,
-    onNavigateToCast: ((Long) -> Unit)
+    onNavigateToCast: ((Long) -> Unit),
 ) {
     Row(
-        modifier = Modifier
-            .clickable {
-                onNavigateToCast(person.id)
-            }
-            .fillMaxWidth()
-            .padding(8.dp)
+        modifier =
+            Modifier
+                .clickable {
+                    onNavigateToCast(person.id)
+                }.fillMaxWidth()
+                .padding(8.dp),
     ) {
         GlideImage(
             model = person.profile_path?.imageUrl(),
             contentDescription = person.name,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape)
+            modifier =
+                Modifier
+                    .size(64.dp)
+                    .clip(CircleShape),
         )
         Text(
             text = person.name,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .padding(8.dp)
+            modifier =
+                Modifier
+                    .padding(8.dp),
         )
         Text(
             text = person.character,
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier
-                .padding(8.dp)
+            modifier =
+                Modifier
+                    .padding(8.dp),
         )
     }
 }

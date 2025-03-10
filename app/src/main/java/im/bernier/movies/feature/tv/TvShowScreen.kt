@@ -26,7 +26,9 @@ import im.bernier.movies.util.setTitle
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TvShowRoute(val id: Long)
+data class TvShowRoute(
+    val id: Long,
+)
 
 fun NavGraphBuilder.tvShowScreen(onTitleChanged: (String) -> Unit) {
     composable<TvShowRoute> { _ ->
@@ -43,7 +45,7 @@ fun NavController.navigateToTvShow(id: Long) {
 @Composable
 fun TvShowScreen(
     viewModel: TvShowViewModel = hiltViewModel(),
-    onTitleChanged: (String) -> Unit
+    onTitleChanged: (String) -> Unit,
 ) {
     val tvShow by viewModel.tvShow.subscribeAsState(initial = null)
     setTitle(stringId = R.string.tv_show) {
@@ -56,28 +58,27 @@ fun TvShowScreen(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun TvShowView(
-    tvShow: TV
-) {
+fun TvShowView(tvShow: TV) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
     ) {
         Row {
             GlideImage(
                 modifier = Modifier.size(120.dp, 180.dp),
                 model = tvShow.poster_path.imageUrl(),
-                contentDescription = stringResource(id = R.string.tv_show_poster)
+                contentDescription = stringResource(id = R.string.tv_show_poster),
             )
             Column(modifier = Modifier.padding(start = 16.dp)) {
                 Text(
                     style = MaterialTheme.typography.titleLarge,
-                    text = tvShow.name
+                    text = tvShow.name,
                 )
                 Text(
                     style = MaterialTheme.typography.bodyMedium,
-                    text = tvShow.overview
+                    text = tvShow.overview,
                 )
             }
         }
@@ -88,8 +89,9 @@ fun TvShowView(
 @Preview
 fun TvShowScreenPreview() {
     TvShowView(
-        tvShow = TV(
-            name = "name",
-        )
+        tvShow =
+            TV(
+                name = "name",
+            ),
     )
 }

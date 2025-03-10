@@ -40,7 +40,7 @@ fun LoginRoute(
     LoginScreen(
         navController = navController,
         loginViewModel = loginViewModel,
-        onTitleChanged = onTitleChanged
+        onTitleChanged = onTitleChanged,
     )
 }
 
@@ -51,12 +51,14 @@ fun LoginScreen(
     onTitleChanged: (String) -> Unit,
 ) {
     setTitle(stringId = R.string.login_title, onTitleChanged = onTitleChanged)
-    val username = remember {
-        mutableStateOf("")
-    }
-    val password = remember {
-        mutableStateOf("")
-    }
+    val username =
+        remember {
+            mutableStateOf("")
+        }
+    val password =
+        remember {
+            mutableStateOf("")
+        }
     val uiState = loginViewModel.uiState
     if (uiState.value.success) {
         LaunchedEffect(uiState) {
@@ -72,18 +74,20 @@ fun LoginScreen(
 fun LoginScreenContent(
     onSend: () -> Unit,
     username: MutableState<String>,
-    password: MutableState<String>
+    password: MutableState<String>,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        contentAlignment = Alignment.CenterStart
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        contentAlignment = Alignment.CenterStart,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
@@ -91,49 +95,52 @@ fun LoginScreenContent(
                 value = username.value,
                 label = {
                     Text(
-                        text = stringResource(id = R.string.username)
+                        text = stringResource(id = R.string.username),
                     )
                 },
                 onValueChange = {
                     username.value = it
-                }
+                },
             )
             OutlinedTextField(
                 value = password.value,
                 label = {
                     Text(
-                        text = stringResource(id = R.string.password)
+                        text = stringResource(id = R.string.password),
                     )
                 },
                 onValueChange = {
                     password.value = it
                 },
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(onDone = {
-                    onSend.invoke()
-                })
+                keyboardOptions =
+                    KeyboardOptions(
+                        autoCorrectEnabled = false,
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done,
+                    ),
+                keyboardActions =
+                    KeyboardActions(onDone = {
+                        onSend.invoke()
+                    }),
             )
             Button(onClick = onSend) {
                 Text(text = stringResource(id = R.string.login))
             }
         }
     }
-
 }
 
 @Composable
 @Preview
 fun LoginPreview() {
-    val username = remember {
-        mutableStateOf("")
-    }
-    val password = remember {
-        mutableStateOf("")
-    }
+    val username =
+        remember {
+            mutableStateOf("")
+        }
+    val password =
+        remember {
+            mutableStateOf("")
+        }
     LoginScreenContent(onSend = { }, username = username, password = password)
 }

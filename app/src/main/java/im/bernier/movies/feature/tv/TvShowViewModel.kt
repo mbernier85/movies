@@ -9,11 +9,12 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class TvShowViewModel @Inject constructor(
-    repository: Repository,
-    savedStateHandle: SavedStateHandle
-):ViewModel() {
-    private val movieId: Long = (savedStateHandle.toRoute() as TvShowRoute).id
-    val tvShow = repository.fetchTv(movieId).doOnError { Timber.e(it) }
-
-}
+class TvShowViewModel
+    @Inject
+    constructor(
+        repository: Repository,
+        savedStateHandle: SavedStateHandle,
+    ) : ViewModel() {
+        private val movieId: Long = (savedStateHandle.toRoute() as TvShowRoute).id
+        val tvShow = repository.fetchTv(movieId).doOnError { Timber.e(it) }
+    }

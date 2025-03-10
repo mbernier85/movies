@@ -23,59 +23,82 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface Api {
-
     @POST("authentication/token/validate_with_login")
-    fun validateToken(@Body validateTokenRequest: ValidateTokenRequest): Single<ValidateTokenResponse>
+    fun validateToken(
+        @Body validateTokenRequest: ValidateTokenRequest,
+    ): Single<ValidateTokenResponse>
 
     @POST("authentication/session/new")
-    fun newSession(@Body sessionRequest: SessionRequest): Single<SessionResponse>
+    fun newSession(
+        @Body sessionRequest: SessionRequest,
+    ): Single<SessionResponse>
 
     @GET("authentication/token/new")
     fun newToken(): Single<TokenResponse>
 
     @GET("account")
-    fun getAccount(@Query("session_id") sessionId: String): Single<AccountResponse>
+    fun getAccount(
+        @Query("session_id") sessionId: String,
+    ): Single<AccountResponse>
 
     @GET("account/{accountId}/favorite/movies")
-    fun getFavoriteMovies(@Path("accountId") accountId: String): Single<Page<Movie>>
+    fun getFavoriteMovies(
+        @Path("accountId") accountId: String,
+    ): Single<Page<Movie>>
 
     @GET("account/{accountId}/favorite/tv")
-    fun getFavoriteTV(@Path("accountId") accountId: String): Single<Page<TV>>
+    fun getFavoriteTV(
+        @Path("accountId") accountId: String,
+    ): Single<Page<TV>>
 
     @GET("account/{accountId}/lists")
-    fun getLists(@Path("accountId") accountId: String): Single<Page<ListsItem>>
+    fun getLists(
+        @Path("accountId") accountId: String,
+    ): Single<Page<ListsItem>>
 
     @GET("discover/movie")
-    fun discover(@Query("page") page: Int): Single<Page<Movie>>
+    fun discover(
+        @Query("page") page: Int,
+    ): Single<Page<Movie>>
 
     @GET("discover/tv")
-    fun discoverTV(@Query("page") page: Int): Single<Page<TV>>
+    fun discoverTV(
+        @Query("page") page: Int,
+    ): Single<Page<TV>>
 
     @GET("genre/movie/list")
     fun genres(): Call<Genres>
 
     @GET("movie/{movieId}?append_to_response=credits")
-    fun getMovie(@Path("movieId") movieId: Long): Single<Movie>
+    fun getMovie(
+        @Path("movieId") movieId: Long,
+    ): Single<Movie>
 
     @GET("tv/{tvId}?append_to_response=credits")
-    fun getTv(@Path("tvId") tvId: Long): Single<TV>
+    fun getTv(
+        @Path("tvId") tvId: Long,
+    ): Single<TV>
 
     @GET("search/multi")
-    fun search(@Query("query") query: String): Call<Page<SearchResultItem>>
+    fun search(
+        @Query("query") query: String,
+    ): Call<Page<SearchResultItem>>
 
     @GET("person/{person_id}?append_to_response=movie_credits,tv_credits")
-    fun getCastById(@Path("person_id") id: Long): Single<Person>
+    fun getCastById(
+        @Path("person_id") id: Long,
+    ): Single<Person>
 
     @POST("account/{account_id}/watchlist")
     fun addToWatchlist(
         @Path("account_id") accountId: String,
         @Query("session_id") sessionId: String,
-        @Body watchlistRequest: WatchlistRequest
+        @Body watchlistRequest: WatchlistRequest,
     ): Single<AddToWatchListResponse>
 
     @GET("account/{account_id}/watchlist/movies")
     fun getWatchlistMovies(
         @Path("account_id") accountId: String,
-        @Query("session_id") sessionId: String
+        @Query("session_id") sessionId: String,
     ): Single<Page<Movie>>
 }

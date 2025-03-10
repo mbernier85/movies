@@ -11,35 +11,40 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
-    val repository: Repository
-) : ViewModel() {
+class LoginViewModel
+    @Inject
+    constructor(
+        val repository: Repository,
+    ) : ViewModel() {
+        var uiState = mutableStateOf(UiState())
+        private val compositeDisposable = CompositeDisposable()
 
-    var uiState = mutableStateOf(UiState())
-    private val compositeDisposable = CompositeDisposable()
+        fun login(
+            username: String,
+            password: String,
+        ) {
+            val disposable =
+                repository
+                    .login()
+                    .observeOn(Schedulers.io())
+                    .flatMap {
+                        repository.validateToken(it.request_token, username, password)
+                    }.flatMap { repository.newSession(it.request_token) }
+                    .flatMap { repository.getAccount() }
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        uiState.value = uiState.value.copy(success = true)
+                    }, {
+                        Timber.e(it)
+                    })
+            compositeDisposable.add(disposable)
+        }
 
-    fun login(username: String, password: String) {
-        val disposable = repository.login()
-            .observeOn(Schedulers.io())
-            .flatMap {
-                repository.validateToken(it.request_token, username, password)
-            }
-            .flatMap { repository.newSession(it.request_token) }
-            .flatMap { repository.getAccount() }
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                uiState.value = uiState.value.copy(success = true)
-            }, {
-                Timber.e(it)
-            })
-        compositeDisposable.add(disposable)
+        override fun onCleared() {
+            super.onCleared()
+            compositeDisposable.clear()
+        }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        compositeDisposable.clear()
-    }
-}
 
 data class UiState(
     val success: Boolean = false,
