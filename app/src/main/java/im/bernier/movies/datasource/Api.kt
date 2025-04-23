@@ -13,7 +13,8 @@ import im.bernier.movies.feature.movie.Movie
 import im.bernier.movies.feature.movie.Page
 import im.bernier.movies.feature.search.SearchResultItem
 import im.bernier.movies.feature.tv.TV
-import im.bernier.movies.feature.watchlist.AddToWatchListResponse
+import im.bernier.movies.feature.watchlist.model.AddToWatchListResponse
+import im.bernier.movies.feature.watchlist.model.WatchlistRequest
 import io.reactivex.rxjava3.core.Single
 import retrofit2.Call
 import retrofit2.http.Body

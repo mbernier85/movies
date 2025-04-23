@@ -1,4 +1,4 @@
-package im.bernier.movies.feature.watchlist
+package im.bernier.movies.feature.watchlist.model
 
 import kotlinx.serialization.Serializable
 

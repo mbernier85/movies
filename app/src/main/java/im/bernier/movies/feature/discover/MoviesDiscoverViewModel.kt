@@ -6,9 +6,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import im.bernier.movies.component.MediaUiStateItem
 import im.bernier.movies.datasource.Repository
+import im.bernier.movies.feature.discover.datasource.MoviesDataSource
 import im.bernier.movies.feature.movie.Movie
-import im.bernier.movies.feature.movie.MoviesDataSource
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import retrofit2.HttpException
 import timber.log.Timber
@@ -26,9 +27,8 @@ class MoviesDiscoverViewModel
         val pager =
             Pager(
                 config = PagingConfig(20, initialLoadSize = 20),
-            ) {
-                moviesDataSource
-            }.flow.cachedIn(viewModelScope)
+                pagingSourceFactory = { moviesDataSource },
+            ).flow.cachedIn(viewModelScope)
 
         val isLoggedIn = repository.loggedIn
 

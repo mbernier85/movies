@@ -18,6 +18,7 @@ import im.bernier.movies.feature.movie.MovieScreen
 import im.bernier.movies.feature.search.SearchScreen
 import im.bernier.movies.feature.tv.navigateToTvShow
 import im.bernier.movies.feature.tv.tvShowScreen
+import im.bernier.movies.feature.watchlist.watchListRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToMovie(id: Long) {
@@ -91,8 +92,9 @@ fun MoviesNavHost(
                 onTitleChanged = onTitleChanged,
             )
         }
+        tvShowScreen(onTitleChanged)
         loginScreen(navController, onTitleChanged)
         accountScreen(onTitleChanged)
-        tvShowScreen(onTitleChanged)
+        watchListRoute()
     }
 }

@@ -13,7 +13,8 @@ import im.bernier.movies.feature.movie.Movie
 import im.bernier.movies.feature.movie.Page
 import im.bernier.movies.feature.search.SearchResultItem
 import im.bernier.movies.feature.tv.TV
-import im.bernier.movies.feature.watchlist.AddToWatchListResponse
+import im.bernier.movies.feature.watchlist.model.AddToWatchListResponse
+import im.bernier.movies.feature.watchlist.model.WatchlistRequest
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -118,6 +119,11 @@ class Repository
                 },
             )
         }
+
+        fun watchList(
+            accountId: String,
+            sessionId: String,
+        ): Single<Page<Movie>> = api.getWatchlistMovies(accountId = accountId, sessionId = sessionId)
 
         fun addToWatchList(
             mediaId: Long,

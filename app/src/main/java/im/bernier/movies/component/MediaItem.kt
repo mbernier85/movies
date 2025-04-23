@@ -1,4 +1,4 @@
-package im.bernier.movies.feature.discover
+package im.bernier.movies.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,7 @@ import im.bernier.movies.util.imageUrl
 fun MediaItem(
     item: MediaUiStateItem,
     onNavigateToMedia: (Long) -> Unit,
-    onAddToWatchList: (Long, String) -> Unit,
+    onAddToWatchList: ((Long, String) -> Unit)? = null,
 ) {
     Card(
         modifier = Modifier.padding(4.dp),
@@ -58,7 +58,7 @@ fun MediaItem(
                             .padding(horizontal = 8.dp),
                 ) {
                     GlideImage(
-                        model = item.posterPath.imageUrl(),
+                        model = item.posterPath?.imageUrl(),
                         contentDescription = "Movie poster",
                         modifier = Modifier.clip(ShapeDefaults.Small),
                     )
@@ -88,10 +88,12 @@ fun MediaItem(
             }
             HorizontalDivider()
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                IconButton(onClick = {
-                    onAddToWatchList(item.id, item.mediaType)
-                }) {
-                    Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Favorite")
+                onAddToWatchList?.let {
+                    IconButton(onClick = {
+                        it(item.id, item.mediaType)
+                    }) {
+                        Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Favorite")
+                    }
                 }
             }
         }
@@ -120,7 +122,7 @@ data class MediaUiStateItem(
     val id: Long,
     val title: String,
     val overview: String,
-    val posterPath: String,
+    val posterPath: String?,
     val genreString: String = "",
     val watchlist: Boolean = false,
     val mediaType: String,

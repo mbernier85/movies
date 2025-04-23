@@ -6,9 +6,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
+import im.bernier.movies.component.MediaUiStateItem
 import im.bernier.movies.datasource.Repository
+import im.bernier.movies.feature.discover.datasource.TVDataSource
 import im.bernier.movies.feature.tv.TV
-import im.bernier.movies.feature.tv.TVDataSource
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import retrofit2.HttpException
 import timber.log.Timber
@@ -28,7 +29,9 @@ class DiscoverTvViewModel
                 config = PagingConfig(20, initialLoadSize = 20),
             ) {
                 tvDataSource
-            }.flow.cachedIn(viewModelScope)
+            }
+
+        val pagerFlow = pager.flow.cachedIn(viewModelScope)
 
         fun onAddToWatchList(
             id: Long,

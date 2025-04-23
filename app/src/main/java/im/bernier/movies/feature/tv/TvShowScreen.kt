@@ -30,17 +30,13 @@ data class TvShowRoute(
     val id: Long,
 )
 
-fun NavGraphBuilder.tvShowScreen(onTitleChanged: (String) -> Unit) {
-    composable<TvShowRoute> { _ ->
-        TvShowScreen(
-            onTitleChanged = onTitleChanged,
-        )
-    }
+fun NavGraphBuilder.tvShowScreen(onTitleChanged: (String) -> Unit) = composable<TvShowRoute> { _ ->
+    TvShowScreen(
+        onTitleChanged = onTitleChanged,
+    )
 }
 
-fun NavController.navigateToTvShow(id: Long) {
-    this.navigate(TvShowRoute(id))
-}
+fun NavController.navigateToTvShow(id: Long) = this.navigate(TvShowRoute(id))
 
 @Composable
 fun TvShowScreen(
@@ -68,7 +64,7 @@ fun TvShowView(tvShow: TV) {
         Row {
             GlideImage(
                 modifier = Modifier.size(120.dp, 180.dp),
-                model = tvShow.poster_path.imageUrl(),
+                model = tvShow.poster_path?.imageUrl(),
                 contentDescription = stringResource(id = R.string.tv_show_poster),
             )
             Column(modifier = Modifier.padding(start = 16.dp)) {

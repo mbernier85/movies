@@ -1,8 +1,9 @@
-package im.bernier.movies.feature.movie
+package im.bernier.movies.feature.discover.datasource
 
 import androidx.paging.PagingState
 import androidx.paging.rxjava3.RxPagingSource
 import im.bernier.movies.datasource.Repository
+import im.bernier.movies.feature.movie.Movie
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
@@ -12,23 +13,7 @@ class MoviesDataSource
     constructor(
         private val repository: Repository,
     ) : RxPagingSource<Int, Movie>() {
-        override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
-            val anchorPosition: Int = state.anchorPosition ?: return null
-
-            val (_, prevKey, nextKey) =
-                state.closestPageToPosition(anchorPosition)
-                    ?: return null
-
-            if (prevKey != null) {
-                return prevKey + 1
-            }
-
-            return if (nextKey != null) {
-                nextKey - 1
-            } else {
-                null
-            }
-        }
+        override fun getRefreshKey(state: PagingState<Int, Movie>): Int? = getRefreshKeyAny(state)
 
         override fun loadSingle(params: LoadParams<Int>): Single<LoadResult<Int, Movie>> =
             repository.api

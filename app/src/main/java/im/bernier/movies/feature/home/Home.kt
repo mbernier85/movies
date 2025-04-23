@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,7 +18,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,40 +27,27 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import im.bernier.movies.MoviesNavHost
 import im.bernier.movies.R
 import im.bernier.movies.feature.account.navigateToAccount
 import im.bernier.movies.feature.authentication.navigateToLogin
+import im.bernier.movies.feature.watchlist.navigateToWatchList
 import im.bernier.movies.navigateToSearch
 import im.bernier.movies.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
-    val navController = rememberNavController()
-    val openAccount = homeViewModel.uiState.value.openAccount
-    val openLogin = homeViewModel.uiState.value.openLogin
+fun HomeScreen(
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    navController: NavHostController = rememberNavController(),
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var title by remember {
         mutableStateOf("")
     }
 
-    if (openAccount) {
-        LaunchedEffect(homeViewModel.uiState) {
-            navController.navigateToAccount()
-            homeViewModel.uiState.value =
-                homeViewModel.uiState.value.copy(openAccount = false)
-        }
-    }
-    if (openLogin) {
-        LaunchedEffect(homeViewModel.uiState) {
-            navController.navigateToLogin()
-            homeViewModel.uiState.value =
-                homeViewModel.uiState.value.copy(openLogin = false)
-        }
-    }
     AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -71,11 +58,22 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                 topBar = {
                     HomeTopBar(
                         title = title,
-                        navController = navController,
+                        openSearch = { navController.navigateToSearch() },
                         openAccount = {
-                            homeViewModel.openAccount()
+                            if (homeViewModel.loggedIn) {
+                                navController.navigateToAccount()
+                            } else {
+                                navController.navigateToLogin()
+                            }
                         },
                         scrollBehavior = scrollBehavior,
+                        openWatchlist = {
+                            if (homeViewModel.loggedIn) {
+                                navController.navigateToWatchList()
+                            } else {
+                                navController.navigateToLogin()
+                            }
+                        }
                     )
                 },
             ) { paddingValues ->
@@ -98,8 +96,9 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
 @Composable
 fun HomeTopBar(
     title: String,
-    navController: NavController,
+    openSearch: () -> Unit,
     openAccount: () -> Unit,
+    openWatchlist: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     TopAppBar(
@@ -109,11 +108,19 @@ fun HomeTopBar(
         },
         actions = {
             IconButton(onClick = {
-                navController.navigateToSearch()
+                openSearch()
             }) {
                 Icon(
                     imageVector = Icons.Outlined.Search,
                     contentDescription = stringResource(id = R.string.search_icon_text),
+                )
+            }
+            IconButton(onClick = {
+                openWatchlist()
+            }) {
+                Icon(
+                    imageVector = Icons.Outlined.Star,
+                    contentDescription = stringResource(R.string.watch_list_icon)
                 )
             }
             IconButton(onClick = {
@@ -128,8 +135,15 @@ fun HomeTopBar(
     )
 }
 
-@Composable
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
-fun HomePreview() {
-    HomeScreen()
+@Composable
+fun HomeToolbarPreview() {
+    HomeTopBar(
+        title = "title",
+        openSearch = {},
+        openAccount = {},
+        openWatchlist = {},
+        scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(),
+    )
 }

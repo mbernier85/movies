@@ -1,10 +1,10 @@
 [versions]
 activity = "1.10.1"
 activityCompose = "1.10.1"
-androidxComposeBom = "2025.02.00"
+androidxComposeBom = "2025.03.00"
 annotation = "1.9.1"
 appcompat = "1.7.0"
-dagger = "2.51.1"
+dagger = "2.56"
 fragment = "1.8.6"
 glide-compose = "1.0.0-beta01"
 dependency-analysis = "1.32.0"

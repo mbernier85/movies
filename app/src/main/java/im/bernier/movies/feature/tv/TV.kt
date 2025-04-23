@@ -9,7 +9,7 @@ data class TV(
     val name: String = "",
     val id: Long = 0,
     val backdrop_path: String? = null,
-    val poster_path: String = "",
+    val poster_path: String? = "",
     val overview: String = "",
     val genre_ids: List<Int> = listOf(),
     var genreString: String = "",
