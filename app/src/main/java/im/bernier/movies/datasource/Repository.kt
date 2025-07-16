@@ -13,6 +13,7 @@ import im.bernier.movies.feature.movie.Movie
 import im.bernier.movies.feature.movie.Page
 import im.bernier.movies.feature.search.SearchResultItem
 import im.bernier.movies.feature.tv.TV
+import im.bernier.movies.feature.watchlist.MovieWatchListItem
 import im.bernier.movies.feature.watchlist.model.AddToWatchListResponse
 import im.bernier.movies.feature.watchlist.model.WatchlistRequest
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -124,6 +125,15 @@ class Repository
             accountId: String,
             sessionId: String,
         ): Single<Page<Movie>> = api.getWatchlistMovies(accountId = accountId, sessionId = sessionId)
+            .observeOn(Schedulers.io())
+            .map {
+                db.watchListDao().insertMovieWatchList(
+                    it.results.map {
+                        MovieWatchListItem(it.id)
+                    }
+                )
+                it
+        }
 
         fun addToWatchList(
             mediaId: Long,

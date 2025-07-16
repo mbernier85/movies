@@ -1,38 +1,37 @@
 [versions]
 activity = "1.10.1"
 activityCompose = "1.10.1"
-androidxComposeBom = "2025.03.00"
+androidxComposeBom = "2025.07.00"
 annotation = "1.9.1"
-appcompat = "1.7.0"
-dagger = "2.56"
-fragment = "1.8.6"
+appcompat = "1.7.1"
+dagger = "2.57"
+fragment = "1.8.8"
 glide-compose = "1.0.0-beta01"
-dependency-analysis = "1.32.0"
+dependency-analysis = "2.19.0"
 espressoCore = "3.6.1"
 firebaseAppdistributionGradle = "4.2.0"
-googleServices = "4.4.2"
-hilt = "2.55"
+googleServices = "4.4.3"
+hilt = "2.57"
 hiltNavigationCompose = "1.2.0"
 javaxInject = "1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-kotlin = "2.1.10"
-kotlinxCoroutinesCore = "1.7.3"
-kotlinxSerializationCore = "1.6.3"
-leakcanaryAndroid = "2.10"
-lifecycle = "2.8.7"
-loggingInterceptor = "4.12.0"
-navigation = "2.8.8"
-okhttp = "4.12.0"
+kotlin = "2.2.0"
+kotlinxCoroutinesCore = "1.10.2"
+kotlinxSerializationCore = "1.9.0"
+leakcanaryAndroid = "2.14"
+lifecycle = "2.9.2"
+loggingInterceptor = "5.1.0"
+navigation = "2.9.2"
+okhttp = "5.1.0"
 paging = "3.3.6"
-retrofit = "2.9.0"
+retrofit = "3.0.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
-roomCommon = "2.6.1"
-roomRuntime = "2.6.1"
+room = "2.7.2"
 runner = "1.6.2"
 rxandroid = "3.0.2"
-rxjava = "3.1.7"
-sqlite = "2.4.0"
+rxjava = "3.1.11"
+sqlite = "2.5.2"
 timber = "5.0.1"
 
 [libraries]
@@ -52,7 +51,7 @@ androidx-material-icons-core = { module = "androidx.compose.material:material-ic
 androidx-navigation-common = { module = "androidx.navigation:navigation-common", version.ref = "navigation" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
 androidx-navigation-runtime = { module = "androidx.navigation:navigation-runtime", version.ref = "navigation" }
-androidx-room-common = { module = "androidx.room:room-common", version.ref = "roomCommon" }
+androidx-room-common = { module = "androidx.room:room-common", version.ref = "room" }
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
@@ -66,8 +65,8 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 androidx-paging-rxjava3 = { module = "androidx.paging:paging-rxjava3", version.ref = "paging" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
-androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
-androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "roomRuntime" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 androidx-runtime-saveable = { module = "androidx.compose.runtime:runtime-saveable" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
 androidx-ui = { module = "androidx.compose.ui:ui"}
@@ -77,8 +76,8 @@ androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "glide-compose" }
-dagger-android = { module = "com.google.dagger:dagger-android", version.ref = "hilt" }
-dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "hilt" }
+dagger-android = { module = "com.google.dagger:dagger-android", version.ref = "dagger" }
+dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
 firebase-appdistribution-gradle = { module = "com.google.firebase:firebase-appdistribution-gradle", version.ref = "firebaseAppdistributionGradle" }
@@ -100,7 +99,7 @@ logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", ver
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 runner = { module = "androidx.test:runner", version.ref = "runner" }
 rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
 rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }

@@ -15,7 +15,7 @@ class Storage
     @Inject
     constructor(
         private val crypto: CryptographyManager,
-        @ApplicationContext private val context: Context,
+        @param:ApplicationContext private val context: Context,
     ) {
         fun setAccountId(accountId: String) {
             set(PREF_KEY_ACCOUNT, accountId)

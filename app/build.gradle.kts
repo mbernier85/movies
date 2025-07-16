@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
     alias(libs.plugins.org.jetbrains.kotlin.android)
@@ -10,13 +12,19 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
+}
+
 android {
-    compileSdk = 35
+    compileSdk = 36
     namespace = "im.bernier.movies"
     defaultConfig {
         applicationId = "im.bernier.movies"
-        minSdk = 28
-        targetSdk = 35
+        minSdk = 31
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -45,9 +53,7 @@ android {
         compose = true
         buildConfig = true
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+
     room {
         schemaDirectory("$projectDir/schemas")
     }

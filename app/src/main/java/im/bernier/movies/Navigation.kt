@@ -95,6 +95,6 @@ fun MoviesNavHost(
         tvShowScreen(onTitleChanged)
         loginScreen(navController, onTitleChanged)
         accountScreen(onTitleChanged)
-        watchListRoute()
+        watchListRoute(onTitleChanged)
     }
 }

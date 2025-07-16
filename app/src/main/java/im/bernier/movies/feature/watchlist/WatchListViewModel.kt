@@ -17,8 +17,8 @@ import javax.inject.Inject
 class WatchListViewModel
     @Inject
     constructor(
-        private val repository: Repository,
-        private val storage: Storage,
+        repository: Repository,
+        storage: Storage,
     ) : ViewModel() {
         var uiState by mutableStateOf(UiState())
         private val compositeDisposable = CompositeDisposable()

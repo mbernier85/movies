@@ -115,5 +115,6 @@ object AppModule {
     ): AppDatabase =
         Room
             .databaseBuilder(context.applicationContext, AppDatabase::class.java, "movies")
+            .fallbackToDestructiveMigration(false)
             .build()
 }
