@@ -21,12 +21,12 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew clean lint test assembleRelease
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: reports
         path: app/build/reports
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: release.apk
         path: app/build/outputs/apk/release/app-release.apk
