@@ -21,12 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil3.compose.AsyncImage
 import im.bernier.movies.feature.cast.Cast
 import im.bernier.movies.util.imageUrl
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MovieScreen(
     viewModel: MovieViewModel,
@@ -43,7 +41,7 @@ fun MovieScreen(
         LazyColumn {
             item {
                 Column {
-                    GlideImage(
+                    AsyncImage(
                         model = movie?.poster_path?.imageUrl(),
                         contentDescription = movie?.title,
                         modifier =
@@ -84,7 +82,6 @@ fun MovieScreen(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CastItem(
     person: Cast,
@@ -98,7 +95,7 @@ fun CastItem(
                 }.fillMaxWidth()
                 .padding(8.dp),
     ) {
-        GlideImage(
+        AsyncImage(
             model = person.profile_path?.imageUrl(),
             contentDescription = person.name,
             contentScale = ContentScale.Crop,

@@ -18,9 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import coil3.compose.AsyncImage
 import im.bernier.movies.theme.AppTheme
 import im.bernier.movies.util.imageUrl
 
@@ -46,11 +45,10 @@ fun CastScreen(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CastComponent(person: Person) {
     Column {
-        GlideImage(
+        AsyncImage(
             model = person.profile_path?.imageUrl(),
             contentDescription = person.name,
             modifier =

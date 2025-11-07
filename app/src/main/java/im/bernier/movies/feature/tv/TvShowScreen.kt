@@ -14,12 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil3.compose.AsyncImage
 import im.bernier.movies.R
 import im.bernier.movies.util.imageUrl
 import im.bernier.movies.util.setTitle
@@ -52,7 +51,6 @@ fun TvShowScreen(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun TvShowView(tvShow: TV) {
     Column(
@@ -62,7 +60,7 @@ fun TvShowView(tvShow: TV) {
                 .padding(16.dp),
     ) {
         Row {
-            GlideImage(
+            AsyncImage(
                 modifier = Modifier.size(120.dp, 180.dp),
                 model = tvShow.poster_path?.imageUrl(),
                 contentDescription = stringResource(id = R.string.tv_show_poster),

@@ -31,9 +31,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import coil3.compose.AsyncImage
 import im.bernier.movies.R
 import im.bernier.movies.util.imageUrl
 import im.bernier.movies.util.setTitle
@@ -111,7 +110,6 @@ fun SearchContent(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SearchResultItem(
     searchResult: SearchResultItem,
@@ -141,7 +139,7 @@ fun SearchResultItem(
         ) {
             val imagePath =
                 searchResult.profile_path?.imageUrl() ?: searchResult.poster_path?.imageUrl() ?: ""
-            GlideImage(
+            AsyncImage(
                 model = imagePath,
                 contentDescription = "Movie poster or profile picture",
             )

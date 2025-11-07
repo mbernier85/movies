@@ -111,7 +111,8 @@ dependencies {
     implementation(libs.androidx.paging.rxjava3)
 
     implementation(libs.timber)
-    implementation(libs.glide.compose)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.dagger.android)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -121,6 +122,7 @@ dependencies {
 
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
+    testImplementation(composeBom)
     androidTestImplementation(composeBom)
 
     implementation(libs.androidx.compose.material3)

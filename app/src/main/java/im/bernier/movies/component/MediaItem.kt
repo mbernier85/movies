@@ -24,11 +24,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil3.compose.AsyncImage
 import im.bernier.movies.util.imageUrl
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun MediaItem(
     item: MediaUiStateItem,
@@ -57,7 +55,7 @@ fun MediaItem(
                             .height(200.dp)
                             .padding(horizontal = 8.dp),
                 ) {
-                    GlideImage(
+                    AsyncImage(
                         model = item.posterPath?.imageUrl(),
                         contentDescription = "Movie poster",
                         modifier = Modifier.clip(ShapeDefaults.Small),
