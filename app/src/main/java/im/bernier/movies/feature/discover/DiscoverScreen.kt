@@ -9,27 +9,16 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation.NavController
 import im.bernier.movies.R
 import im.bernier.movies.util.setTitle
 import kotlinx.coroutines.launch
-
-@Composable
-fun DiscoverRoute(
-    onTitleChanged: (String) -> Unit,
-    navController: NavController,
-) {
-    DiscoverScreen(
-        onTitleChanged = onTitleChanged,
-        navController = navController,
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscoverScreen(
     onTitleChanged: (String) -> Unit,
-    navController: NavController,
+    onNavigateToMovie: (Long) -> Unit,
+    onNavigateToShow: (Long) -> Unit
 ) {
     setTitle(stringId = R.string.discover) {
         onTitleChanged.invoke(it)
@@ -57,12 +46,11 @@ fun DiscoverScreen(
             when (index) {
                 0 ->
                     DiscoverMovieScreen(
-                        navController = navController,
+                        onNavigateToMovie = onNavigateToMovie,
                     )
-                1 ->
-                    DiscoverTvScreen(
-                        navController = navController,
-                    )
+                1 -> DiscoverTvScreen(
+                    onNavigateToTvShow = onNavigateToShow
+                )
             }
         }
     }

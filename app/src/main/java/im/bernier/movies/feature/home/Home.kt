@@ -27,27 +27,24 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import im.bernier.movies.MoviesNavHost
+import im.bernier.movies.LoginRoute
+import im.bernier.movies.MovieApp
+import im.bernier.movies.ProfileRoute
 import im.bernier.movies.R
-import im.bernier.movies.feature.account.navigateToAccount
-import im.bernier.movies.feature.authentication.navigateToLogin
-import im.bernier.movies.feature.watchlist.navigateToWatchList
-import im.bernier.movies.navigateToSearch
+import im.bernier.movies.SearchRoute
+import im.bernier.movies.WatchListRoute
 import im.bernier.movies.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navController: NavHostController = rememberNavController(),
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var title by remember {
         mutableStateOf("")
     }
-
+    val backStack = homeViewModel.backStack
     AppTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -58,33 +55,41 @@ fun HomeScreen(
                 topBar = {
                     HomeTopBar(
                         title = title,
-                        openSearch = { navController.navigateToSearch() },
+                        openSearch = {
+                            backStack.add(SearchRoute)
+                        },
                         openAccount = {
                             if (homeViewModel.loggedIn) {
-                                navController.navigateToAccount()
+                                backStack.add(ProfileRoute)
                             } else {
-                                navController.navigateToLogin()
+                                backStack.add(LoginRoute)
                             }
                         },
                         scrollBehavior = scrollBehavior,
                         openWatchlist = {
                             if (homeViewModel.loggedIn) {
-                                navController.navigateToWatchList()
+                                backStack.add(WatchListRoute)
                             } else {
-                                navController.navigateToLogin()
+                                backStack.add(LoginRoute)
                             }
-                        }
+                        },
                     )
                 },
             ) { paddingValues ->
                 Column(
                     modifier = Modifier.padding(paddingValues),
                 ) {
-                    MoviesNavHost(
-                        navController = navController,
-                        onTitleChanged = {
-                            title = it
+                    MovieApp(
+                        onBack = {
+                            backStack.removeLastOrNull()
                         },
+                        onForward = {
+                            backStack.add(it)
+                        },
+                        backStack = backStack,
+                        onTitleChange = {
+                            title = it
+                        }
                     )
                 }
             }
@@ -120,7 +125,7 @@ fun HomeTopBar(
             }) {
                 Icon(
                     imageVector = Icons.Outlined.Star,
-                    contentDescription = stringResource(R.string.watch_list_icon)
+                    contentDescription = stringResource(R.string.watch_list_icon),
                 )
             }
             IconButton(onClick = {

@@ -41,8 +41,14 @@ android {
         release {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
+    }
+    packaging {
+        resources.excludes.add("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -89,8 +95,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.core)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
     implementation(libs.androidx.lifecycle.viewmodel)
-    implementation(libs.androidx.navigation.common)
-    implementation(libs.androidx.navigation.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.paging.common)
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.sqlite)
@@ -133,7 +140,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.manifest)
     androidTestImplementation(libs.androidx.compose.junit4)
 
-    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 

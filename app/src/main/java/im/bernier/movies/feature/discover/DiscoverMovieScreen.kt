@@ -7,35 +7,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import im.bernier.movies.component.MediaItem
-import im.bernier.movies.feature.authentication.navigateToLogin
 import im.bernier.movies.feature.movie.Movie
-import im.bernier.movies.navigateToMovie
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
 @Composable
 fun DiscoverMovieScreen(
     viewModel: MoviesDiscoverViewModel = hiltViewModel(),
-    navController: NavController,
+    onNavigateToMovie: (Long) -> Unit,
 ) {
     val pager: Flow<PagingData<Movie>> = viewModel.pager
 
     MediaList(
         pager = pager,
-        onNavigateToMovie = {
-            navController.navigateToMovie(it)
-        },
+        onNavigateToMovie = onNavigateToMovie,
         onAddToWatchList = { id, mediaType ->
             if (viewModel.isLoggedIn) {
                 viewModel.onAddToWatchList(id, mediaType)
             } else {
-                navController.navigateToLogin()
             }
         },
     )

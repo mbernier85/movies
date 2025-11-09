@@ -7,27 +7,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import im.bernier.movies.component.MediaItem
 import im.bernier.movies.feature.tv.TV
-import im.bernier.movies.feature.tv.navigateToTvShow
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
 @Composable
 fun DiscoverTvScreen(
     viewModel: DiscoverTvViewModel = hiltViewModel(),
-    navController: NavController,
+    onNavigateToTvShow: (Long) -> Unit,
 ) {
     val pager: Flow<PagingData<TV>> = viewModel.pagerFlow
     TvList(
         pager = pager,
         onNavigateToTvShow = {
-            navController.navigateToTvShow(it)
+            onNavigateToTvShow(it)
         },
         onAddToWatchList = viewModel::onAddToWatchList,
     )

@@ -10,7 +10,7 @@ fragment = "1.8.9"
 dependency-analysis = "3.4.1"
 espressoCore = "3.7.0"
 firebaseAppdistributionGradle = "4.2.0"
-googleServices = "4.4.3"
+googleServices = "4.4.4"
 hilt = "2.57.2"
 hiltNavigationCompose = "1.3.0"
 javaxInject = "1"
@@ -21,7 +21,7 @@ kotlinxCoroutinesCore = "1.10.2"
 kotlinxSerializationCore = "1.9.0"
 leakcanaryAndroid = "2.14"
 lifecycle = "2.9.4"
-navigation = "2.9.6"
+navigation = "1.0.0-rc01"
 okhttp = "5.3.0"
 paging = "3.3.6"
 retrofit = "3.0.0"
@@ -47,28 +47,28 @@ androidx-lifecycle-livedata-core = { module = "androidx.lifecycle:lifecycle-live
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
 androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
 androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
-androidx-navigation-common = { module = "androidx.navigation:navigation-common", version.ref = "navigation" }
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation" }
+androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "navigation" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycle" }
-androidx-navigation-runtime = { module = "androidx.navigation:navigation-runtime", version.ref = "navigation" }
 androidx-room-common = { module = "androidx.room:room-common", version.ref = "room" }
 androidx-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
 androidx-runtime = { module = "androidx.compose.runtime:runtime" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata" }
 androidx-runtime-rxjava3 = { module = "androidx.compose.runtime:runtime-rxjava3" }
-androidx-compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"}
+androidx-compose-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-compose-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
-androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 androidx-paging-rxjava3 = { module = "androidx.paging:paging-rxjava3", version.ref = "paging" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 androidx-runtime-saveable = { module = "androidx.compose.runtime:runtime-saveable" }
 androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
-androidx-ui = { module = "androidx.compose.ui:ui"}
+androidx-ui = { module = "androidx.compose.ui:ui" }
 androidx-ui-unit = { module = "androidx.compose.ui:ui-unit" }
 androidx-ui-text = { module = "androidx.compose.ui:ui-text" }
 androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
@@ -110,4 +110,4 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 [plugins]
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependency-analysis"}
+dependency-analysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependency-analysis" }
