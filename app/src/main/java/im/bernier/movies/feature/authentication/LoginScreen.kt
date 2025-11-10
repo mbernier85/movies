@@ -27,18 +27,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import im.bernier.movies.R
 import im.bernier.movies.util.setTitle
 
 @Composable
 fun LoginRoute(
-    navController: NavController,
     loginViewModel: LoginViewModel = hiltViewModel(),
     onTitleChanged: (String) -> Unit,
 ) {
     LoginScreen(
-        navController = navController,
         loginViewModel = loginViewModel,
         onTitleChanged = onTitleChanged,
     )
@@ -46,7 +43,6 @@ fun LoginRoute(
 
 @Composable
 fun LoginScreen(
-    navController: NavController,
     loginViewModel: LoginViewModel,
     onTitleChanged: (String) -> Unit,
 ) {
@@ -62,7 +58,6 @@ fun LoginScreen(
     val uiState = loginViewModel.uiState
     if (uiState.value.success) {
         LaunchedEffect(uiState) {
-            navController.popBackStack()
         }
     }
     LoginScreenContent(onSend = {

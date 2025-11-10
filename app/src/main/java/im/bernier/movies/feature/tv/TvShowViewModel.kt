@@ -1,20 +1,24 @@
 package im.bernier.movies.feature.tv
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.toRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import im.bernier.movies.datasource.Repository
 import timber.log.Timber
-import javax.inject.Inject
 
-@HiltViewModel
+@HiltViewModel(assistedFactory = TvShowViewModel.ShowViewModelFactory::class)
 class TvShowViewModel
-    @Inject
+    @AssistedInject
     constructor(
         repository: Repository,
-        savedStateHandle: SavedStateHandle,
+        @Assisted
+        id: Long,
     ) : ViewModel() {
-        private val movieId: Long = (savedStateHandle.toRoute() as TvShowRoute).id
-        val tvShow = repository.fetchTv(movieId).doOnError { Timber.e(it) }
+        @AssistedFactory
+        interface ShowViewModelFactory {
+            fun create(id: Long): TvShowViewModel
+        }
+        val tvShow = repository.fetchTv(id).doOnError { Timber.e(it) }
     }

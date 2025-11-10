@@ -1,23 +1,26 @@
 package im.bernier.movies.feature.cast
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.toRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import im.bernier.movies.CastRoute
 import im.bernier.movies.datasource.Repository
-import javax.inject.Inject
+import im.bernier.movies.di.AssistedViewModelFactory
 
 /**
  * Created by Michael on 2020-02-24.
  */
-@HiltViewModel
+@HiltViewModel(assistedFactory = CastViewModel.ModelFactory::class)
 class CastViewModel
-    @Inject
+    @AssistedInject
     constructor(
+        @Assisted
+        id: Long,
         val repository: Repository,
-        savedStateHandle: SavedStateHandle,
     ) : ViewModel() {
-        private val personId: Long = (savedStateHandle.toRoute() as CastRoute).id
-        val person = repository.api.getCastById(personId)
+
+        @AssistedFactory
+        fun interface ModelFactory: AssistedViewModelFactory<CastViewModel>
+        val person = repository.api.getCastById(id)
     }

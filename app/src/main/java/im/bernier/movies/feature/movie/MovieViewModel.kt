@@ -1,28 +1,31 @@
 package im.bernier.movies.feature.movie
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.toRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import im.bernier.movies.MovieRoute
 import im.bernier.movies.datasource.Repository
-import javax.inject.Inject
 
-@HiltViewModel
+@HiltViewModel(assistedFactory = MovieViewModel.MovieViewModelFactory::class)
 class MovieViewModel
-    @Inject
-    constructor(
-        repository: Repository,
-        savedStateHandle: SavedStateHandle,
-    ) : ViewModel() {
-        private val movieId: Long = (savedStateHandle.toRoute() as MovieRoute).id
-
-        val movie =
-            repository.fetchMovie(movieId).map {
-                it.genreString =
-                    it.genres.joinToString { genre ->
-                        genre.name
-                    }
-                it
-            }
+@AssistedInject
+constructor(
+    @Assisted
+    id: Long,
+    repository: Repository,
+) : ViewModel() {
+    @AssistedFactory
+    interface MovieViewModelFactory {
+        fun create(id: Long): MovieViewModel
     }
+
+    val movie =
+        repository.fetchMovie(id).map {
+            it.genreString =
+                it.genres.joinToString { genre ->
+                    genre.name
+                }
+            it
+        }
+}

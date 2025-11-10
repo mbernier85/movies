@@ -18,14 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import im.bernier.movies.theme.AppTheme
 import im.bernier.movies.util.imageUrl
 
 @Composable
 fun CastScreen(
-    viewModel: CastViewModel = hiltViewModel(),
+    viewModel: CastViewModel,
     onTitleChanged: (String) -> Unit,
 ) {
     val person by viewModel.person.subscribeAsState(initial = null)
@@ -37,7 +36,11 @@ fun CastScreen(
             onTitleChanged.invoke(it.name)
         }
     }
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
         person?.let {
             CastComponent(person = it)
         }

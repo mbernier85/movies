@@ -92,7 +92,8 @@ fun CastItem(
             Modifier
                 .clickable {
                     onNavigateToCast(person.id)
-                }.fillMaxWidth()
+                }
+                .fillMaxWidth()
                 .padding(8.dp),
     ) {
         AsyncImage(
