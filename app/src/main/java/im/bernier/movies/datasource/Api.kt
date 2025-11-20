@@ -18,6 +18,7 @@ import im.bernier.movies.feature.watchlist.model.WatchlistRequest
 import io.reactivex.rxjava3.core.Single
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -33,6 +34,9 @@ interface Api {
     suspend fun newSession(
         @Body sessionRequest: SessionRequest,
     ): SessionResponse
+
+    @DELETE("authentication/session")
+    suspend fun deleteSession(): SessionResponse
 
     @GET("authentication/token/new")
     suspend fun newToken(): TokenResponse

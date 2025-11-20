@@ -20,4 +20,6 @@
     <string name="tv_show_poster">Tv show poster</string>
     <string name="watch_list_icon">Watchlist</string>
     <string name="watch_list_title">Movie watch list</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
 </resources>

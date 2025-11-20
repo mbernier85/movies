@@ -146,7 +146,8 @@ class Repository
                         ),
                 ).observeOn(Schedulers.io())
 
-    fun logout() {
+    suspend fun logout() {
+        api.deleteSession()
         storage.clear()
     }
 }
