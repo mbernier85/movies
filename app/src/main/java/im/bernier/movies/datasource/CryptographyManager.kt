@@ -3,10 +3,10 @@ package im.bernier.movies.datasource
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import androidx.core.content.edit
+import jakarta.inject.Inject
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.nio.charset.Charset
 import java.security.KeyStore
@@ -14,7 +14,6 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
-import javax.inject.Inject
 
 /**
  * Handles encryption and decryption
@@ -150,9 +149,9 @@ class CryptographyManagerImpl
             val json = Json.encodeToString(ciphertextWrapper)
             context
                 .getSharedPreferences(filename, mode)
-                .edit()
-                .putString(prefKey, json)
-                .apply()
+                .edit {
+                    putString(prefKey, json)
+                }
         }
 
         @OptIn(ExperimentalSerializationApi::class)

@@ -14,7 +14,7 @@ import im.bernier.movies.datasource.Api
 import im.bernier.movies.datasource.AppDatabase
 import im.bernier.movies.datasource.CryptographyManager
 import im.bernier.movies.datasource.CryptographyManagerImpl
-import im.bernier.movies.datasource.LogApi
+import jakarta.inject.Singleton
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -23,7 +23,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
-import javax.inject.Singleton
 
 /**
  * Created by Michael on 2020-03-14.
@@ -39,9 +38,6 @@ abstract class CryptoModule {
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    @Provides
-    @Singleton
-    fun provideLogApi(retrofit: Retrofit): LogApi = retrofit.create(LogApi::class.java)
 
     @Provides
     @Singleton

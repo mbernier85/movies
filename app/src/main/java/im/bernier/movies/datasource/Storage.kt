@@ -3,8 +3,8 @@ package im.bernier.movies.datasource
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import dagger.hilt.android.qualifiers.ApplicationContext
+import jakarta.inject.Inject
 import timber.log.Timber
-import javax.inject.Inject
 
 const val KEY_NAME = "im.bernier.movies.key3"
 const val PREF_KEY_SESSION = "im.bernier.movies.session.id"

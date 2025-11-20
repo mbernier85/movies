@@ -6,7 +6,7 @@ import im.bernier.movies.datasource.Repository
 import im.bernier.movies.feature.movie.Movie
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 class MoviesDataSource
     @Inject

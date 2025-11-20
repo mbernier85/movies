@@ -42,3 +42,4 @@ hs_err_pid*
 /.idea/AndroidProjectSystem.xml
 /.idea/.name
 /.idea/ktlint-plugin.xml
+/.idea/studiobot.xml

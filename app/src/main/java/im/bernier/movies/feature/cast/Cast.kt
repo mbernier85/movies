@@ -13,4 +13,6 @@ data class Cast(
     val gender: Int? = null,
     val profile_path: String? = null,
     val order: Int? = null,
+    val poster_path: String? = null,
+    val backdrop_path: String? = null,
 )

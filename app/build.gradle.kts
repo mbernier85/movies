@@ -1,13 +1,12 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     kotlin("plugin.serialization")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.google.ksp)
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
-    id("com.google.firebase.appdistribution")
     id("androidx.room")
     alias(libs.plugins.compose.compiler)
 }
@@ -39,7 +38,7 @@ android {
     }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -104,7 +103,6 @@ dependencies {
     implementation(libs.dagger)
     implementation(libs.hilt.core)
     implementation(libs.okhttp)
-    implementation(libs.javax.inject)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.core)
 
