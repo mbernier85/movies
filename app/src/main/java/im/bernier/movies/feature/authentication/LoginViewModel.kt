@@ -1,50 +1,49 @@
 package im.bernier.movies.feature.authentication
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import im.bernier.movies.datasource.Repository
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel
-    @Inject
-    constructor(
-        val repository: Repository,
-    ) : ViewModel() {
-        var uiState = mutableStateOf(UiState())
-        private val compositeDisposable = CompositeDisposable()
+@Inject
+constructor(
+    val repository: Repository,
+) : ViewModel() {
+    var uiState by mutableStateOf(UiState())
 
-        fun login(
-            username: String,
-            password: String,
-        ) {
-            val disposable =
-                repository
-                    .login()
-                    .observeOn(Schedulers.io())
-                    .flatMap {
-                        repository.validateToken(it.request_token, username, password)
-                    }.flatMap { repository.newSession(it.request_token) }
-                    .flatMap { repository.getAccount() }
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        uiState.value = uiState.value.copy(success = true)
-                    }, {
-                        Timber.e(it)
-                    })
-            compositeDisposable.add(disposable)
-        }
+    val handler = CoroutineExceptionHandler { _, exception ->
+        Timber.e(exception)
+        uiState = uiState.copy(success = false)
+    }
 
-        override fun onCleared() {
-            super.onCleared()
-            compositeDisposable.clear()
+    fun login(
+        username: String,
+        password: String,
+    ) {
+        viewModelScope.launch(context = handler) {
+            repository
+                .login()
+                .also {
+                    repository.validateToken(it.request_token, username, password)
+                }.also {
+                    repository.newSession(it.request_token)
+                }.also {
+                    repository.getAccount()
+                }.also {
+                    uiState = uiState.copy(success = it.success)
+                }
         }
     }
+}
 
 data class UiState(
     val success: Boolean = false,

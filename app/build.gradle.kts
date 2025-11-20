@@ -6,7 +6,6 @@ plugins {
     kotlin("plugin.serialization")
     alias(libs.plugins.google.ksp)
     id("com.google.dagger.hilt.android")
-    id("com.google.gms.google-services")
     id("androidx.room")
     alias(libs.plugins.compose.compiler)
 }

@@ -25,22 +25,22 @@ import retrofit2.http.Query
 
 interface Api {
     @POST("authentication/token/validate_with_login")
-    fun validateToken(
+    suspend fun validateToken(
         @Body validateTokenRequest: ValidateTokenRequest,
-    ): Single<ValidateTokenResponse>
+    ): ValidateTokenResponse
 
     @POST("authentication/session/new")
-    fun newSession(
+    suspend fun newSession(
         @Body sessionRequest: SessionRequest,
-    ): Single<SessionResponse>
+    ): SessionResponse
 
     @GET("authentication/token/new")
-    fun newToken(): Single<TokenResponse>
+    suspend fun newToken(): TokenResponse
 
     @GET("account")
-    fun getAccount(
+    suspend fun getAccount(
         @Query("session_id") sessionId: String,
-    ): Single<AccountResponse>
+    ): AccountResponse
 
     @GET("account/{accountId}/favorite/movies")
     fun getFavoriteMovies(

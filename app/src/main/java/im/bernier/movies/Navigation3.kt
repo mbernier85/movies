@@ -126,7 +126,11 @@ fun MovieApp(
                 is LoginRoute -> {
                     NavEntry(key) {
                         LoginRoute(
-                            onTitleChanged = onTitleChange
+                            onTitleChanged = onTitleChange,
+                            onLoginSuccess = {
+                                onBack()
+                                onForward(ProfileRoute)
+                            }
                         )
                     }
                 }
@@ -134,7 +138,11 @@ fun MovieApp(
                 is ProfileRoute -> {
                     NavEntry(key) {
                         AccountRoute(
-                            onTitleChanged = onTitleChange
+                            onTitleChanged = onTitleChange,
+                            onLogout = {
+                                onBack()
+                                onForward(LoginRoute)
+                            }
                         )
                     }
                 }

@@ -16,7 +16,6 @@ import im.bernier.movies.feature.tv.TV
 import im.bernier.movies.feature.watchlist.MovieWatchListItem
 import im.bernier.movies.feature.watchlist.model.AddToWatchListResponse
 import im.bernier.movies.feature.watchlist.model.WatchlistRequest
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.Call
@@ -39,36 +38,31 @@ class Repository
             get() = searchLiveData
 
         val loggedIn: Boolean
-            get() {
-                return storage.getSessionId().isNotEmpty()
-            }
+            get() = storage.getSessionId().isNotEmpty()
 
-        fun validateToken(
+
+        suspend fun validateToken(
             token: String,
             username: String,
             password: String,
-        ): Single<ValidateTokenResponse> =
-            api
-                .validateToken(ValidateTokenRequest(username, password, token))
-                .observeOn(Schedulers.io())
+        ): ValidateTokenResponse =
+            api.validateToken(ValidateTokenRequest(username, password, token))
 
-        fun newSession(token: String): Single<SessionResponse> =
+        suspend fun newSession(token: String): SessionResponse =
             api
                 .newSession(SessionRequest(token))
-                .observeOn(Schedulers.io())
-                .doOnSuccess {
+                .also {
                     storage.setSessionId(it.session_id)
                 }
 
-        fun getAccount(): Single<AccountResponse> =
+        suspend fun getAccount(): AccountResponse =
             api
                 .getAccount(storage.getSessionId())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess {
+                .also {
                     storage.setAccountId(it.id.toString())
                 }
 
-        fun login(): Single<TokenResponse> = api.newToken().observeOn(Schedulers.io())
+        suspend fun login(): TokenResponse = api.newToken()
 
         fun fetchMovie(id: Long): Single<Movie> = api.getMovie(id)
 
@@ -151,4 +145,8 @@ class Repository
                             media_type = mediaType,
                         ),
                 ).observeOn(Schedulers.io())
+
+    fun logout() {
+        storage.clear()
     }
+}

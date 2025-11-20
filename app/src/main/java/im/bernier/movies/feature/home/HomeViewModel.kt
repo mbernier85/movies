@@ -11,8 +11,9 @@ import jakarta.inject.Inject
 class HomeViewModel
 @Inject
 constructor(
-    repository: Repository,
+    private val repository: Repository,
 ) : ViewModel() {
-    val loggedIn: Boolean = repository.loggedIn
+    val loggedIn: Boolean
+        get() = repository.loggedIn
     val backStack = mutableStateListOf<Any>(DiscoverRoute)
 }

@@ -63,4 +63,9 @@ class Storage
                 crypto.getInitializedCipherForDecryption(KEY_NAME, cypherTextWrapper.initializationVector),
             )
         }
+
+    fun clear() {
+        setAccountId("")
+        setSessionId("")
     }
+}

@@ -2,12 +2,13 @@ package im.bernier.movies.feature.account
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,10 +19,12 @@ import im.bernier.movies.theme.AppTheme
 fun AccountRoute(
     accountViewModel: AccountViewModel = hiltViewModel(),
     onTitleChanged: (String) -> Unit,
+    onLogout: () -> Unit
 ) {
     AccountScreen(
         accountViewModel = accountViewModel,
         onTitleChanged = onTitleChanged,
+        onLogout = onLogout
     )
 }
 
@@ -29,16 +32,26 @@ fun AccountRoute(
 fun AccountScreen(
     accountViewModel: AccountViewModel,
     onTitleChanged: (String) -> Unit,
+    onLogout: () -> Unit,
 ) {
-    val uiState = accountViewModel.uiState.subscribeAsState(initial = UiState(""))
+    val uiState = accountViewModel.uiState
     LaunchedEffect(uiState) {
-        onTitleChanged.invoke(uiState.value.name)
+        onTitleChanged.invoke(uiState.name)
     }
-    AccountContent(uiState.value)
+    AccountContent(
+        uiState,
+        onLogout = {
+            accountViewModel.logout()
+            onLogout()
+        }
+    )
 }
 
 @Composable
-fun AccountContent(uiState: UiState) {
+fun AccountContent(
+    uiState: UiState,
+    onLogout: () -> Unit = {},
+) {
     Column(
         modifier =
             Modifier
@@ -46,6 +59,14 @@ fun AccountContent(uiState: UiState) {
                 .padding(16.dp),
     ) {
         Text(text = uiState.name)
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 48.dp),
+            onClick = onLogout
+        ) {
+            Text(text = "Logout")
+        }
     }
 }
 
@@ -54,7 +75,9 @@ fun AccountContent(uiState: UiState) {
 fun AccountPreview() {
     AppTheme {
         Surface {
-            AccountContent(UiState(name = "Michael Bernier"))
+            AccountContent(
+                UiState(name = "Michael Bernier")
+            )
         }
     }
 }

@@ -30,7 +30,8 @@ class MoviesDiscoverViewModel
                 pagingSourceFactory = { moviesDataSource },
             ).flow.cachedIn(viewModelScope)
 
-        val isLoggedIn = repository.loggedIn
+    val isLoggedIn
+        get() = repository.loggedIn
 
         fun onAddToWatchList(
             id: Long,
