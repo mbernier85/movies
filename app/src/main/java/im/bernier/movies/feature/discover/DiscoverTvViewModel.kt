@@ -18,41 +18,41 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DiscoverTvViewModel
-@Inject
-constructor(
-    tvDataSource: TVDataSource,
-    private val repository: Repository,
-) : ViewModel() {
+    @Inject
+    constructor(
+        tvDataSource: TVDataSource,
+        private val repository: Repository,
+    ) : ViewModel() {
+        val pager =
+            Pager(
+                config = PagingConfig(20, initialLoadSize = 20),
+            ) {
+                tvDataSource
+            }
 
-    val pager =
-        Pager(
-            config = PagingConfig(20, initialLoadSize = 20),
-        ) {
-            tvDataSource
-        }
+        val pagerFlow = pager.flow.cachedIn(viewModelScope)
 
-    val pagerFlow = pager.flow.cachedIn(viewModelScope)
-
-    val handler = CoroutineExceptionHandler { _, throwable ->
-        when (throwable) {
-            is HttpException -> {
-                if (throwable.code() == 401) {
-                    // Navigate to login
+        val handler =
+            CoroutineExceptionHandler { _, throwable ->
+                when (throwable) {
+                    is HttpException -> {
+                        if (throwable.code() == 401) {
+                            // Navigate to login
+                        }
+                    }
                 }
+                Timber.e(throwable)
+            }
+
+        fun onAddToWatchList(
+            id: Long,
+            mediaType: String,
+        ) {
+            viewModelScope.launch(handler) {
+                repository.addToWatchList(mediaId = id, watchlist = true, mediaType = mediaType)
             }
         }
-        Timber.e(throwable)
     }
-
-    fun onAddToWatchList(
-        id: Long,
-        mediaType: String,
-    ) {
-        viewModelScope.launch(handler) {
-            repository.addToWatchList(mediaId = id, watchlist = true, mediaType = mediaType)
-        }
-    }
-}
 
 fun TV.toMediaUiStateItem(): MediaUiStateItem =
     MediaUiStateItem(

@@ -14,17 +14,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import im.bernier.movies.R
+import im.bernier.movies.util.SetTitle
 import im.bernier.movies.util.imageUrl
-import im.bernier.movies.util.setTitle
 
 @Composable
 fun TvShowScreen(
     viewModel: TvShowViewModel,
-    onTitleChanged: (String) -> Unit,
+    onTitleChange: (String) -> Unit,
 ) {
     val tvShow = viewModel.tvShow
-    setTitle(stringId = R.string.tv_show) {
-        onTitleChanged.invoke(it)
+    SetTitle(stringId = R.string.tv_show) {
+        onTitleChange.invoke(it)
     }
     TvShowView(tvShow = tvShow)
 }

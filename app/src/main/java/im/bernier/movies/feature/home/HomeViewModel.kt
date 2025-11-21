@@ -13,21 +13,22 @@ import timber.log.Timber
 
 @HiltViewModel
 class HomeViewModel
-@Inject
-constructor(
-    private val repository: Repository,
-) : ViewModel() {
-    val loggedIn: Boolean
-        get() = repository.loggedIn
-    val backStack = mutableStateListOf<Any>(DiscoverRoute)
+    @Inject
+    constructor(
+        private val repository: Repository,
+    ) : ViewModel() {
+        val loggedIn: Boolean
+            get() = repository.loggedIn
+        val backStack = mutableStateListOf<Any>(DiscoverRoute)
 
-    val handler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e(throwable)
-    }
+        val handler =
+            CoroutineExceptionHandler { _, throwable ->
+                Timber.e(throwable)
+            }
 
-    init {
-        viewModelScope.launch(handler) {
-            repository.fetchGenres()
+        init {
+            viewModelScope.launch(handler) {
+                repository.fetchGenres()
+            }
         }
     }
-}

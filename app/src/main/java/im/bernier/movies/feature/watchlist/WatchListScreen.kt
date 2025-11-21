@@ -4,13 +4,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import im.bernier.movies.component.MediaItem
 import im.bernier.movies.feature.discover.toMediaUiStateItem
 import im.bernier.movies.feature.movie.Movie
-import kotlinx.serialization.Serializable
 
 @Composable
 fun WatchListRoute(viewModel: WatchListViewModel = hiltViewModel()) {
@@ -21,8 +21,11 @@ fun WatchListRoute(viewModel: WatchListViewModel = hiltViewModel()) {
 fun WatchListScreen(
     uiState: UiState,
     onNavigateToMedia: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Column {
+    Column(
+        modifier = modifier,
+    ) {
         MovieList(movies = uiState.movies, onNavigateToMedia = onNavigateToMedia)
     }
 }
@@ -31,8 +34,11 @@ fun WatchListScreen(
 fun MovieList(
     movies: List<Movie>,
     onNavigateToMedia: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    LazyColumn {
+    LazyColumn(
+        modifier = modifier,
+    ) {
         items(movies) {
             MediaItem(
                 item = it.toMediaUiStateItem(),
@@ -44,7 +50,7 @@ fun MovieList(
 
 @Composable
 @Preview
-fun WatchListScreenPreview() {
+private fun WatchListScreenPreview() {
     WatchListScreen(
         uiState =
             UiState(

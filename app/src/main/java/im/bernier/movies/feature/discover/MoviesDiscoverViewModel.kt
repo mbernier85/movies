@@ -20,14 +20,13 @@ class MoviesDiscoverViewModel
         moviesDataSource: MoviesDataSource,
         private val repository: Repository,
     ) : ViewModel() {
-
         val pager =
             Pager(
                 config = PagingConfig(20, initialLoadSize = 20),
                 pagingSourceFactory = { moviesDataSource },
             ).flow.cachedIn(viewModelScope)
-    val isLoggedIn
-        get() = repository.loggedIn
+        val isLoggedIn
+            get() = repository.loggedIn
 
         fun onAddToWatchList(
             id: Long,

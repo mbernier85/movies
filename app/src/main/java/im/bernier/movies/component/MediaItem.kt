@@ -31,10 +31,11 @@ import im.bernier.movies.util.imageUrl
 fun MediaItem(
     item: MediaUiStateItem,
     onNavigateToMedia: (Long) -> Unit,
+    modifier: Modifier = Modifier,
     onAddToWatchList: ((Long, String) -> Unit)? = null,
 ) {
     Card(
-        modifier = Modifier.padding(4.dp),
+        modifier = modifier.padding(4.dp),
     ) {
         Column(
             modifier =
@@ -90,7 +91,10 @@ fun MediaItem(
                     IconButton(onClick = {
                         it(item.id, item.mediaType)
                     }) {
-                        Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Favorite")
+                        Icon(
+                            imageVector = Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Favorite",
+                        )
                     }
                 }
             }
@@ -100,7 +104,7 @@ fun MediaItem(
 
 @Composable
 @Preview
-fun MediaItemPreview() {
+private fun MediaItemPreview() {
     MediaItem(
         item =
             MediaUiStateItem(

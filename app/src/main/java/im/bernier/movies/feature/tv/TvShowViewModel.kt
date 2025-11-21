@@ -16,28 +16,28 @@ import timber.log.Timber
 
 @HiltViewModel(assistedFactory = TvShowViewModel.ShowViewModelFactory::class)
 class TvShowViewModel
-@AssistedInject
-constructor(
-    repository: Repository,
-    @Assisted
-    id: Long,
-) : ViewModel() {
-    @AssistedFactory
-    interface ShowViewModelFactory {
-        fun create(id: Long): TvShowViewModel
-    }
-
-    var tvShow by mutableStateOf(TV())
-        private set
-
-    val handler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e(throwable)
-    }
-
-    init {
-        viewModelScope.launch(handler) {
-            tvShow = repository.fetchTv(id)
+    @AssistedInject
+    constructor(
+        repository: Repository,
+        @Assisted
+        id: Long,
+    ) : ViewModel() {
+        @AssistedFactory
+        interface ShowViewModelFactory {
+            fun create(id: Long): TvShowViewModel
         }
 
+        var tvShow by mutableStateOf(TV())
+            private set
+
+        val handler =
+            CoroutineExceptionHandler { _, throwable ->
+                Timber.e(throwable)
+            }
+
+        init {
+            viewModelScope.launch(handler) {
+                tvShow = repository.fetchTv(id)
+            }
+        }
     }
-}

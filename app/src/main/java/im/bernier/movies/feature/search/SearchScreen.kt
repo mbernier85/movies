@@ -34,26 +34,28 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import im.bernier.movies.R
+import im.bernier.movies.util.SetTitle
 import im.bernier.movies.util.imageUrl
-import im.bernier.movies.util.setTitle
 import timber.log.Timber
 
 @Composable
 fun SearchScreen(
-    viewModel: SearchViewModel = hiltViewModel(),
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
-    onTitleChanged: (String) -> Unit,
+    onTitleChange: (String) -> Unit,
     onNavigateToTvShow: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: SearchViewModel = hiltViewModel(),
 ) {
     val searchResult by viewModel.searchResults.observeAsState(listOf())
     SearchContent(
-        onNavigateToMovie,
-        onNavigateToCast,
-        onTitleChanged,
-        onNavigateToTvShow,
-        viewModel::submit,
-        searchResult,
+        onNavigateToMovie = onNavigateToMovie,
+        onNavigateToCast = onNavigateToCast,
+        onTitleChange = onTitleChange,
+        onNavigateToTvShow = onNavigateToTvShow,
+        onSubmit = viewModel::submit,
+        searchResult = searchResult,
+        modifier = modifier,
     )
 }
 
@@ -61,15 +63,16 @@ fun SearchScreen(
 fun SearchContent(
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
-    onTitleChanged: (String) -> Unit,
+    onTitleChange: (String) -> Unit,
     onNavigateToTvShow: (Long) -> Unit,
     onSubmit: (String) -> Unit,
     searchResult: List<SearchResultItem>,
+    modifier: Modifier = Modifier,
 ) {
-    setTitle(stringId = R.string.search_title, onTitleChanged = onTitleChanged)
+    SetTitle(stringId = R.string.search_title, onTitleChange = onTitleChange)
     var text by rememberSaveable { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = text,
@@ -116,10 +119,11 @@ fun SearchResultItem(
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
     onNavigateToTvShow: ((Long) -> Unit),
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier =
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .clickable {
                     when (searchResult.media_type) {
@@ -158,11 +162,11 @@ fun SearchResultItem(
 
 @Composable
 @Preview
-fun SearchScreenPreview() {
+private fun SearchScreenPreview() {
     SearchContent(
         onNavigateToMovie = {},
         onNavigateToCast = {},
-        onTitleChanged = {},
+        onTitleChange = {},
         onNavigateToTvShow = {},
         onSubmit = {},
         searchResult =

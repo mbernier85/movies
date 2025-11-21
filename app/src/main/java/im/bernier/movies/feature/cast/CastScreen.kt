@@ -24,26 +24,29 @@ import im.bernier.movies.util.imageUrl
 @Composable
 fun CastScreen(
     viewModel: CastViewModel,
-    onTitleChanged: (String) -> Unit,
+    onTitleChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val person = viewModel.person
 
     LaunchedEffect(person) {
-        onTitleChanged.invoke(person.name)
+        onTitleChange.invoke(person.name)
     }
-    CastScreenContent(person)
+    CastScreenContent(person = person, modifier = modifier)
 }
 
 @Composable
 private fun CastScreenContent(
     person: Person,
+    modifier: Modifier = Modifier,
 ) {
     val tvShowCredits: List<Cast> = person.tv_credits?.cast ?: listOf()
     val movieCredits: List<Cast> = person.movie_credits?.cast ?: listOf()
     val credits: List<Cast> = tvShowCredits + movieCredits
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier =
+            modifier
+                .fillMaxSize(),
     ) {
         item {
             CastComponent(person = person)
@@ -55,8 +58,13 @@ private fun CastScreenContent(
 }
 
 @Composable
-private fun CastComponent(person: Person) {
-    Column {
+private fun CastComponent(
+    person: Person,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier,
+    ) {
         AsyncImage(
             model = person.profile_path?.imageUrl(),
             contentDescription = person.name,
@@ -86,32 +94,32 @@ private fun CastComponent(person: Person) {
 @Composable
 private fun Credit(credit: Cast) {
     Column(
-        modifier = Modifier.padding(
-            horizontal = 16.dp,
-            vertical = 8.dp
-        ),
+        modifier =
+            Modifier.padding(
+                horizontal = 16.dp,
+                vertical = 8.dp,
+            ),
     ) {
         Row {
             AsyncImage(
-                modifier = Modifier
-                    .size(64.dp)
-                    .padding(end = 8.dp),
+                modifier =
+                    Modifier
+                        .size(64.dp)
+                        .padding(end = 8.dp),
                 model = credit.poster_path?.imageUrl(),
                 contentDescription = "profile image",
             )
             val title = credit.name.ifEmpty { credit.title }
             Column {
                 Text(
-                    text = "Character : ${credit.character}"
+                    text = "Character : ${credit.character}",
                 )
                 Text(
-                    text = "Title : $title"
+                    text = "Title : $title",
                 )
             }
         }
-
     }
-
 }
 
 @Composable
@@ -123,15 +131,17 @@ private fun CastScreenPreview() {
                 Person(
                     id = 1,
                     name = "Keanu Reeves",
-                    movie_credits = Casts(
-                        listOf(
-                            Cast(
-                                character = "Neo",
-                                title = "The matrix",
-                                credit_id = "credit_id", id = 1L
-                            )
-                        )
-                    )
+                    movie_credits =
+                        Casts(
+                            listOf(
+                                Cast(
+                                    character = "Neo",
+                                    title = "The matrix",
+                                    credit_id = "credit_id",
+                                    id = 1L,
+                                ),
+                            ),
+                        ),
                 ),
             )
         }

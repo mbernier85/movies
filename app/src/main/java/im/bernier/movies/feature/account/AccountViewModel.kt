@@ -14,29 +14,30 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel
-@Inject
-constructor(
-    private val repository: Repository,
-) : ViewModel() {
+    @Inject
+    constructor(
+        private val repository: Repository,
+    ) : ViewModel() {
+        var uiState by mutableStateOf(UiState(name = ""))
 
-    var uiState by mutableStateOf(UiState(name = ""))
+        val exceptionHandler =
+            CoroutineExceptionHandler { _, throwable ->
+                Timber.e(throwable)
+            }
 
-    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.e(throwable)
-    }
-    init {
-        viewModelScope.launch {
-            val account = repository.getAccount()
-            uiState = uiState.copy(name = account.name.ifEmpty { account.username })
+        init {
+            viewModelScope.launch {
+                val account = repository.getAccount()
+                uiState = uiState.copy(name = account.name.ifEmpty { account.username })
+            }
+        }
+
+        fun logout() {
+            viewModelScope.launch(exceptionHandler) {
+                repository.logout()
+            }
         }
     }
-
-    fun logout() {
-        viewModelScope.launch(exceptionHandler) {
-            repository.logout()
-        }
-    }
-}
 
 data class UiState(
     val name: String,

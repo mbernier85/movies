@@ -1,4 +1,4 @@
-package im.bernier.movies.datasource
+package im.bernier.movies.datasource.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

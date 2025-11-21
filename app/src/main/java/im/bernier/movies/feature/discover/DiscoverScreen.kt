@@ -9,24 +9,28 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import im.bernier.movies.R
-import im.bernier.movies.util.setTitle
+import im.bernier.movies.util.SetTitle
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscoverScreen(
-    onTitleChanged: (String) -> Unit,
+    onTitleChange: (String) -> Unit,
     onNavigateToMovie: (Long) -> Unit,
-    onNavigateToShow: (Long) -> Unit
+    onNavigateToShow: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    setTitle(stringId = R.string.discover) {
-        onTitleChanged.invoke(it)
+    SetTitle(stringId = R.string.discover) {
+        onTitleChange.invoke(it)
     }
     val tabs = listOf("Movies", "Tv Shows")
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val scope = rememberCoroutineScope()
-    Column {
+    Column(
+        modifier = modifier,
+    ) {
         PrimaryTabRow(
             selectedTabIndex = pagerState.currentPage,
         ) {
@@ -48,9 +52,10 @@ fun DiscoverScreen(
                     DiscoverMovieScreen(
                         onNavigateToMovie = onNavigateToMovie,
                     )
-                1 -> DiscoverTvScreen(
-                    onNavigateToTvShow = onNavigateToShow
-                )
+                1 ->
+                    DiscoverTvScreen(
+                        onNavigateToTvShow = onNavigateToShow,
+                    )
             }
         }
     }

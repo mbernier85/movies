@@ -18,22 +18,21 @@ import kotlinx.coroutines.launch
  */
 @HiltViewModel(assistedFactory = CastViewModel.ModelFactory::class)
 class CastViewModel
-@AssistedInject
-constructor(
-    @Assisted
-    id: Long,
-    val repository: Repository,
-) : ViewModel() {
+    @AssistedInject
+    constructor(
+        @Assisted
+        id: Long,
+        val repository: Repository,
+    ) : ViewModel() {
+        @AssistedFactory
+        fun interface ModelFactory : AssistedViewModelFactory<CastViewModel>
 
-    @AssistedFactory
-    fun interface ModelFactory : AssistedViewModelFactory<CastViewModel>
+        var person by mutableStateOf(Person())
+            private set
 
-    var person by mutableStateOf(Person())
-        private set
-
-    init {
-        viewModelScope.launch {
-            person = repository.api.getCastById(id)
+        init {
+            viewModelScope.launch {
+                person = repository.getCastById(id)
+            }
         }
     }
-}

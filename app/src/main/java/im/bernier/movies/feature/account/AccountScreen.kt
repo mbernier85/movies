@@ -17,53 +17,56 @@ import im.bernier.movies.theme.AppTheme
 
 @Composable
 fun AccountRoute(
+    onTitleChange: (String) -> Unit,
+    onLogout: () -> Unit,
     accountViewModel: AccountViewModel = hiltViewModel(),
-    onTitleChanged: (String) -> Unit,
-    onLogout: () -> Unit
 ) {
     AccountScreen(
-        accountViewModel = accountViewModel,
-        onTitleChanged = onTitleChanged,
-        onLogout = onLogout
+        uiState = accountViewModel.uiState,
+        onTitleChange = onTitleChange,
+        onLogout = {
+            accountViewModel.logout()
+            onLogout()
+        },
     )
 }
 
 @Composable
 fun AccountScreen(
-    accountViewModel: AccountViewModel,
-    onTitleChanged: (String) -> Unit,
+    uiState: UiState,
+    onTitleChange: (String) -> Unit,
     onLogout: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val uiState = accountViewModel.uiState
     LaunchedEffect(uiState) {
-        onTitleChanged.invoke(uiState.name)
+        onTitleChange.invoke(uiState.name)
     }
     AccountContent(
-        uiState,
-        onLogout = {
-            accountViewModel.logout()
-            onLogout()
-        }
+        uiState = uiState,
+        onLogout = onLogout,
+        modifier = modifier,
     )
 }
 
 @Composable
 fun AccountContent(
     uiState: UiState,
+    modifier: Modifier = Modifier,
     onLogout: () -> Unit = {},
 ) {
     Column(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .padding(16.dp),
     ) {
         Text(text = uiState.name)
         Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 48.dp),
-            onClick = onLogout
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 48.dp),
+            onClick = onLogout,
         ) {
             Text(text = "Logout")
         }
@@ -72,11 +75,11 @@ fun AccountContent(
 
 @Composable
 @Preview
-fun AccountPreview() {
+private fun AccountPreview() {
     AppTheme {
         Surface {
             AccountContent(
-                UiState(name = "Michael Bernier")
+                UiState(name = "Michael Bernier"),
             )
         }
     }

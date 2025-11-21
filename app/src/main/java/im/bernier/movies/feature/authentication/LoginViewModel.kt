@@ -14,36 +14,37 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel
-@Inject
-constructor(
-    val repository: Repository,
-) : ViewModel() {
-    var uiState by mutableStateOf(UiState())
+    @Inject
+    constructor(
+        val repository: Repository,
+    ) : ViewModel() {
+        var uiState by mutableStateOf(UiState())
 
-    val handler = CoroutineExceptionHandler { _, exception ->
-        Timber.e(exception)
-        uiState = uiState.copy(success = false)
-    }
+        val handler =
+            CoroutineExceptionHandler { _, exception ->
+                Timber.e(exception)
+                uiState = uiState.copy(success = false)
+            }
 
-    fun login(
-        username: String,
-        password: String,
-    ) {
-        viewModelScope.launch(context = handler) {
-            repository
-                .login()
-                .also {
-                    repository.validateToken(it.request_token, username, password)
-                }.also {
-                    repository.newSession(it.request_token)
-                }.also {
-                    repository.getAccount()
-                }.also {
-                    uiState = uiState.copy(success = it.success)
-                }
+        fun login(
+            username: String,
+            password: String,
+        ) {
+            viewModelScope.launch(context = handler) {
+                repository
+                    .login()
+                    .also {
+                        repository.validateToken(it.request_token, username, password)
+                    }.also {
+                        repository.newSession(it.request_token)
+                    }.also {
+                        repository.getAccount()
+                    }.also {
+                        uiState = uiState.copy(success = it.success)
+                    }
+            }
         }
     }
-}
 
 data class UiState(
     val success: Boolean = false,

@@ -1,4 +1,4 @@
-package im.bernier.movies.datasource
+package im.bernier.movies.crypto
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec

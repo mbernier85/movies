@@ -2,12 +2,16 @@ package im.bernier.movies.datasource
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import im.bernier.movies.datasource.local.AppDatabase
+import im.bernier.movies.datasource.local.Storage
+import im.bernier.movies.datasource.remote.Api
 import im.bernier.movies.feature.account.model.AccountResponse
 import im.bernier.movies.feature.authentication.model.SessionRequest
 import im.bernier.movies.feature.authentication.model.SessionResponse
 import im.bernier.movies.feature.authentication.model.TokenResponse
 import im.bernier.movies.feature.authentication.model.ValidateTokenRequest
 import im.bernier.movies.feature.authentication.model.ValidateTokenResponse
+import im.bernier.movies.feature.cast.Person
 import im.bernier.movies.feature.movie.Movie
 import im.bernier.movies.feature.movie.Page
 import im.bernier.movies.feature.search.SearchResultItem
@@ -25,8 +29,8 @@ import javax.inject.Singleton
 class Repository
     @Inject
     constructor(
-        val api: Api,
-        val db: AppDatabase,
+        private val api: Api,
+        private val db: AppDatabase,
         private val storage: Storage,
     ) {
         private val searchLiveData = MutableLiveData<List<SearchResultItem>>()
@@ -37,13 +41,11 @@ class Repository
         val loggedIn: Boolean
             get() = storage.getSessionId().isNotEmpty()
 
-
         suspend fun validateToken(
             token: String,
             username: String,
             password: String,
-        ): ValidateTokenResponse =
-            api.validateToken(ValidateTokenRequest(username, password, token))
+        ): ValidateTokenResponse = api.validateToken(ValidateTokenRequest(username, password, token))
 
         suspend fun newSession(token: String): SessionResponse =
             api
@@ -71,6 +73,30 @@ class Repository
             }
         }
 
+        suspend fun getCastById(id: Long): Person = api.getCastById(id)
+
+        suspend fun discover(page: Int): Page<Movie> =
+            api.discover(page).also {
+                it.results.forEach { movie ->
+                    movie.genreString =
+                        db
+                            .genreDao()
+                            .loadAllByIds(movie.genre_ids.toIntArray())
+                            .joinToString { genre -> genre.name }
+                }
+            }
+
+        suspend fun discoverTV(page: Int): Page<TV> =
+            api.discoverTV(page).also {
+                it.results.forEach { tv ->
+                    tv.genreString =
+                        db
+                            .genreDao()
+                            .loadAllByIds(tv.genre_ids.toIntArray())
+                            .joinToString { genre -> genre.name }
+                }
+            }
+
         fun search(query: String) {
             api.search(query).enqueue(
                 object : Callback<Page<SearchResultItem>?> {
@@ -96,14 +122,16 @@ class Repository
         suspend fun watchList(
             accountId: String,
             sessionId: String,
-        ): Page<Movie> = api.getWatchlistMovies(accountId = accountId, sessionId = sessionId)
-            .also {
-                db.watchListDao().insertMovieWatchList(
-                    it.results.map { movie ->
-                        MovieWatchListItem(movie.id)
-                    }
-                )
-        }
+        ): Page<Movie> =
+            api
+                .getWatchlistMovies(accountId = accountId, sessionId = sessionId)
+                .also {
+                    db.watchListDao().insertMovieWatchList(
+                        it.results.map { movie ->
+                            MovieWatchListItem(movie.id)
+                        },
+                    )
+                }
 
         suspend fun addToWatchList(
             mediaId: Long,
@@ -122,8 +150,8 @@ class Repository
                         ),
                 )
 
-    suspend fun logout() {
-        api.deleteSession()
-        storage.clear()
+        suspend fun logout() {
+            api.deleteSession()
+            storage.clear()
+        }
     }
-}

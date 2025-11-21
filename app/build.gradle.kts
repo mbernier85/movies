@@ -8,12 +8,22 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("androidx.room")
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ktlint)
 }
 
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_17
     }
+}
+
+ktlint {
+    android.set(true)
+    version = "1.7.1"
+}
+
+dependencies {
+    ktlintRuleset(libs.compose.rules.ktlint)
 }
 
 android {
@@ -41,7 +51,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }

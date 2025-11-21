@@ -48,39 +48,41 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import im.bernier.movies.R
-import im.bernier.movies.util.setTitle
+import im.bernier.movies.util.SetTitle
 
 @Composable
 fun LoginRoute(
-    loginViewModel: LoginViewModel = hiltViewModel(),
-    onTitleChanged: (String) -> Unit,
+    onTitleChange: (String) -> Unit,
     onLoginSuccess: () -> Unit,
+    loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     LoginScreen(
-        loginViewModel = loginViewModel,
-        onTitleChanged = onTitleChanged,
-        onLoginSuccess = onLoginSuccess
+        uiState = loginViewModel.uiState,
+        onTitleChange = onTitleChange,
+        onLoginSuccess = onLoginSuccess,
+        onSend = loginViewModel::login,
     )
 }
 
 @Composable
 fun LoginScreen(
-    loginViewModel: LoginViewModel,
-    onTitleChanged: (String) -> Unit,
+    uiState: UiState,
+    onTitleChange: (String) -> Unit,
     onLoginSuccess: () -> Unit,
+    onSend: (String, String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    setTitle(stringId = R.string.login_title, onTitleChanged = onTitleChanged)
+    SetTitle(stringId = R.string.login_title, onTitleChange = onTitleChange)
     val username = rememberTextFieldState(initialText = "")
     val password = rememberTextFieldState(initialText = "")
-    val uiState = loginViewModel.uiState
-    LaunchedEffect(uiState) {
+    LaunchedEffect(uiState, onLoginSuccess) {
         if (uiState.success) {
             onLoginSuccess()
         }
     }
     LoginScreenContent(onSend = {
-        loginViewModel.login(username.text.toString(), password.text.toString())
-    }, username = username, password = password)
+        onSend(username.toString(), password.toString())
+    }, username = username, password = password, modifier = modifier)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,10 +91,11 @@ fun LoginScreenContent(
     onSend: () -> Unit,
     username: TextFieldState,
     password: TextFieldState,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier =
-            Modifier
+            modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.CenterStart,
@@ -107,27 +110,29 @@ fun LoginScreenContent(
         ) {
             val keyboard = LocalSoftwareKeyboardController.current
             OutlinedTextField(
-                modifier = Modifier.semantics {
-                    contentType = ContentType.Username + ContentType.EmailAddress
-                    FillableData.createFromText(username.text)?.let { fillableData = it }
-                    onFillData {
-                        keyboard?.hide()
-                        it.textValue?.let { textValue ->
-                            username.edit { replace(0, length, textValue) }
+                modifier =
+                    Modifier.semantics {
+                        contentType = ContentType.Username + ContentType.EmailAddress
+                        FillableData.createFromText(username.text)?.let { fillableData = it }
+                        onFillData {
+                            keyboard?.hide()
+                            it.textValue?.let { textValue ->
+                                username.edit { replace(0, length, textValue) }
+                            }
+                            true
                         }
-                        true
-                    }
-                },
+                    },
                 state = username,
                 label = {
                     Text(
                         text = stringResource(id = R.string.username),
                     )
                 },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                )
+                keyboardOptions =
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next,
+                    ),
             )
 
             var passwordHidden by rememberSaveable { mutableStateOf(true) }
@@ -150,13 +155,21 @@ fun LoginScreenContent(
                     defaultAction()
                 },
                 textObfuscationMode =
-                    if (passwordHidden) TextObfuscationMode.RevealLastTyped
-                    else TextObfuscationMode.Visible,
+                    if (passwordHidden) {
+                        TextObfuscationMode.RevealLastTyped
+                    } else {
+                        TextObfuscationMode.Visible
+                    },
                 trailingIcon = {
                     // Provide localized description for accessibility services
-                    val description = if (passwordHidden) stringResource(R.string.show_password) else stringResource(
-                        R.string.hide_password
-                    )
+                    val description =
+                        if (passwordHidden) {
+                            stringResource(R.string.show_password)
+                        } else {
+                            stringResource(
+                                R.string.hide_password,
+                            )
+                        }
                     TooltipBox(
                         positionProvider =
                             TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
@@ -165,9 +178,13 @@ fun LoginScreenContent(
                     ) {
                         IconButton(onClick = { passwordHidden = !passwordHidden }) {
                             val visibilityIcon =
-                                if (passwordHidden) painterResource(R.drawable.outline_visibility_24) else painterResource(
-                                    R.drawable.outline_visibility_off_24
-                                )
+                                if (passwordHidden) {
+                                    painterResource(R.drawable.outline_visibility_24)
+                                } else {
+                                    painterResource(
+                                        R.drawable.outline_visibility_off_24,
+                                    )
+                                }
                             Icon(painter = visibilityIcon, contentDescription = description)
                         }
                     }
@@ -182,10 +199,10 @@ fun LoginScreenContent(
 
 @Composable
 @Preview
-fun LoginPreview() {
+private fun LoginPreview() {
     LoginScreenContent(
         onSend = { },
         username = rememberTextFieldState(),
-        password = rememberTextFieldState()
+        password = rememberTextFieldState(),
     )
 }

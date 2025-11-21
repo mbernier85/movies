@@ -2,6 +2,7 @@ package im.bernier.movies
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
@@ -56,8 +57,10 @@ fun MovieApp(
     onForward: (Any) -> Unit,
     onTitleChange: (String) -> Unit,
     backStack: List<Any>,
+    modifier: Modifier = Modifier,
 ) {
     NavDisplay(
+        modifier = modifier,
         entryDecorators =
             listOf(
                 rememberSaveableStateHolderNavEntryDecorator(),
@@ -70,13 +73,13 @@ fun MovieApp(
                 is DiscoverRoute -> {
                     NavEntry(key) {
                         DiscoverScreen(
-                            onTitleChanged = onTitleChange,
+                            onTitleChange = onTitleChange,
                             onNavigateToMovie = {
                                 onForward(MovieRoute(it))
                             },
                             onNavigateToShow = {
                                 onForward(ShowRoute(it))
-                            }
+                            },
                         )
                     }
                 }
@@ -84,15 +87,16 @@ fun MovieApp(
                 is MovieRoute -> {
                     NavEntry(key) {
                         MovieScreen(
-                            viewModel = hiltViewModel(
-                                creationCallback = { factory: MovieViewModel.MovieViewModelFactory ->
-                                    factory.create(key.id)
-                                },
-                            ),
+                            viewModel =
+                                hiltViewModel(
+                                    creationCallback = { factory: MovieViewModel.MovieViewModelFactory ->
+                                        factory.create(key.id)
+                                    },
+                                ),
                             onNavigateToCast = {
                                 onForward(CastRoute(it))
                             },
-                            onTitleChanged = onTitleChange,
+                            onTitleChange = onTitleChange,
                         )
                     }
                 }
@@ -100,12 +104,13 @@ fun MovieApp(
                 is ShowRoute -> {
                     NavEntry(key) {
                         TvShowScreen(
-                            viewModel = hiltViewModel(
-                                creationCallback = { factory: TvShowViewModel.ShowViewModelFactory ->
-                                    factory.create(key.id)
-                                }
-                            ),
-                            onTitleChanged = onTitleChange
+                            viewModel =
+                                hiltViewModel(
+                                    creationCallback = { factory: TvShowViewModel.ShowViewModelFactory ->
+                                        factory.create(key.id)
+                                    },
+                                ),
+                            onTitleChange = onTitleChange,
                         )
                     }
                 }
@@ -113,12 +118,13 @@ fun MovieApp(
                 is CastRoute -> {
                     NavEntry(key) {
                         CastScreen(
-                            viewModel = hiltViewModel(
-                                creationCallback = { factory: CastViewModel.ModelFactory ->
-                                    factory.create(key.id)
-                                },
-                            ),
-                            onTitleChanged = onTitleChange,
+                            viewModel =
+                                hiltViewModel(
+                                    creationCallback = { factory: CastViewModel.ModelFactory ->
+                                        factory.create(key.id)
+                                    },
+                                ),
+                            onTitleChange = onTitleChange,
                         )
                     }
                 }
@@ -126,11 +132,11 @@ fun MovieApp(
                 is LoginRoute -> {
                     NavEntry(key) {
                         LoginRoute(
-                            onTitleChanged = onTitleChange,
+                            onTitleChange = onTitleChange,
                             onLoginSuccess = {
                                 onBack()
                                 onForward(ProfileRoute)
-                            }
+                            },
                         )
                     }
                 }
@@ -138,11 +144,11 @@ fun MovieApp(
                 is ProfileRoute -> {
                     NavEntry(key) {
                         AccountRoute(
-                            onTitleChanged = onTitleChange,
+                            onTitleChange = onTitleChange,
                             onLogout = {
                                 onBack()
                                 onForward(LoginRoute)
-                            }
+                            },
                         )
                     }
                 }
@@ -156,22 +162,19 @@ fun MovieApp(
                             onNavigateToCast = {
                                 onForward(CastRoute(it))
                             },
-                            onTitleChanged = onTitleChange,
+                            onTitleChange = onTitleChange,
                             onNavigateToTvShow = {
                                 onForward(ShowRoute(it))
-                            }
+                            },
                         )
                     }
                 }
 
                 is WatchListRoute -> {
                     NavEntry(key) {
-                        WatchListRoute(
-
-                        )
+                        WatchListRoute()
                     }
                 }
-
 
                 else -> {
                     NavEntry(Unit) {

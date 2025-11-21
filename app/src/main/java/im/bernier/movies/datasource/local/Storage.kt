@@ -1,8 +1,9 @@
-package im.bernier.movies.datasource
+package im.bernier.movies.datasource.local
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import dagger.hilt.android.qualifiers.ApplicationContext
+import im.bernier.movies.crypto.CryptographyManager
 import jakarta.inject.Inject
 import timber.log.Timber
 
@@ -64,8 +65,8 @@ class Storage
             )
         }
 
-    fun clear() {
-        setAccountId("")
-        setSessionId("")
+        fun clear() {
+            setAccountId("")
+            setSessionId("")
+        }
     }
-}

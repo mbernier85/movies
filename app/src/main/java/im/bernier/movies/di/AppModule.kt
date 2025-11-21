@@ -10,10 +10,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import im.bernier.movies.BuildConfig
-import im.bernier.movies.datasource.Api
-import im.bernier.movies.datasource.AppDatabase
-import im.bernier.movies.datasource.CryptographyManager
-import im.bernier.movies.datasource.CryptographyManagerImpl
+import im.bernier.movies.crypto.CryptographyManager
+import im.bernier.movies.crypto.CryptographyManagerImpl
+import im.bernier.movies.datasource.local.AppDatabase
+import im.bernier.movies.datasource.remote.Api
 import jakarta.inject.Singleton
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -38,7 +38,6 @@ abstract class CryptoModule {
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)

@@ -37,9 +37,7 @@ import im.bernier.movies.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    homeViewModel: HomeViewModel = hiltViewModel(),
-) {
+fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var title by remember {
         mutableStateOf("")
@@ -89,7 +87,7 @@ fun HomeScreen(
                         backStack = backStack,
                         onTitleChange = {
                             title = it
-                        }
+                        },
                     )
                 }
             }
@@ -105,8 +103,10 @@ fun HomeTopBar(
     openAccount: () -> Unit,
     openWatchlist: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
+    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
+        modifier = modifier,
         scrollBehavior = scrollBehavior,
         title = {
             Text(text = title)
@@ -143,7 +143,7 @@ fun HomeTopBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun HomeToolbarPreview() {
+private fun HomeToolbarPreview() {
     HomeTopBar(
         title = "title",
         openSearch = {},

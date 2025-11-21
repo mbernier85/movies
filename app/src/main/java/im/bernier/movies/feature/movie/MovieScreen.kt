@@ -29,26 +29,29 @@ import im.bernier.movies.util.imageUrl
 fun MovieScreen(
     viewModel: MovieViewModel,
     onNavigateToCast: ((Long) -> Unit),
-    onTitleChanged: (String) -> Unit,
+    onTitleChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val movie = viewModel.movieState
     LaunchedEffect(key1 = movie) {
         movie.let {
-            onTitleChanged.invoke(it.title)
+            onTitleChange.invoke(it.title)
         }
     }
     MovieScreen(
         movie = movie,
         onNavigateToCast = onNavigateToCast,
+        modifier = modifier,
     )
 }
 
 @Composable
 private fun MovieScreen(
     movie: Movie,
+    modifier: Modifier = Modifier,
     onNavigateToCast: ((Long) -> Unit) = {},
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         LazyColumn {
             item {
                 Column {
@@ -103,8 +106,7 @@ private fun CastItem(
             Modifier
                 .clickable {
                     onNavigateToCast(person.id)
-                }
-                .fillMaxWidth()
+                }.fillMaxWidth()
                 .padding(8.dp),
     ) {
         AsyncImage(
@@ -137,20 +139,25 @@ private fun CastItem(
 @Composable
 private fun MoviePreview() {
     MovieScreen(
-        movie = Movie(
-            title = "The Matrix",
-            overview = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
-            genreString = "Action, Sci-Fi",
-            credits = Credits(
-                cast = listOf(
-                    Cast(
-                        name = "Keanu Reeves",
-                        character = "Neo",
-                        id = 0L,
-                        credit_id = ""
-                    )
-                )
-            )
-        ),
+        movie =
+            Movie(
+                title = "The Matrix",
+                overview =
+                    "A computer hacker learns from mysterious rebels about the true " +
+                        "nature of his reality and his role in the war against its controllers.",
+                genreString = "Action, Sci-Fi",
+                credits =
+                    Credits(
+                        cast =
+                            listOf(
+                                Cast(
+                                    name = "Keanu Reeves",
+                                    character = "Neo",
+                                    id = 0L,
+                                    credit_id = "",
+                                ),
+                            ),
+                    ),
+            ),
     )
 }

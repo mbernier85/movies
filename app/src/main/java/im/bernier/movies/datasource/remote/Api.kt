@@ -1,4 +1,4 @@
-package im.bernier.movies.datasource
+package im.bernier.movies.datasource.remote
 
 import im.bernier.movies.feature.account.model.AccountResponse
 import im.bernier.movies.feature.account.model.ListsItem
