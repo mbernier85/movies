@@ -4,40 +4,34 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import im.bernier.movies.datasource.Repository
 import im.bernier.movies.datasource.Storage
 import im.bernier.movies.feature.movie.Movie
 import im.bernier.movies.feature.tv.TV
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import timber.log.Timber
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class WatchListViewModel
-    @Inject
-    constructor(
-        repository: Repository,
-        storage: Storage,
-    ) : ViewModel() {
-        var uiState by mutableStateOf(UiState())
-        private val compositeDisposable = CompositeDisposable()
+@Inject
+constructor(
+    repository: Repository,
+    storage: Storage,
+) : ViewModel() {
+    var uiState by mutableStateOf(UiState())
 
-        init {
-            val disposable =
-                repository.watchList(accountId = storage.getAccountId(), sessionId = storage.getSessionId()).subscribe({
-                    uiState = uiState.copy(movies = it.results)
-                }, {
-                    Timber.e(it)
-                })
-            compositeDisposable.add(disposable)
-        }
-
-        override fun onCleared() {
-            compositeDisposable.clear()
-            super.onCleared()
+    init {
+        viewModelScope.launch {
+            val page = repository.watchList(
+                accountId = storage.getAccountId(),
+                sessionId = storage.getSessionId()
+            )
+            uiState = uiState.copy(movies = page.results)
         }
     }
+}
 
 data class UiState(
     val movies: List<Movie> = listOf(),

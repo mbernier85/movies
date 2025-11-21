@@ -8,12 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import im.bernier.movies.component.MediaItem
 import im.bernier.movies.feature.movie.Movie
-import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
 @Composable
@@ -21,10 +20,10 @@ fun DiscoverMovieScreen(
     viewModel: MoviesDiscoverViewModel = hiltViewModel(),
     onNavigateToMovie: (Long) -> Unit,
 ) {
-    val pager: Flow<PagingData<Movie>> = viewModel.pager
+    val items = viewModel.pager.collectAsLazyPagingItems()
 
     MediaList(
-        pager = pager,
+        lazyPagingItems = items,
         onNavigateToMovie = onNavigateToMovie,
         onAddToWatchList = { id, mediaType ->
             if (viewModel.isLoggedIn) {
@@ -37,11 +36,10 @@ fun DiscoverMovieScreen(
 
 @Composable
 fun MediaList(
-    pager: Flow<PagingData<Movie>>,
+    lazyPagingItems: LazyPagingItems<Movie>,
     onNavigateToMovie: (Long) -> Unit,
     onAddToWatchList: (Long, String) -> Unit,
 ) {
-    val lazyPagingItems = pager.collectAsLazyPagingItems()
     when (val loadState = lazyPagingItems.loadState.refresh) {
         is LoadState.Error -> {
             Timber.e(loadState.error)

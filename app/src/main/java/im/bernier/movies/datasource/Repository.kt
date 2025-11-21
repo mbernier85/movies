@@ -8,7 +8,6 @@ import im.bernier.movies.feature.authentication.model.SessionResponse
 import im.bernier.movies.feature.authentication.model.TokenResponse
 import im.bernier.movies.feature.authentication.model.ValidateTokenRequest
 import im.bernier.movies.feature.authentication.model.ValidateTokenResponse
-import im.bernier.movies.feature.genre.Genres
 import im.bernier.movies.feature.movie.Movie
 import im.bernier.movies.feature.movie.Page
 import im.bernier.movies.feature.search.SearchResultItem
@@ -16,8 +15,6 @@ import im.bernier.movies.feature.tv.TV
 import im.bernier.movies.feature.watchlist.MovieWatchListItem
 import im.bernier.movies.feature.watchlist.model.AddToWatchListResponse
 import im.bernier.movies.feature.watchlist.model.WatchlistRequest
-import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import timber.log.Timber
@@ -64,33 +61,14 @@ class Repository
 
         suspend fun login(): TokenResponse = api.newToken()
 
-        fun fetchMovie(id: Long): Single<Movie> = api.getMovie(id)
+        suspend fun fetchMovie(id: Long): Movie = api.getMovie(id)
 
-        fun fetchTv(id: Long): Single<TV> = api.getTv(id)
+        suspend fun fetchTv(id: Long): TV = api.getTv(id)
 
-        fun fetchGenres() {
-            api.genres().enqueue(
-                object : Callback<Genres?> {
-                    override fun onFailure(
-                        call: Call<Genres?>,
-                        t: Throwable,
-                    ) {
-                        Timber.e(t)
-                    }
-
-                    override fun onResponse(
-                        call: Call<Genres?>,
-                        response: retrofit2.Response<Genres?>,
-                    ) {
-                        val genres = response.body()
-                        if (response.isSuccessful && genres != null) {
-                            Thread {
-                                db.genreDao().insertAll(genres.genres)
-                            }.start()
-                        }
-                    }
-                },
-            )
+        suspend fun fetchGenres() {
+            api.genres().genres.also {
+                db.genreDao().insertAll(it)
+            }
         }
 
         fun search(query: String) {
@@ -115,25 +93,23 @@ class Repository
             )
         }
 
-        fun watchList(
+        suspend fun watchList(
             accountId: String,
             sessionId: String,
-        ): Single<Page<Movie>> = api.getWatchlistMovies(accountId = accountId, sessionId = sessionId)
-            .observeOn(Schedulers.io())
-            .map {
+        ): Page<Movie> = api.getWatchlistMovies(accountId = accountId, sessionId = sessionId)
+            .also {
                 db.watchListDao().insertMovieWatchList(
-                    it.results.map {
-                        MovieWatchListItem(it.id)
+                    it.results.map { movie ->
+                        MovieWatchListItem(movie.id)
                     }
                 )
-                it
         }
 
-        fun addToWatchList(
+        suspend fun addToWatchList(
             mediaId: Long,
             watchlist: Boolean,
             mediaType: String,
-        ): Single<AddToWatchListResponse> =
+        ): AddToWatchListResponse =
             api
                 .addToWatchlist(
                     accountId = storage.getAccountId(),
@@ -144,7 +120,7 @@ class Repository
                             watchlist = watchlist,
                             media_type = mediaType,
                         ),
-                ).observeOn(Schedulers.io())
+                )
 
     suspend fun logout() {
         api.deleteSession()

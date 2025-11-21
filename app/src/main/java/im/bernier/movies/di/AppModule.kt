@@ -22,7 +22,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 
 /**
  * Created by Michael on 2020-03-14.
@@ -32,6 +31,7 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 @InstallIn(SingletonComponent::class)
 abstract class CryptoModule {
     @Binds
+    @Singleton
     abstract fun bindsCryptographyManager(impl: CryptographyManagerImpl): CryptographyManager
 }
 
@@ -56,7 +56,6 @@ object AppModule {
             .baseUrl("https://api.themoviedb.org/3/")
             .client(client)
             .addConverterFactory(json.asConverterFactory(contentType))
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
     }
 

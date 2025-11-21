@@ -15,7 +15,6 @@ import im.bernier.movies.feature.search.SearchResultItem
 import im.bernier.movies.feature.tv.TV
 import im.bernier.movies.feature.watchlist.model.AddToWatchListResponse
 import im.bernier.movies.feature.watchlist.model.WatchlistRequest
-import io.reactivex.rxjava3.core.Single
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -47,42 +46,42 @@ interface Api {
     ): AccountResponse
 
     @GET("account/{accountId}/favorite/movies")
-    fun getFavoriteMovies(
+    suspend fun getFavoriteMovies(
         @Path("accountId") accountId: String,
-    ): Single<Page<Movie>>
+    ): Page<Movie>
 
     @GET("account/{accountId}/favorite/tv")
-    fun getFavoriteTV(
+    suspend fun getFavoriteTV(
         @Path("accountId") accountId: String,
-    ): Single<Page<TV>>
+    ): Page<TV>
 
     @GET("account/{accountId}/lists")
-    fun getLists(
+    suspend fun getLists(
         @Path("accountId") accountId: String,
-    ): Single<Page<ListsItem>>
+    ): Page<ListsItem>
 
     @GET("discover/movie")
-    fun discover(
+    suspend fun discover(
         @Query("page") page: Int,
-    ): Single<Page<Movie>>
+    ): Page<Movie>
 
     @GET("discover/tv")
-    fun discoverTV(
+    suspend fun discoverTV(
         @Query("page") page: Int,
-    ): Single<Page<TV>>
+    ): Page<TV>
 
     @GET("genre/movie/list")
-    fun genres(): Call<Genres>
+    suspend fun genres(): Genres
 
     @GET("movie/{movieId}?append_to_response=credits")
-    fun getMovie(
+    suspend fun getMovie(
         @Path("movieId") movieId: Long,
-    ): Single<Movie>
+    ): Movie
 
     @GET("tv/{tvId}?append_to_response=credits")
-    fun getTv(
+    suspend fun getTv(
         @Path("tvId") tvId: Long,
-    ): Single<TV>
+    ): TV
 
     @GET("search/multi")
     fun search(
@@ -90,20 +89,20 @@ interface Api {
     ): Call<Page<SearchResultItem>>
 
     @GET("person/{person_id}?append_to_response=movie_credits,tv_credits")
-    fun getCastById(
+    suspend fun getCastById(
         @Path("person_id") id: Long,
-    ): Single<Person>
+    ): Person
 
     @POST("account/{account_id}/watchlist")
-    fun addToWatchlist(
+    suspend fun addToWatchlist(
         @Path("account_id") accountId: String,
         @Query("session_id") sessionId: String,
         @Body watchlistRequest: WatchlistRequest,
-    ): Single<AddToWatchListResponse>
+    ): AddToWatchListResponse
 
     @GET("account/{account_id}/watchlist/movies")
-    fun getWatchlistMovies(
+    suspend fun getWatchlistMovies(
         @Path("account_id") accountId: String,
         @Query("session_id") sessionId: String,
-    ): Single<Page<Movie>>
+    ): Page<Movie>
 }

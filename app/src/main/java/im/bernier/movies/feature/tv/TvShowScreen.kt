@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,17 +22,15 @@ fun TvShowScreen(
     viewModel: TvShowViewModel,
     onTitleChanged: (String) -> Unit,
 ) {
-    val tvShow by viewModel.tvShow.subscribeAsState(initial = null)
+    val tvShow = viewModel.tvShow
     setTitle(stringId = R.string.tv_show) {
         onTitleChanged.invoke(it)
     }
-    tvShow?.let {
-        TvShowView(tvShow = it)
-    }
+    TvShowView(tvShow = tvShow)
 }
 
 @Composable
-fun TvShowView(tvShow: TV) {
+private fun TvShowView(tvShow: TV) {
     Column(
         modifier =
             Modifier
@@ -62,8 +58,8 @@ fun TvShowView(tvShow: TV) {
 }
 
 @Composable
-@Preview
-fun TvShowScreenPreview() {
+@Preview(showBackground = true)
+private fun TvShowScreenPreview() {
     TvShowView(
         tvShow =
             TV(

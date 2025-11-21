@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Person(
-    val id: Int,
-    val name: String,
+    val id: Long = 0,
+    val name: String = "",
     val birthday: String? = null,
     val deathday: String? = null,
     val biography: String = "",

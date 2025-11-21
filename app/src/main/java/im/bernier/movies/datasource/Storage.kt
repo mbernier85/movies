@@ -31,7 +31,7 @@ class Storage
             try {
                 get(PREF_KEY_SESSION)
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.e(e.message)
                 ""
             }
 

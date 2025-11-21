@@ -15,14 +15,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import im.bernier.movies.feature.cast.Cast
+import im.bernier.movies.feature.credits.Credits
 import im.bernier.movies.util.imageUrl
 
 @Composable
@@ -31,40 +31,51 @@ fun MovieScreen(
     onNavigateToCast: ((Long) -> Unit),
     onTitleChanged: (String) -> Unit,
 ) {
-    val movie by viewModel.movie.subscribeAsState(initial = null)
+    val movie = viewModel.movieState
     LaunchedEffect(key1 = movie) {
-        movie?.let {
+        movie.let {
             onTitleChanged.invoke(it.title)
         }
     }
+    MovieScreen(
+        movie = movie,
+        onNavigateToCast = onNavigateToCast,
+    )
+}
+
+@Composable
+private fun MovieScreen(
+    movie: Movie,
+    onNavigateToCast: ((Long) -> Unit) = {},
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
             item {
                 Column {
                     AsyncImage(
-                        model = movie?.poster_path?.imageUrl(),
-                        contentDescription = movie?.title,
+                        model = movie.poster_path.imageUrl(),
+                        contentDescription = movie.title,
                         modifier =
                             Modifier
                                 .size(140.dp, 240.dp)
                                 .padding(8.dp),
                     )
                     Text(
-                        text = movie?.title ?: "",
+                        text = movie.title,
                         style = MaterialTheme.typography.headlineMedium,
                         modifier =
                             Modifier
                                 .padding(8.dp),
                     )
                     Text(
-                        text = movie?.genreString ?: "",
+                        text = movie.genreString,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier =
                             Modifier
                                 .padding(8.dp),
                     )
                     Text(
-                        text = movie?.overview ?: "",
+                        text = movie.overview,
                         style = MaterialTheme.typography.bodyMedium,
                         modifier =
                             Modifier
@@ -73,7 +84,7 @@ fun MovieScreen(
                     HorizontalDivider()
                 }
             }
-            movie?.credits?.cast?.let {
+            movie.credits.cast.let {
                 items(items = it) { cast ->
                     CastItem(person = cast, onNavigateToCast)
                 }
@@ -83,7 +94,7 @@ fun MovieScreen(
 }
 
 @Composable
-fun CastItem(
+private fun CastItem(
     person: Cast,
     onNavigateToCast: ((Long) -> Unit),
 ) {
@@ -120,4 +131,26 @@ fun CastItem(
                     .padding(8.dp),
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MoviePreview() {
+    MovieScreen(
+        movie = Movie(
+            title = "The Matrix",
+            overview = "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+            genreString = "Action, Sci-Fi",
+            credits = Credits(
+                cast = listOf(
+                    Cast(
+                        name = "Keanu Reeves",
+                        character = "Neo",
+                        id = 0L,
+                        credit_id = ""
+                    )
+                )
+            )
+        ),
+    )
 }

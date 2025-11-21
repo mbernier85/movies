@@ -15,7 +15,7 @@ interface GenreDao {
     fun getAll(): LiveData<List<Genre>>
 
     @Query("SELECT * FROM genre WHERE id IN (:genreIds)")
-    fun loadAllByIds(genreIds: IntArray): List<Genre>
+    suspend fun loadAllByIds(genreIds: IntArray): List<Genre>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(genres: List<Genre>)

@@ -13,8 +13,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rxjava3.subscribeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,31 +26,27 @@ fun CastScreen(
     viewModel: CastViewModel,
     onTitleChanged: (String) -> Unit,
 ) {
-    val person by viewModel.person.subscribeAsState(initial = null)
+    val person = viewModel.person
 
     LaunchedEffect(person) {
-        person?.let {
-            onTitleChanged.invoke(it.name)
-        }
+        onTitleChanged.invoke(person.name)
     }
     CastScreenContent(person)
 }
 
 @Composable
-internal fun CastScreenContent(
-    person: Person?,
+private fun CastScreenContent(
+    person: Person,
 ) {
-    val tvShowCredits: List<Cast> = person?.tv_credits?.cast ?: listOf()
-    val movieCredits: List<Cast> = person?.movie_credits?.cast ?: listOf()
+    val tvShowCredits: List<Cast> = person.tv_credits?.cast ?: listOf()
+    val movieCredits: List<Cast> = person.movie_credits?.cast ?: listOf()
     val credits: List<Cast> = tvShowCredits + movieCredits
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ) {
         item {
-            person?.let {
-                CastComponent(person = it)
-            }
+            CastComponent(person = person)
         }
         items(items = credits) { credit ->
             Credit(credit)
@@ -61,7 +55,7 @@ internal fun CastScreenContent(
 }
 
 @Composable
-fun CastComponent(person: Person) {
+private fun CastComponent(person: Person) {
     Column {
         AsyncImage(
             model = person.profile_path?.imageUrl(),
@@ -90,7 +84,7 @@ fun CastComponent(person: Person) {
 }
 
 @Composable
-fun Credit(credit: Cast) {
+private fun Credit(credit: Cast) {
     Column(
         modifier = Modifier.padding(
             horizontal = 16.dp,
@@ -122,7 +116,7 @@ fun Credit(credit: Cast) {
 
 @Composable
 @Preview
-fun CastScreenPreview() {
+private fun CastScreenPreview() {
     AppTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             CastScreenContent(

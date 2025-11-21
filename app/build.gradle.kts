@@ -73,7 +73,6 @@ dependencies {
 
     implementation(libs.logging.interceptor)
     implementation(libs.retrofit)
-    implementation(libs.adapter.rxjava3)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
 
     implementation(libs.androidx.activity)
@@ -105,14 +104,10 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.core)
 
-    implementation(libs.rxjava)
-    implementation(libs.rxandroid)
-
     implementation(libs.room.runtime)
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.paging.compose)
-    implementation(libs.androidx.paging.rxjava3)
 
     implementation(libs.timber)
     implementation(libs.coil.compose)
@@ -131,7 +126,6 @@ dependencies {
 
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.runtime.livedata)
-    implementation(libs.androidx.runtime.rxjava3)
     implementation(libs.androidx.compose.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.manifest)
