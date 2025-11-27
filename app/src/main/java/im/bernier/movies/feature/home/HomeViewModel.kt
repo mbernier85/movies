@@ -1,11 +1,11 @@
 package im.bernier.movies.feature.home
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import im.bernier.movies.DiscoverRoute
 import im.bernier.movies.datasource.Repository
+import im.bernier.movies.navigation.EntryProviderInstaller
+import im.bernier.movies.navigation.Navigator
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -16,10 +16,11 @@ class HomeViewModel
     @Inject
     constructor(
         private val repository: Repository,
+        val navigator: Navigator,
+        val entryProviderScope: Set<@JvmSuppressWildcards EntryProviderInstaller>,
     ) : ViewModel() {
         val loggedIn: Boolean
             get() = repository.loggedIn
-        val backStack = mutableStateListOf<Any>(DiscoverRoute)
 
         val handler =
             CoroutineExceptionHandler { _, throwable ->

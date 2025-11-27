@@ -1,20 +1,18 @@
 package im.bernier.movies.di
 
-import android.content.Context
-import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import im.bernier.movies.BuildConfig
 import im.bernier.movies.crypto.CryptographyManager
 import im.bernier.movies.crypto.CryptographyManagerImpl
-import im.bernier.movies.datasource.local.AppDatabase
 import im.bernier.movies.datasource.remote.Api
-import jakarta.inject.Singleton
+import im.bernier.movies.feature.discover.DiscoverRoute
+import im.bernier.movies.navigation.Navigator
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -28,23 +26,27 @@ import retrofit2.Retrofit
  */
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ActivityRetainedComponent::class)
 abstract class CryptoModule {
     @Binds
-    @Singleton
+    @ActivityRetainedScoped
     abstract fun bindsCryptographyManager(impl: CryptographyManagerImpl): CryptographyManager
 }
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ActivityRetainedComponent::class)
 object AppModule {
     @Provides
-    @Singleton
+    @ActivityRetainedScoped
+    fun provideNavigator(): Navigator = Navigator(startDestination = DiscoverRoute)
+
+    @Provides
+    @ActivityRetainedScoped
     fun provideApi(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
 
     @OptIn(ExperimentalSerializationApi::class)
     @Provides
-    @Singleton
+    @ActivityRetainedScoped
     fun provideRetrofit(
         client: OkHttpClient,
         json: Json,
@@ -59,14 +61,14 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
+    @ActivityRetainedScoped
     fun provideJson(): Json =
         Json {
             ignoreUnknownKeys = true
         }
 
     @Provides
-    @Singleton
+    @ActivityRetainedScoped
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -74,7 +76,7 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
+    @ActivityRetainedScoped
     fun provideOkHttp(
         loggingInterceptor: HttpLoggingInterceptor,
         requestInterceptor: Interceptor,
@@ -89,7 +91,7 @@ object AppModule {
             .build()
 
     @Provides
-    @Singleton
+    @ActivityRetainedScoped
     fun provideRequestInterceptor(): Interceptor =
         Interceptor {
             val request = it.request()
@@ -101,14 +103,4 @@ object AppModule {
             val newRequest = request.newBuilder().url(newUrl).build()
             it.proceed(newRequest)
         }
-
-    @Provides
-    @Singleton
-    fun provideDb(
-        @ApplicationContext context: Context,
-    ): AppDatabase =
-        Room
-            .databaseBuilder(context.applicationContext, AppDatabase::class.java, "movies")
-            .fallbackToDestructiveMigration(false)
-            .build()
 }

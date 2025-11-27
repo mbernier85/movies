@@ -47,18 +47,45 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.multibindings.IntoSet
 import im.bernier.movies.R
-import im.bernier.movies.util.SetTitle
+import im.bernier.movies.feature.account.AccountRoute
+import im.bernier.movies.navigation.EntryProviderInstaller
+import im.bernier.movies.navigation.Navigator
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object LoginRoute
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object LoginModule {
+    @IntoSet
+    @Provides
+    fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller =
+        {
+            entry<LoginRoute> {
+                LoginRoute(
+                    onLoginSuccess = {
+                        navigator.goBack()
+                        navigator.goTo(AccountRoute)
+                    },
+                )
+            }
+        }
+}
 
 @Composable
 fun LoginRoute(
-    onTitleChange: (String) -> Unit,
     onLoginSuccess: () -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     LoginScreen(
         uiState = loginViewModel.uiState,
-        onTitleChange = onTitleChange,
         onLoginSuccess = onLoginSuccess,
         onSend = loginViewModel::login,
     )
@@ -67,12 +94,10 @@ fun LoginRoute(
 @Composable
 fun LoginScreen(
     uiState: UiState,
-    onTitleChange: (String) -> Unit,
     onLoginSuccess: () -> Unit,
     onSend: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    SetTitle(stringId = R.string.login_title, onTitleChange = onTitleChange)
     val username = rememberTextFieldState(initialText = "")
     val password = rememberTextFieldState(initialText = "")
     LaunchedEffect(uiState, onLoginSuccess) {

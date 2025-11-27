@@ -5,25 +5,55 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.multibindings.IntoSet
+import im.bernier.movies.feature.authentication.LoginRoute
+import im.bernier.movies.navigation.EntryProviderInstaller
+import im.bernier.movies.navigation.Navigator
 import im.bernier.movies.theme.AppTheme
+import kotlinx.serialization.Serializable
+
+
+@Serializable
+data object AccountRoute
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object AccountModule {
+    @IntoSet
+    @Provides
+    fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller =
+        {
+            entry<AccountRoute> {
+                AccountRoute(
+                    onLogout = {
+                        navigator.goBack()
+                        navigator.goTo(LoginRoute)
+                    },
+                )
+            }
+        }
+}
 
 @Composable
 fun AccountRoute(
-    onTitleChange: (String) -> Unit,
     onLogout: () -> Unit,
     accountViewModel: AccountViewModel = hiltViewModel(),
 ) {
     AccountScreen(
         uiState = accountViewModel.uiState,
-        onTitleChange = onTitleChange,
         onLogout = {
             accountViewModel.logout()
             onLogout()
@@ -34,13 +64,9 @@ fun AccountRoute(
 @Composable
 fun AccountScreen(
     uiState: UiState,
-    onTitleChange: (String) -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LaunchedEffect(uiState) {
-        onTitleChange.invoke(uiState.name)
-    }
     AccountContent(
         uiState = uiState,
         onLogout = onLogout,
@@ -48,6 +74,7 @@ fun AccountScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AccountContent(
     uiState: UiState,
@@ -62,6 +89,7 @@ fun AccountContent(
     ) {
         Text(text = uiState.name)
         Button(
+            shapes = ButtonDefaults.shapes(),
             modifier =
                 Modifier
                     .fillMaxWidth()

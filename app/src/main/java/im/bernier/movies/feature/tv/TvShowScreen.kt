@@ -12,20 +12,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.multibindings.IntoSet
 import im.bernier.movies.R
-import im.bernier.movies.util.SetTitle
+import im.bernier.movies.navigation.EntryProviderInstaller
+import im.bernier.movies.navigation.Navigator
 import im.bernier.movies.util.imageUrl
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ShowRoute(
+    val id: Long,
+)
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object ShowModule {
+    @IntoSet
+    @Provides
+    fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller =
+        {
+            entry<ShowRoute> {
+                TvShowScreen(
+                    viewModel =
+                        hiltViewModel(
+                            creationCallback = { factory: TvShowViewModel.ShowViewModelFactory ->
+                                factory.create(it.id)
+                            },
+                        ),
+                )
+            }
+        }
+}
 
 @Composable
-fun TvShowScreen(
-    viewModel: TvShowViewModel,
-    onTitleChange: (String) -> Unit,
-) {
+fun TvShowScreen(viewModel: TvShowViewModel) {
     val tvShow = viewModel.tvShow
-    SetTitle(stringId = R.string.tv_show) {
-        onTitleChange.invoke(it)
-    }
     TvShowView(tvShow = tvShow)
 }
 

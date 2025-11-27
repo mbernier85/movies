@@ -25,7 +25,7 @@ class MoviesDiscoverViewModel
                 config = PagingConfig(20, initialLoadSize = 20),
                 pagingSourceFactory = { moviesDataSource },
             ).flow.cachedIn(viewModelScope)
-        val isLoggedIn
+        private val isLoggedIn
             get() = repository.loggedIn
 
         fun onAddToWatchList(
@@ -33,7 +33,11 @@ class MoviesDiscoverViewModel
             mediaType: String,
         ) {
             viewModelScope.launch {
-                repository.addToWatchList(id, true, mediaType)
+                if (isLoggedIn) {
+                    repository.addToWatchList(id, true, mediaType)
+                } else {
+                    navigateToLogin()
+                }
             }
         }
 

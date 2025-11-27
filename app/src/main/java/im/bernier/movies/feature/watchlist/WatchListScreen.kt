@@ -8,13 +8,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.multibindings.IntoSet
 import im.bernier.movies.component.MediaItem
 import im.bernier.movies.feature.discover.toMediaUiStateItem
 import im.bernier.movies.feature.movie.Movie
+import im.bernier.movies.feature.movie.MovieRoute
+import im.bernier.movies.navigation.EntryProviderInstaller
+import im.bernier.movies.navigation.Navigator
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object WatchListRoute
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object WatchListModule {
+    @IntoSet
+    @Provides
+    fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller =
+        {
+            entry<WatchListRoute> {
+                WatchListRoute(
+                    onNavigateToMedia = { navigator.goTo(MovieRoute(it)) },
+                )
+            }
+        }
+}
 
 @Composable
-fun WatchListRoute(viewModel: WatchListViewModel = hiltViewModel()) {
-    WatchListScreen(uiState = viewModel.uiState, onNavigateToMedia = { })
+fun WatchListRoute(
+    viewModel: WatchListViewModel = hiltViewModel(),
+    onNavigateToMedia: (Long) -> Unit,
+) {
+    WatchListScreen(uiState = viewModel.uiState, onNavigateToMedia = onNavigateToMedia)
 }
 
 @Composable

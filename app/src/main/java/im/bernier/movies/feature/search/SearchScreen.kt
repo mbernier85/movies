@@ -33,16 +33,50 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import im.bernier.movies.R
-import im.bernier.movies.util.SetTitle
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.multibindings.IntoSet
+import im.bernier.movies.feature.cast.CastRoute
+import im.bernier.movies.feature.movie.MovieRoute
+import im.bernier.movies.feature.tv.ShowRoute
+import im.bernier.movies.navigation.EntryProviderInstaller
+import im.bernier.movies.navigation.Navigator
 import im.bernier.movies.util.imageUrl
+import kotlinx.serialization.Serializable
 import timber.log.Timber
+
+@Serializable
+data object SearchRoute
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object SearchModule {
+    @IntoSet
+    @Provides
+    fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller =
+        {
+            entry<SearchRoute> {
+                SearchScreen(
+                    onNavigateToMovie = {
+                        navigator.goTo(MovieRoute(it))
+                    },
+                    onNavigateToCast = {
+                        navigator.goTo(CastRoute(it))
+                    },
+                    onNavigateToTvShow = {
+                        navigator.goTo(ShowRoute(it))
+                    },
+                )
+            }
+        }
+}
 
 @Composable
 fun SearchScreen(
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
-    onTitleChange: (String) -> Unit,
     onNavigateToTvShow: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = hiltViewModel(),
@@ -51,7 +85,6 @@ fun SearchScreen(
     SearchContent(
         onNavigateToMovie = onNavigateToMovie,
         onNavigateToCast = onNavigateToCast,
-        onTitleChange = onTitleChange,
         onNavigateToTvShow = onNavigateToTvShow,
         onSubmit = viewModel::submit,
         searchResult = searchResult,
@@ -63,13 +96,11 @@ fun SearchScreen(
 fun SearchContent(
     onNavigateToMovie: ((Long) -> Unit),
     onNavigateToCast: ((Long) -> Unit),
-    onTitleChange: (String) -> Unit,
     onNavigateToTvShow: (Long) -> Unit,
     onSubmit: (String) -> Unit,
     searchResult: List<SearchResultItem>,
     modifier: Modifier = Modifier,
 ) {
-    SetTitle(stringId = R.string.search_title, onTitleChange = onTitleChange)
     var text by rememberSaveable { mutableStateOf("") }
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -166,7 +197,6 @@ private fun SearchScreenPreview() {
     SearchContent(
         onNavigateToMovie = {},
         onNavigateToCast = {},
-        onTitleChange = {},
         onNavigateToTvShow = {},
         onSubmit = {},
         searchResult =

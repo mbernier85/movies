@@ -2,6 +2,7 @@ package im.bernier.movies.datasource
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import im.bernier.movies.datasource.local.AppDatabase
 import im.bernier.movies.datasource.local.Storage
 import im.bernier.movies.datasource.remote.Api
@@ -23,9 +24,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@ActivityRetainedScoped
 class Repository
     @Inject
     constructor(

@@ -26,10 +26,7 @@ fun DiscoverMovieScreen(
         lazyPagingItems = items,
         onNavigateToMovie = onNavigateToMovie,
         onAddToWatchList = { id, mediaType ->
-            if (viewModel.isLoggedIn) {
-                viewModel.onAddToWatchList(id, mediaType)
-            } else {
-            }
+            viewModel.onAddToWatchList(id, mediaType)
         },
     )
 }

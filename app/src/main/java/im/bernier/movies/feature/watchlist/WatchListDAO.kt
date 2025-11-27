@@ -1,6 +1,5 @@
 package im.bernier.movies.feature.watchlist
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.Insert
@@ -12,16 +11,16 @@ import kotlinx.serialization.Serializable
 @Dao
 interface WatchListDAO {
     @Query("SELECT * FROM MovieWatchListItem")
-    fun getMovieWatchList(): LiveData<List<MovieWatchListItem>>
+    suspend fun getMovieWatchList(): List<MovieWatchListItem>
 
     @Query("SELECT * FROM ShowWatchListItem")
-    fun getShowWatchList(): LiveData<List<ShowWatchListItem>>
+    suspend fun getShowWatchList(): List<ShowWatchListItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovieWatchList(movieWatchList: List<MovieWatchListItem>)
+    suspend fun insertMovieWatchList(movieWatchList: List<MovieWatchListItem>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertShowWatchList(showWatchList: List<ShowWatchListItem>)
+    suspend fun insertShowWatchList(showWatchList: List<ShowWatchListItem>)
 }
 
 @Entity

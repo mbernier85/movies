@@ -12,26 +12,55 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.multibindings.IntoSet
+import im.bernier.movies.navigation.EntryProviderInstaller
+import im.bernier.movies.navigation.Navigator
 import im.bernier.movies.theme.AppTheme
 import im.bernier.movies.util.imageUrl
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class CastRoute(
+    val id: Long,
+)
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object CastModule {
+    @IntoSet
+    @Provides
+    fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller =
+        {
+            entry<CastRoute> {
+                CastScreen(
+                    viewModel =
+                        hiltViewModel(
+                            creationCallback = { factory: CastViewModel.ModelFactory ->
+                                factory.create(it.id)
+                            },
+                        ),
+                )
+            }
+        }
+}
+
 
 @Composable
 fun CastScreen(
     viewModel: CastViewModel,
-    onTitleChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val person = viewModel.person
-
-    LaunchedEffect(person) {
-        onTitleChange.invoke(person.name)
-    }
     CastScreenContent(person = person, modifier = modifier)
 }
 

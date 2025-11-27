@@ -9,9 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,10 +20,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import im.bernier.movies.R
+import im.bernier.movies.R.drawable.outline_bookmark_added_24
 import im.bernier.movies.util.imageUrl
 
 @Composable
@@ -34,8 +36,13 @@ fun MediaItem(
     modifier: Modifier = Modifier,
     onAddToWatchList: ((Long, String) -> Unit)? = null,
 ) {
-    Card(
+    ElevatedCard(
         modifier = modifier.padding(4.dp),
+        colors =
+            CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            ),
     ) {
         Column(
             modifier =
@@ -85,14 +92,22 @@ fun MediaItem(
                     )
                 }
             }
-            HorizontalDivider()
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outline,
+            )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 onAddToWatchList?.let {
                     IconButton(onClick = {
                         it(item.id, item.mediaType)
                     }) {
+                        val icon =
+                            if (item.watchlist) {
+                                outline_bookmark_added_24
+                            } else {
+                                R.drawable.outline_bookmark_add_24
+                            }
                         Icon(
-                            imageVector = Icons.Outlined.FavoriteBorder,
+                            painter = painterResource(icon),
                             contentDescription = "Favorite",
                         )
                     }

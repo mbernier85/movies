@@ -14,30 +14,61 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.multibindings.IntoSet
 import im.bernier.movies.feature.cast.Cast
+import im.bernier.movies.feature.cast.CastRoute
 import im.bernier.movies.feature.credits.Credits
+import im.bernier.movies.navigation.EntryProviderInstaller
+import im.bernier.movies.navigation.Navigator
 import im.bernier.movies.util.imageUrl
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class MovieRoute(
+    val id: Long,
+)
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object MovieModule {
+    @IntoSet
+    @Provides
+    fun provideEntryProviderInstaller(navigator: Navigator): EntryProviderInstaller =
+        {
+            entry<MovieRoute> {
+                MovieScreen(
+                    viewModel =
+                        hiltViewModel(
+                            creationCallback = { factory: MovieViewModel.MovieViewModelFactory ->
+                                factory.create(it.id)
+                            },
+                        ),
+                    onNavigateToCast = { id ->
+                        navigator.goTo(CastRoute(id))
+                    },
+                )
+            }
+        }
+}
 
 @Composable
 fun MovieScreen(
     viewModel: MovieViewModel,
     onNavigateToCast: ((Long) -> Unit),
-    onTitleChange: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val movie = viewModel.movieState
-    LaunchedEffect(key1 = movie) {
-        movie.let {
-            onTitleChange.invoke(it.title)
-        }
-    }
     MovieScreen(
         movie = movie,
         onNavigateToCast = onNavigateToCast,

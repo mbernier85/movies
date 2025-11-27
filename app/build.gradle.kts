@@ -106,7 +106,6 @@ dependencies {
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.paging.common)
-    implementation(libs.androidx.room.common)
     implementation(libs.androidx.sqlite)
     implementation(libs.dagger)
     implementation(libs.hilt.core)
@@ -115,6 +114,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.core)
 
     implementation(libs.room.runtime)
+    implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.androidx.paging.compose)
