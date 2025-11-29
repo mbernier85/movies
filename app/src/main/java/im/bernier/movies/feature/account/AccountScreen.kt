@@ -25,9 +25,8 @@ import im.bernier.movies.navigation.Navigator
 import im.bernier.movies.theme.AppTheme
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-data object AccountRoute
+data object AccountRoute : Navigator.RequiresLogin
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)

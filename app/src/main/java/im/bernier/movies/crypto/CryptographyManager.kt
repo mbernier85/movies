@@ -101,7 +101,8 @@ class CryptographyManagerImpl
             cipher: Cipher,
         ): String {
             val plaintext = cipher.doFinal(ciphertext)
-            return String(plaintext, Charset.forName("UTF-8"))
+            val value = String(plaintext, Charset.forName("UTF-8"))
+            return value
         }
 
         private fun getCipher(): Cipher {

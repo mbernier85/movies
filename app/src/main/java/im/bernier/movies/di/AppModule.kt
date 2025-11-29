@@ -10,8 +10,8 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 import im.bernier.movies.BuildConfig
 import im.bernier.movies.crypto.CryptographyManager
 import im.bernier.movies.crypto.CryptographyManagerImpl
+import im.bernier.movies.datasource.Repository
 import im.bernier.movies.datasource.remote.Api
-import im.bernier.movies.feature.discover.DiscoverRoute
 import im.bernier.movies.navigation.Navigator
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -38,7 +38,7 @@ abstract class CryptoModule {
 object AppModule {
     @Provides
     @ActivityRetainedScoped
-    fun provideNavigator(): Navigator = Navigator(startDestination = DiscoverRoute)
+    fun provideNavigator(repository: Repository): Navigator = Navigator(repository = repository)
 
     @Provides
     @ActivityRetainedScoped

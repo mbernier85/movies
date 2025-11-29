@@ -151,7 +151,12 @@ class Repository
                 )
 
         suspend fun logout() {
-            api.deleteSession()
-            storage.clear()
+            try {
+                api.deleteSession(sessionId = storage.getSessionId())
+            } catch (e: Exception) {
+                Timber.e(e)
+            } finally {
+                storage.clear()
+            }
         }
     }

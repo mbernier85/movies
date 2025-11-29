@@ -53,7 +53,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.multibindings.IntoSet
 import im.bernier.movies.R
-import im.bernier.movies.feature.account.AccountRoute
 import im.bernier.movies.navigation.EntryProviderInstaller
 import im.bernier.movies.navigation.Navigator
 import kotlinx.serialization.Serializable
@@ -71,8 +70,7 @@ object LoginModule {
             entry<LoginRoute> {
                 LoginRoute(
                     onLoginSuccess = {
-                        navigator.goBack()
-                        navigator.goTo(AccountRoute)
+                        navigator.login()
                     },
                 )
             }
@@ -106,7 +104,7 @@ fun LoginScreen(
         }
     }
     LoginScreenContent(onSend = {
-        onSend(username.toString(), password.toString())
+        onSend(username.text.toString(), password.text.toString())
     }, username = username, password = password, modifier = modifier)
 }
 

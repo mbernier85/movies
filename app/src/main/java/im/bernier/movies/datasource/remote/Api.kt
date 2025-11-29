@@ -35,7 +35,9 @@ interface Api {
     ): SessionResponse
 
     @DELETE("authentication/session")
-    suspend fun deleteSession(): SessionResponse
+    suspend fun deleteSession(
+        @Query("session_id") sessionId: String,
+    ): SessionResponse
 
     @GET("authentication/token/new")
     suspend fun newToken(): TokenResponse

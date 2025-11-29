@@ -22,7 +22,7 @@ import im.bernier.movies.navigation.Navigator
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object WatchListRoute
+data object WatchListRoute : Navigator.RequiresLogin
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
