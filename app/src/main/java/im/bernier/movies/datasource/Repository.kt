@@ -133,6 +133,11 @@ class Repository
                     )
                 }
 
+        suspend fun watchListTV(
+            accountId: String,
+            sessionId: String,
+        ): Page<TV> = api.getWatchlistTV(accountId = accountId, sessionId = sessionId)
+
         suspend fun addToWatchList(
             mediaId: Long,
             watchlist: Boolean,

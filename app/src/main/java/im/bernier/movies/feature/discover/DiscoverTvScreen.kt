@@ -11,6 +11,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import im.bernier.movies.component.Actions
 import im.bernier.movies.component.MediaItem
 import im.bernier.movies.feature.tv.TV
 import kotlinx.coroutines.flow.Flow
@@ -59,10 +60,10 @@ fun TvList(
             if (tv != null) {
                 MediaItem(
                     item = tv.toMediaUiStateItem(),
-                    onNavigateToMedia = {
-                        onNavigateToTvShow(it)
-                    },
-                    onAddToWatchList = onAddToWatchList,
+                    actions = Actions(
+                        onMediaClick = onNavigateToTvShow,
+                        onAddToWatchList = onAddToWatchList
+                    )
                 )
             }
         }

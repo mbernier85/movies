@@ -23,7 +23,6 @@ class WatchListViewModel
         storage: Storage,
     ) : ViewModel() {
         var uiState by mutableStateOf(UiState())
-
         val exceptionHandler =
             CoroutineExceptionHandler { _, throwable ->
                 Timber.e(throwable)
@@ -37,6 +36,13 @@ class WatchListViewModel
                         sessionId = storage.getSessionId(),
                     )
                 uiState = uiState.copy(movies = page.results)
+
+                val tvShow =
+                    repository.watchListTV(
+                        accountId = storage.getAccountId(),
+                        sessionId = storage.getSessionId(),
+                    )
+                uiState = uiState.copy(tvShow = tvShow.results)
             }
         }
     }

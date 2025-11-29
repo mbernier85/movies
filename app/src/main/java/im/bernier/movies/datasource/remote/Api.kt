@@ -107,4 +107,10 @@ interface Api {
         @Path("account_id") accountId: String,
         @Query("session_id") sessionId: String,
     ): Page<Movie>
+
+    @GET("account/{account_id}/watchlist/tv")
+    suspend fun getWatchlistTV(
+        @Path("account_id") accountId: String,
+        @Query("session_id") sessionId: String,
+    ): Page<TV>
 }

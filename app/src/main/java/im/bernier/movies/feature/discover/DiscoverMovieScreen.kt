@@ -11,6 +11,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import im.bernier.movies.component.Actions
 import im.bernier.movies.component.MediaItem
 import im.bernier.movies.feature.movie.Movie
 import timber.log.Timber
@@ -58,8 +59,10 @@ fun MediaList(
             if (movie != null) {
                 MediaItem(
                     item = movie.toMediaUiStateItem(),
-                    onNavigateToMovie,
-                    onAddToWatchList = onAddToWatchList,
+                    actions = Actions(
+                        onMediaClick = onNavigateToMovie,
+                        onAddToWatchList = onAddToWatchList
+                    )
                 )
             }
         }

@@ -32,9 +32,8 @@ import im.bernier.movies.util.imageUrl
 @Composable
 fun MediaItem(
     item: MediaUiStateItem,
-    onNavigateToMedia: (Long) -> Unit,
     modifier: Modifier = Modifier,
-    onAddToWatchList: ((Long, String) -> Unit)? = null,
+    actions: Actions = Actions(),
 ) {
     ElevatedCard(
         modifier = modifier.padding(4.dp),
@@ -50,7 +49,7 @@ fun MediaItem(
                     .padding(4.dp)
                     .fillMaxWidth()
                     .clickable {
-                        onNavigateToMedia(item.id)
+                        actions.onMediaClick?.let { it(item.id) }
                     },
         ) {
             Row(
@@ -92,11 +91,11 @@ fun MediaItem(
                     )
                 }
             }
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outline,
-            )
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                onAddToWatchList?.let {
+            actions.onAddToWatchList?.let {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outline,
+                )
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     IconButton(onClick = {
                         it(item.id, item.mediaType)
                     }) {
@@ -131,8 +130,8 @@ private fun MediaItemPreview() {
                 watchlist = false,
                 mediaType = "movie",
             ),
-        onNavigateToMedia = { },
-    ) { _, _ -> }
+        actions = Actions(),
+    )
 }
 
 data class MediaUiStateItem(
@@ -143,4 +142,9 @@ data class MediaUiStateItem(
     val genreString: String = "",
     val watchlist: Boolean = false,
     val mediaType: String,
+)
+
+data class Actions(
+    val onMediaClick: ((Long) -> Unit)? = null,
+    val onAddToWatchList: ((Long, String) -> Unit)? = null,
 )
