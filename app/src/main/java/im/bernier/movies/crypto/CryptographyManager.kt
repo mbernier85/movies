@@ -4,10 +4,14 @@ import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.core.content.edit
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.Serializer
+import androidx.datastore.dataStore
 import jakarta.inject.Inject
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.io.InputStream
+import java.io.OutputStream
 import java.nio.charset.Charset
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -139,7 +143,6 @@ class CryptographyManagerImpl
             return keyGenerator.generateKey()
         }
 
-        @OptIn(ExperimentalSerializationApi::class)
         override fun persistCiphertextWrapperToSharedPrefs(
             ciphertextWrapper: CiphertextWrapper,
             context: Context,
@@ -155,7 +158,6 @@ class CryptographyManagerImpl
                 }
         }
 
-        @OptIn(ExperimentalSerializationApi::class)
         override fun getCiphertextWrapperFromSharedPrefs(
             context: Context,
             filename: String,
@@ -166,6 +168,26 @@ class CryptographyManagerImpl
             return Json.decodeFromString<CiphertextWrapper>(json)
         }
     }
+
+object CiphertextWrapperSerializer : Serializer<CiphertextWrapper> {
+    override suspend fun readFrom(input: InputStream): CiphertextWrapper =
+        Json.decodeFromString<CiphertextWrapper>(input.readBytes().decodeToString())
+
+    override suspend fun writeTo(
+        t: CiphertextWrapper,
+        output: OutputStream,
+    ) {
+        output.write(Json.encodeToString(t).encodeToByteArray())
+    }
+
+    override val defaultValue: CiphertextWrapper
+        get() = CiphertextWrapper(ByteArray(0), ByteArray(0))
+}
+
+val Context.dataStore: DataStore<CiphertextWrapper> by dataStore(
+    fileName = "settings.json",
+    serializer = CiphertextWrapperSerializer,
+)
 
 @Serializable
 data class CiphertextWrapper(

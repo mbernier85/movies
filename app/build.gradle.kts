@@ -107,6 +107,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.paging.common)
     implementation(libs.androidx.sqlite)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.dagger)
     implementation(libs.hilt.core)
     implementation(libs.okhttp)

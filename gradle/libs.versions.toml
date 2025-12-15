@@ -7,6 +7,7 @@ annotation = "1.9.1"
 appcompat = "1.7.1"
 coilCompose = "3.3.0"
 dagger = "2.57.2"
+datastorePreferences = "1.2.0"
 fragment = "1.8.9"
 dependency-analysis = "3.5.1"
 espressoCore = "3.7.0"
@@ -40,6 +41,7 @@ androidx-animation = { module = "androidx.compose.animation:animation" }
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom-alpha", version.ref = "androidxComposeBom" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-foundation = { module = "androidx.compose.foundation:foundation" }
 androidx-foundation-layout = { module = "androidx.compose.foundation:foundation-layout" }
 androidx-lifecycle-livedata-core = { module = "androidx.lifecycle:lifecycle-livedata-core", version.ref = "lifecycle" }
