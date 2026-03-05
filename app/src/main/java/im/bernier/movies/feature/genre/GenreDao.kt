@@ -18,7 +18,7 @@ interface GenreDao {
     suspend fun loadAllByIds(genreIds: IntArray): List<Genre>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(genres: List<Genre>)
+    suspend fun insertAll(genres: List<Genre>)
 }
 
 @Serializable
