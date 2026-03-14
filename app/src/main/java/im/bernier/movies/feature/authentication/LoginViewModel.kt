@@ -33,14 +33,14 @@ class LoginViewModel
             viewModelScope.launch(context = handler) {
                 repository
                     .login()
-                    .also {
-                        repository.validateToken(it.request_token, username, password)
-                    }.also {
-                        repository.newSession(it.request_token)
-                    }.also {
-                        repository.getAccount()
-                    }.also {
-                        uiState = uiState.copy(success = it.success)
+                    .also { tokenResponse ->
+                        repository.validateToken(tokenResponse.request_token, username, password)
+                    }.also { tokenResponse ->
+                        repository.newSession(tokenResponse.request_token).also { sessionResponse ->
+                            repository.getAccount(sessionResponse.session_id)
+                        }
+                    }.also { tokenResponse ->
+                        uiState = uiState.copy(success = tokenResponse.success)
                     }
             }
         }

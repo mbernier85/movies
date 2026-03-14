@@ -19,9 +19,6 @@ class HomeViewModel
         val navigator: Navigator,
         val entryProviderScope: Set<@JvmSuppressWildcards EntryProviderInstaller>,
     ) : ViewModel() {
-        val loggedIn: Boolean
-            get() = repository.loggedIn
-
         val handler =
             CoroutineExceptionHandler { _, throwable ->
                 Timber.e(throwable)

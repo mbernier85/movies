@@ -30,19 +30,21 @@ class WatchListViewModel
 
         init {
             viewModelScope.launch(exceptionHandler) {
-                val page =
-                    repository.watchList(
-                        accountId = storage.getAccountId(),
-                        sessionId = storage.getSessionId(),
-                    )
-                uiState = uiState.copy(movies = page.results)
-
-                val tvShow =
-                    repository.watchListTV(
-                        accountId = storage.getAccountId(),
-                        sessionId = storage.getSessionId(),
-                    )
-                uiState = uiState.copy(tvShow = tvShow.results)
+                storage.settingsFlow.collect { settings ->
+                    val accountId = settings.accountId
+                    val sessionId = settings.sessionId
+                    val page =
+                        repository.watchList(
+                            accountId = accountId,
+                            sessionId = sessionId,
+                        )
+                    val tvShow =
+                        repository.watchListTV(
+                            accountId = accountId,
+                            sessionId = sessionId,
+                        )
+                    uiState = uiState.copy(movies = page.results, tvShow = tvShow.results)
+                }
             }
         }
     }

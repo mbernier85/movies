@@ -1,25 +1,21 @@
 package im.bernier.movies.datasource.local
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import androidx.datastore.core.DataStore
-import androidx.datastore.core.Serializer
-import androidx.datastore.dataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import im.bernier.movies.crypto.CryptographyManager
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import timber.log.Timber
-import java.io.InputStream
-import java.io.OutputStream
 
 const val KEY_NAME = "im.bernier.movies.key3"
-const val PREF_KEY_SESSION = "im.bernier.movies.session.id"
-const val PREF_KEY_ACCOUNT = "im.bernier.movies.account.id"
-const val FILE_NAME = "im.bernier.movies.session.file.name"
 
 @Serializable
 data class Settings(
@@ -27,96 +23,67 @@ data class Settings(
     val sessionId: String = "",
 )
 
-object SettingsSerializer : Serializer<Settings> {
-    override suspend fun readFrom(input: InputStream): Settings = Json.decodeFromString(input.readBytes().decodeToString())
-
-    override suspend fun writeTo(
-        t: Settings,
-        output: OutputStream,
-    ) {
-        output.write(Json.encodeToString(t).encodeToByteArray())
-    }
-
-    override val defaultValue: Settings
-        get() = Settings()
-}
-
-val Context.dataStore: DataStore<Settings> by dataStore(
-    fileName = "settings.json",
-    serializer = SettingsSerializer,
-)
-
+@ActivityRetainedScoped
 class Storage
     @Inject
     constructor(
         private val crypto: CryptographyManager,
         @param:ApplicationContext private val context: Context,
     ) {
-        fun accountId(): Flow<String> = context.dataStore.data.map { settings -> settings.accountId }
+        val settingsFlow: StateFlow<Settings>
 
-        fun sessionId(): Flow<String> = context.dataStore.data.map { settings -> settings.sessionId }
-
-        suspend fun updateSesionId(sessionId: String) {
-            context.dataStore.updateData { settings ->
-                settings.copy(sessionId = sessionId)
-            }
+        init {
+            settingsFlow =
+                get()
+                    .map {
+                        try {
+                            Json.decodeFromString<Settings>(it)
+                        } catch (_: Exception) {
+                            Settings()
+                        }
+                    }.stateIn(CoroutineScope(Dispatchers.Default), SharingStarted.Eagerly, Settings())
         }
 
-        suspend fun updateAccountId(accountId: String) {
-            context.dataStore.updateData { settings ->
-                settings.copy(accountId = accountId)
-            }
+        suspend fun setSettings(value: Settings) {
+            set(Json.encodeToString(value))
         }
 
-        fun setAccountId(accountId: String) {
-            set(PREF_KEY_ACCOUNT, accountId)
+        fun getSessionId() = settingsFlow.value.sessionId
+
+        fun getAccountId() = settingsFlow.value.accountId
+
+        suspend fun setSessionId(value: String) {
+            val settings = settingsFlow.value.copy(sessionId = value)
+            setSettings(settings)
         }
 
-        fun getAccountId(): String = get(PREF_KEY_ACCOUNT)
-
-        fun setSessionId(sessionId: String) {
-            set(PREF_KEY_SESSION, sessionId)
+        suspend fun setAccountId(value: String) {
+            val settings = settingsFlow.value.copy(accountId = value)
+            setSettings(settings)
         }
 
-        fun getSessionId(): String =
-            try {
-                get(PREF_KEY_SESSION)
-            } catch (e: Exception) {
-                Timber.e(e.message)
-                ""
-            }
-
-        private fun set(
-            key: String,
-            value: String,
-        ) {
+        private suspend fun set(value: String) {
             val data =
-                crypto.encryptData(value, crypto.getInitializedCipherForEncryption(KEY_NAME))
+                crypto.encryptData(
+                    plaintext = value,
+                    cipher = crypto.getInitializedCipherForEncryption(KEY_NAME),
+                )
             crypto.persistCiphertextWrapperToSharedPrefs(
-                data,
-                context,
-                FILE_NAME,
-                MODE_PRIVATE,
-                key,
+                ciphertextWrapper = data,
+                context = context,
             )
         }
 
-        private fun get(key: String): String {
-            val cypherTextWrapper =
-                crypto.getCiphertextWrapperFromSharedPrefs(
-                    context,
-                    FILE_NAME,
-                    MODE_PRIVATE,
-                    key,
-                ) ?: return ""
-            return crypto.decryptData(
-                cypherTextWrapper.ciphertext,
-                crypto.getInitializedCipherForDecryption(KEY_NAME, cypherTextWrapper.initializationVector),
-            )
-        }
+        private fun get(): Flow<String> =
+            crypto
+                .getCiphertextWrapperFromSharedPrefs(
+                    context = context,
+                ).map {
+                    if (it.initializationVector.isEmpty()) return@map ""
+                    crypto.decryptData(it.ciphertext, crypto.getInitializedCipherForDecryption(KEY_NAME, it.initializationVector))
+                }
 
-        fun clear() {
-            setAccountId("")
-            setSessionId("")
+        suspend fun clear() {
+            setSettings(Settings())
         }
     }
