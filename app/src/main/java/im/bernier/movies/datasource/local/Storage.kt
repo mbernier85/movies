@@ -1,72 +1,89 @@
 package im.bernier.movies.datasource.local
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import im.bernier.movies.crypto.CryptographyManager
 import jakarta.inject.Inject
-import timber.log.Timber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 const val KEY_NAME = "im.bernier.movies.key3"
-const val PREF_KEY_SESSION = "im.bernier.movies.session.id"
-const val PREF_KEY_ACCOUNT = "im.bernier.movies.account.id"
-const val FILE_NAME = "im.bernier.movies.session.file.name"
 
+@Serializable
+data class Settings(
+    val accountId: String = "",
+    val sessionId: String = "",
+)
+
+@ActivityRetainedScoped
 class Storage
     @Inject
     constructor(
         private val crypto: CryptographyManager,
         @param:ApplicationContext private val context: Context,
     ) {
-        fun setAccountId(accountId: String) {
-            set(PREF_KEY_ACCOUNT, accountId)
+        val settingsFlow: StateFlow<Settings>
+
+        init {
+            settingsFlow =
+                get()
+                    .map {
+                        try {
+                            Json.decodeFromString<Settings>(it)
+                        } catch (_: Exception) {
+                            Settings()
+                        }
+                    }.stateIn(CoroutineScope(Dispatchers.Default), SharingStarted.Eagerly, Settings())
         }
 
-        fun getAccountId(): String = get(PREF_KEY_ACCOUNT)
-
-        fun setSessionId(sessionId: String) {
-            set(PREF_KEY_SESSION, sessionId)
+        suspend fun setSettings(value: Settings) {
+            set(Json.encodeToString(value))
         }
 
-        fun getSessionId(): String =
-            try {
-                get(PREF_KEY_SESSION)
-            } catch (e: Exception) {
-                Timber.e(e.message)
-                ""
-            }
+        fun getSessionId() = settingsFlow.value.sessionId
 
-        private fun set(
-            key: String,
-            value: String,
-        ) {
+        fun getAccountId() = settingsFlow.value.accountId
+
+        suspend fun setSessionId(value: String) {
+            val settings = settingsFlow.value.copy(sessionId = value)
+            setSettings(settings)
+        }
+
+        suspend fun setAccountId(value: String) {
+            val settings = settingsFlow.value.copy(accountId = value)
+            setSettings(settings)
+        }
+
+        private suspend fun set(value: String) {
             val data =
-                crypto.encryptData(value, crypto.getInitializedCipherForEncryption(KEY_NAME))
+                crypto.encryptData(
+                    plaintext = value,
+                    cipher = crypto.getInitializedCipherForEncryption(KEY_NAME),
+                )
             crypto.persistCiphertextWrapperToSharedPrefs(
-                data,
-                context,
-                FILE_NAME,
-                MODE_PRIVATE,
-                key,
+                ciphertextWrapper = data,
+                context = context,
             )
         }
 
-        private fun get(key: String): String {
-            val cypherTextWrapper =
-                crypto.getCiphertextWrapperFromSharedPrefs(
-                    context,
-                    FILE_NAME,
-                    MODE_PRIVATE,
-                    key,
-                ) ?: return ""
-            return crypto.decryptData(
-                cypherTextWrapper.ciphertext,
-                crypto.getInitializedCipherForDecryption(KEY_NAME, cypherTextWrapper.initializationVector),
-            )
-        }
+        private fun get(): Flow<String> =
+            crypto
+                .getCiphertextWrapperFromSharedPrefs(
+                    context = context,
+                ).map {
+                    if (it.initializationVector.isEmpty()) return@map ""
+                    crypto.decryptData(it.ciphertext, crypto.getInitializedCipherForDecryption(KEY_NAME, it.initializationVector))
+                }
 
-        fun clear() {
-            setAccountId("")
-            setSessionId("")
+        suspend fun clear() {
+            setSettings(Settings())
         }
     }

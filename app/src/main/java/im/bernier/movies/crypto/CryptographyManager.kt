@@ -3,11 +3,17 @@ package im.bernier.movies.crypto
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import androidx.core.content.edit
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.Serializer
+import androidx.datastore.dataStore
 import jakarta.inject.Inject
-import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.io.InputStream
+import java.io.OutputStream
 import java.nio.charset.Charset
 import java.security.KeyStore
 import javax.crypto.Cipher
@@ -42,20 +48,12 @@ interface CryptographyManager {
         cipher: Cipher,
     ): String
 
-    fun persistCiphertextWrapperToSharedPrefs(
+    fun getCiphertextWrapperFromSharedPrefs(context: Context): Flow<CiphertextWrapper>
+
+    suspend fun persistCiphertextWrapperToSharedPrefs(
         ciphertextWrapper: CiphertextWrapper,
         context: Context,
-        filename: String,
-        mode: Int,
-        prefKey: String,
     )
-
-    fun getCiphertextWrapperFromSharedPrefs(
-        context: Context,
-        filename: String,
-        mode: Int,
-        prefKey: String,
-    ): CiphertextWrapper?
 }
 
 const val KEY_SIZE = 256
@@ -139,38 +137,42 @@ class CryptographyManagerImpl
             return keyGenerator.generateKey()
         }
 
-        @OptIn(ExperimentalSerializationApi::class)
-        override fun persistCiphertextWrapperToSharedPrefs(
+        override suspend fun persistCiphertextWrapperToSharedPrefs(
             ciphertextWrapper: CiphertextWrapper,
             context: Context,
-            filename: String,
-            mode: Int,
-            prefKey: String,
         ) {
-            val json = Json.encodeToString(ciphertextWrapper)
-            context
-                .getSharedPreferences(filename, mode)
-                .edit {
-                    putString(prefKey, json)
-                }
+            context.dataStore.updateData { ciphertextWrapper }
         }
 
-        @OptIn(ExperimentalSerializationApi::class)
-        override fun getCiphertextWrapperFromSharedPrefs(
-            context: Context,
-            filename: String,
-            mode: Int,
-            prefKey: String,
-        ): CiphertextWrapper {
-            val json = context.getSharedPreferences(filename, mode).getString(prefKey, null) ?: ""
-            return Json.decodeFromString<CiphertextWrapper>(json)
+        override fun getCiphertextWrapperFromSharedPrefs(context: Context): Flow<CiphertextWrapper> = context.dataStore.data
+    }
+
+object CiphertextWrapperSerializer : Serializer<CiphertextWrapper> {
+    override suspend fun readFrom(input: InputStream): CiphertextWrapper =
+        Json.decodeFromString<CiphertextWrapper>(input.readBytes().decodeToString())
+
+    override suspend fun writeTo(
+        t: CiphertextWrapper,
+        output: OutputStream,
+    ) {
+        withContext(Dispatchers.IO) {
+            output.write(Json.encodeToString(t).encodeToByteArray())
         }
     }
 
+    override val defaultValue: CiphertextWrapper
+        get() = CiphertextWrapper()
+}
+
+val Context.dataStore: DataStore<CiphertextWrapper> by dataStore(
+    fileName = "settings.json",
+    serializer = CiphertextWrapperSerializer,
+)
+
 @Serializable
 data class CiphertextWrapper(
-    val ciphertext: ByteArray,
-    val initializationVector: ByteArray,
+    val ciphertext: ByteArray = ByteArray(0),
+    val initializationVector: ByteArray = ByteArray(0),
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

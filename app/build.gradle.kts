@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
     kotlin("plugin.serialization")
     alias(libs.plugins.google.ksp)
     id("com.google.dagger.hilt.android")
@@ -107,6 +106,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.androidx.paging.common)
     implementation(libs.androidx.sqlite)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.dagger)
     implementation(libs.hilt.core)
     implementation(libs.okhttp)

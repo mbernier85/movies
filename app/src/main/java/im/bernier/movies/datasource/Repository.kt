@@ -39,7 +39,8 @@ class Repository
             get() = searchLiveData
 
         val loggedIn: Boolean
-            get() = storage.getSessionId().isNotEmpty()
+            get() =
+                storage.getSessionId().isNotBlank()
 
         suspend fun validateToken(
             token: String,
@@ -54,12 +55,14 @@ class Repository
                     storage.setSessionId(it.session_id)
                 }
 
-        suspend fun getAccount(): AccountResponse =
-            api
-                .getAccount(storage.getSessionId())
+        suspend fun getAccount(sessionId: String = ""): AccountResponse {
+            val value = sessionId.takeIf { it.isNotBlank() } ?: storage.getSessionId()
+            return api
+                .getAccount(value)
                 .also {
                     storage.setAccountId(it.id.toString())
                 }
+        }
 
         suspend fun login(): TokenResponse = api.newToken()
 
