@@ -1,5 +1,5 @@
 [versions]
-activity = "1.12.4"
+activity = "1.13.0"
 activityCompose = "1.12.4"
 agp = "9.1.0"
 androidxComposeBom = "2026.02.01"
