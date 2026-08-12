@@ -25,13 +25,17 @@ dependencies {
     ktlintRuleset(libs.compose.rules.ktlint)
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 android {
-    compileSdk = 36
+    compileSdk = 37
     namespace = "im.bernier.movies"
     defaultConfig {
         applicationId = "im.bernier.movies"
         minSdk = 31
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -47,6 +51,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -65,10 +70,6 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-    }
-
-    room {
-        schemaDirectory("$projectDir/schemas")
     }
 }
 
