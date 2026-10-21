@@ -16,4 +16,5 @@ data class Movie(
     val genres: List<Genre> = listOf(),
     val credits: Credits = Credits(),
     var watchList: Boolean = false,
+    val release_date: String = "",
 )

@@ -11,6 +11,7 @@ import im.bernier.movies.datasource.Repository
 import im.bernier.movies.feature.discover.datasource.TVDataSource
 import im.bernier.movies.feature.tv.TV
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import timber.log.Timber
@@ -23,6 +24,8 @@ class DiscoverTvViewModel
         tvDataSource: TVDataSource,
         private val repository: Repository,
     ) : ViewModel() {
+        val watchListIds: Flow<Set<Long>> = repository.showWatchListIds
+
         val pager =
             Pager(
                 config = PagingConfig(20, initialLoadSize = 20),
@@ -47,20 +50,27 @@ class DiscoverTvViewModel
         fun onAddToWatchList(
             id: Long,
             mediaType: String,
+            watchlist: Boolean,
+            onLoginRequired: () -> Unit,
         ) {
+            if (!repository.loggedIn) {
+                onLoginRequired()
+                return
+            }
+
             viewModelScope.launch(handler) {
-                repository.addToWatchList(mediaId = id, watchlist = true, mediaType = mediaType)
+                repository.updateWatchList(mediaId = id, watchlist = watchlist, mediaType = mediaType)
             }
         }
     }
 
-fun TV.toMediaUiStateItem(): MediaUiStateItem =
+fun TV.toMediaUiStateItem(watchlist: Boolean = watchList): MediaUiStateItem =
     MediaUiStateItem(
         id = id,
         title = name,
         overview = overview,
         posterPath = poster_path,
         genreString = genreString,
-        watchlist = false,
+        watchlist = watchlist,
         mediaType = "tv",
     )

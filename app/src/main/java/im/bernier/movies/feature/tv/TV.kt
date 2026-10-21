@@ -15,6 +15,7 @@ data class TV(
     var genreString: String = "",
     val genres: List<Genre> = listOf(),
     val credits: Credits = Credits(),
+    var watchList: Boolean = false,
     val first_air_date: String = "",
     val original_name: String = "",
 )

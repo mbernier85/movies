@@ -17,8 +17,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import dagger.Module
@@ -82,6 +86,12 @@ private fun MovieScreen(
     modifier: Modifier = Modifier,
     onNavigateToCast: ((Long) -> Unit) = {},
 ) {
+    val titleYear = buildAnnotatedString {
+        append(movie.title)
+        withStyle(style = SpanStyle(fontSize = 12.sp)) {
+            append("(" + movie.release_date + ")")
+        }
+    }
     Column(modifier = modifier.fillMaxSize()) {
         LazyColumn {
             item {
@@ -95,7 +105,7 @@ private fun MovieScreen(
                                 .padding(8.dp),
                     )
                     Text(
-                        text = movie.title,
+                        text = titleYear,
                         style = MaterialTheme.typography.headlineMedium,
                         modifier =
                             Modifier
@@ -131,13 +141,15 @@ private fun MovieScreen(
 private fun CastItem(
     person: Cast,
     onNavigateToCast: ((Long) -> Unit),
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier =
-            Modifier
+            modifier
                 .clickable {
                     onNavigateToCast(person.id)
-                }.fillMaxWidth()
+                }
+                .fillMaxWidth()
                 .padding(8.dp),
     ) {
         AsyncImage(
@@ -175,8 +187,9 @@ private fun MoviePreview() {
                 title = "The Matrix",
                 overview =
                     "A computer hacker learns from mysterious rebels about the true " +
-                        "nature of his reality and his role in the war against its controllers.",
+                            "nature of his reality and his role in the war against its controllers.",
                 genreString = "Action, Sci-Fi",
+                release_date = "1999-01-01",
                 credits =
                     Credits(
                         cast =
