@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import im.bernier.movies.R
-import im.bernier.movies.R.drawable.outline_bookmark_added_24
 import im.bernier.movies.util.imageUrl
 
 @Composable
@@ -97,18 +96,19 @@ fun MediaItem(
                 )
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     IconButton(onClick = {
-                        it(item.id, item.mediaType)
+                        it(item.id, item.mediaType, !item.watchlist)
                     }) {
-                        val icon =
-                            if (item.watchlist) {
-                                outline_bookmark_added_24
-                            } else {
-                                R.drawable.outline_bookmark_add_24
-                            }
-                        Icon(
-                            painter = painterResource(icon),
-                            contentDescription = "Favorite",
-                        )
+                        if (item.watchlist) {
+                            Icon(
+                                painter = painterResource(R.drawable.bookmark_24),
+                                contentDescription = "Remove from watchlist",
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(R.drawable.outline_bookmark_add_24),
+                                contentDescription = "Add to watchlist",
+                            )
+                        }
                     }
                 }
             }
@@ -146,5 +146,5 @@ data class MediaUiStateItem(
 
 data class Actions(
     val onMediaClick: ((Long) -> Unit)? = null,
-    val onAddToWatchList: ((Long, String) -> Unit)? = null,
+    val onAddToWatchList: ((Long, String, Boolean) -> Unit)? = null,
 )

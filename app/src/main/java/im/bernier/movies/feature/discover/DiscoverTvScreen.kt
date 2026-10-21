@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -21,14 +23,19 @@ import timber.log.Timber
 fun DiscoverTvScreen(
     viewModel: DiscoverTvViewModel = hiltViewModel(),
     onNavigateToTvShow: (Long) -> Unit,
+    onLoginRequired: () -> Unit = {},
 ) {
     val pager: Flow<PagingData<TV>> = viewModel.pagerFlow
+    val watchListIds by viewModel.watchListIds.collectAsState(initial = emptySet())
     TvList(
         pager = pager,
         onNavigateToTvShow = {
             onNavigateToTvShow(it)
         },
-        onAddToWatchList = viewModel::onAddToWatchList,
+        watchListIds = watchListIds,
+        onAddToWatchList = { id, mediaType, watchlist ->
+            viewModel.onAddToWatchList(id, mediaType, watchlist, onLoginRequired)
+        },
     )
 }
 
@@ -36,19 +43,23 @@ fun DiscoverTvScreen(
 fun TvList(
     pager: Flow<PagingData<TV>>,
     onNavigateToTvShow: (Long) -> Unit,
-    onAddToWatchList: (Long, String) -> Unit,
+    onAddToWatchList: (Long, String, Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    watchListIds: Set<Long> = emptySet(),
 ) {
     val lazyPagingItems = pager.collectAsLazyPagingItems()
     when (val loadState = lazyPagingItems.loadState.refresh) {
         is LoadState.Error -> {
             Timber.e(loadState.error)
         }
+
         LoadState.Loading -> {}
+
         is LoadState.NotLoading -> {}
     }
     LazyColumn(
         modifier =
-            Modifier
+            modifier
                 .padding(4.dp)
                 .fillMaxWidth(),
     ) {
@@ -59,11 +70,15 @@ fun TvList(
             val tv = lazyPagingItems[index]
             if (tv != null) {
                 MediaItem(
-                    item = tv.toMediaUiStateItem(),
-                    actions = Actions(
-                        onMediaClick = onNavigateToTvShow,
-                        onAddToWatchList = onAddToWatchList
-                    )
+                    item =
+                        tv.toMediaUiStateItem(
+                            watchlist = tv.id in watchListIds,
+                        ),
+                    actions =
+                        Actions(
+                            onMediaClick = onNavigateToTvShow,
+                            onAddToWatchList = onAddToWatchList,
+                        ),
                 )
             }
         }

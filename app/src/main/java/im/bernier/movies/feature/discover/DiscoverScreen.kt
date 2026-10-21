@@ -31,6 +31,7 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.multibindings.IntoSet
 import im.bernier.movies.R
 import im.bernier.movies.feature.account.AccountRoute
+import im.bernier.movies.feature.authentication.LoginRoute
 import im.bernier.movies.feature.movie.MovieRoute
 import im.bernier.movies.feature.search.SearchRoute
 import im.bernier.movies.feature.tv.ShowRoute
@@ -67,6 +68,9 @@ object DiscoverModule {
                     onWatchListTap = {
                         navigator.goTo(WatchListRoute)
                     },
+                    onLoginRequired = {
+                        navigator.goTo(LoginRoute)
+                    },
                 )
             }
         }
@@ -80,6 +84,7 @@ fun DiscoverScreen(
     onAccountTap: () -> Unit,
     onSearchTap: () -> Unit,
     onWatchListTap: () -> Unit,
+    onLoginRequired: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val tabs = listOf("Movies", "Tv Shows")
@@ -128,10 +133,12 @@ fun DiscoverScreen(
                     0 ->
                         DiscoverMovieScreen(
                             onNavigateToMovie = onNavigateToMovie,
+                            onLoginRequired = onLoginRequired,
                         )
                     1 ->
                         DiscoverTvScreen(
                             onNavigateToTvShow = onNavigateToShow,
+                            onLoginRequired = onLoginRequired,
                         )
                 }
             }

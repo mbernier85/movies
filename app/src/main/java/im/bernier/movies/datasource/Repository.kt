@@ -18,8 +18,11 @@ import im.bernier.movies.feature.movie.Page
 import im.bernier.movies.feature.search.SearchResultItem
 import im.bernier.movies.feature.tv.TV
 import im.bernier.movies.feature.watchlist.MovieWatchListItem
+import im.bernier.movies.feature.watchlist.ShowWatchListItem
 import im.bernier.movies.feature.watchlist.model.AddToWatchListResponse
 import im.bernier.movies.feature.watchlist.model.WatchlistRequest
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import retrofit2.Call
 import retrofit2.Callback
 import timber.log.Timber
@@ -41,6 +44,12 @@ class Repository
         val loggedIn: Boolean
             get() =
                 storage.getSessionId().isNotBlank()
+
+        val movieWatchListIds: Flow<Set<Long>> =
+            db.watchListDao().observeMovieWatchList().map { it.toSet() }
+
+        val showWatchListIds: Flow<Set<Long>> =
+            db.watchListDao().observeShowWatchList().map { it.toSet() }
 
         suspend fun validateToken(
             token: String,
@@ -80,23 +89,37 @@ class Repository
 
         suspend fun discover(page: Int): Page<Movie> =
             api.discover(page).also {
+                val watchListIds =
+                    db
+                        .watchListDao()
+                        .getMovieWatchList()
+                        .map { movie -> movie.id }
+                        .toSet()
                 it.results.forEach { movie ->
                     movie.genreString =
                         db
                             .genreDao()
                             .loadAllByIds(movie.genre_ids.toIntArray())
                             .joinToString { genre -> genre.name }
+                    movie.watchList = movie.id in watchListIds
                 }
             }
 
         suspend fun discoverTV(page: Int): Page<TV> =
             api.discoverTV(page).also {
+                val watchListIds =
+                    db
+                        .watchListDao()
+                        .getShowWatchList()
+                        .map { show -> show.id }
+                        .toSet()
                 it.results.forEach { tv ->
                     tv.genreString =
                         db
                             .genreDao()
                             .loadAllByIds(tv.genre_ids.toIntArray())
                             .joinToString { genre -> genre.name }
+                    tv.watchList = tv.id in watchListIds
                 }
             }
 
@@ -129,6 +152,7 @@ class Repository
             api
                 .getWatchlistMovies(accountId = accountId, sessionId = sessionId)
                 .also {
+                    db.watchListDao().clearMovies()
                     db.watchListDao().insertMovieWatchList(
                         it.results.map { movie ->
                             MovieWatchListItem(movie.id)
@@ -139,15 +163,33 @@ class Repository
         suspend fun watchListTV(
             accountId: String,
             sessionId: String,
-        ): Page<TV> = api.getWatchlistTV(accountId = accountId, sessionId = sessionId)
+        ): Page<TV> =
+            api
+                .getWatchlistTV(accountId = accountId, sessionId = sessionId)
+                .also {
+                    db.watchListDao().clearShows()
+                    db.watchListDao().insertShowWatchList(
+                        it.results.map { tv ->
+                            ShowWatchListItem(tv.id)
+                        },
+                    )
+                }
 
-        suspend fun addToWatchList(
+        suspend fun syncWatchList(
+            accountId: String,
+            sessionId: String,
+        ) {
+            watchList(accountId = accountId, sessionId = sessionId)
+            watchListTV(accountId = accountId, sessionId = sessionId)
+        }
+
+        suspend fun updateWatchList(
             mediaId: Long,
             watchlist: Boolean,
             mediaType: String,
         ): AddToWatchListResponse =
             api
-                .addToWatchlist(
+                .updateWatchlist(
                     accountId = storage.getAccountId(),
                     sessionId = storage.getSessionId(),
                     watchlistRequest =
@@ -156,7 +198,31 @@ class Repository
                             watchlist = watchlist,
                             media_type = mediaType,
                         ),
-                )
+                ).also { response ->
+                    if (response.success) {
+                        when (mediaType) {
+                            "movie" -> {
+                                if (watchlist) {
+                                    db.watchListDao().insertMovie(MovieWatchListItem(mediaId))
+                                } else {
+                                    db.watchListDao().removeMovie(mediaId)
+                                }
+                            }
+
+                            "tv" -> {
+                                if (watchlist) {
+                                    db.watchListDao().insertShow(ShowWatchListItem(mediaId))
+                                } else {
+                                    db.watchListDao().removeShow(mediaId)
+                                }
+                            }
+                        }
+                    } else {
+                        Timber.w(
+                            "Watchlist update failed for $mediaType/$mediaId: ${response.status_message}",
+                        )
+                    }
+                }
 
         suspend fun logout() {
             try {
@@ -164,6 +230,8 @@ class Repository
             } catch (e: Exception) {
                 Timber.e(e)
             } finally {
+                db.watchListDao().clearMovies()
+                db.watchListDao().clearShows()
                 storage.clear()
             }
         }

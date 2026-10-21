@@ -37,7 +37,15 @@ class LoginViewModel
                         repository.validateToken(tokenResponse.request_token, username, password)
                     }.also { tokenResponse ->
                         repository.newSession(tokenResponse.request_token).also { sessionResponse ->
-                            repository.getAccount(sessionResponse.session_id)
+                            val account = repository.getAccount(sessionResponse.session_id)
+                            try {
+                                repository.syncWatchList(
+                                    accountId = account.id.toString(),
+                                    sessionId = sessionResponse.session_id,
+                                )
+                            } catch (exception: Exception) {
+                                Timber.e(exception, "Unable to sync watchlist after login")
+                            }
                         }
                     }.also { tokenResponse ->
                         uiState = uiState.copy(success = tokenResponse.success)

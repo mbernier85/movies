@@ -96,7 +96,7 @@ interface Api {
     ): Person
 
     @POST("account/{account_id}/watchlist")
-    suspend fun addToWatchlist(
+    suspend fun updateWatchlist(
         @Path("account_id") accountId: String,
         @Query("session_id") sessionId: String,
         @Body watchlistRequest: WatchlistRequest,

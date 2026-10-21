@@ -11,6 +11,7 @@ import im.bernier.movies.datasource.local.Storage
 import im.bernier.movies.feature.movie.Movie
 import im.bernier.movies.feature.tv.TV
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -19,10 +20,12 @@ import javax.inject.Inject
 class WatchListViewModel
     @Inject
     constructor(
-        repository: Repository,
+        private val repository: Repository,
         storage: Storage,
     ) : ViewModel() {
         var uiState by mutableStateOf(UiState())
+        val movieWatchListIds: Flow<Set<Long>> = repository.movieWatchListIds
+        val showWatchListIds: Flow<Set<Long>> = repository.showWatchListIds
         val exceptionHandler =
             CoroutineExceptionHandler { _, throwable ->
                 Timber.e(throwable)
@@ -45,6 +48,20 @@ class WatchListViewModel
                         )
                     uiState = uiState.copy(movies = page.results, tvShow = tvShow.results)
                 }
+            }
+        }
+
+        fun onWatchListToggle(
+            id: Long,
+            mediaType: String,
+            watchlist: Boolean,
+        ) {
+            viewModelScope.launch(exceptionHandler) {
+                repository.updateWatchList(
+                    mediaId = id,
+                    watchlist = watchlist,
+                    mediaType = mediaType,
+                )
             }
         }
     }

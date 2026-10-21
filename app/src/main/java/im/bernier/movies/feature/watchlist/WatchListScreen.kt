@@ -9,6 +9,8 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,14 +52,17 @@ object WatchListModule {
 
 @Composable
 fun WatchListRoute(
-    viewModel: WatchListViewModel = hiltViewModel(),
     onNavigateToMedia: (Long) -> Unit,
-    onNavigateToShow: (Long) -> Unit
+    onNavigateToShow: (Long) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: WatchListViewModel = hiltViewModel(),
 ) {
     val tabs = listOf("Movies", "Tv Shows")
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val scope = rememberCoroutineScope()
-    Column {
+    val movieWatchListIds by viewModel.movieWatchListIds.collectAsState(initial = emptySet())
+    val showWatchListIds by viewModel.showWatchListIds.collectAsState(initial = emptySet())
+    Column(modifier = modifier) {
         PrimaryTabRow(
             selectedTabIndex = pagerState.currentPage,
         ) {
@@ -79,14 +84,23 @@ fun WatchListRoute(
             when (index) {
                 0 -> {
                     WatchListScreen(
-                        mediaUiStateItems = viewModel.uiState.movies.map { it.toMediaUiStateItem() },
+                        mediaUiStateItems =
+                            viewModel.uiState.movies
+                                .filter { it.id in movieWatchListIds }
+                                .map { it.toMediaUiStateItem(watchlist = true) },
                         onNavigateToMedia = onNavigateToMedia,
+                        onWatchListToggle = viewModel::onWatchListToggle,
                     )
                 }
+
                 1 -> {
                     WatchListScreen(
-                        mediaUiStateItems = viewModel.uiState.tvShow.map { it.toMediaUiStateItem() },
+                        mediaUiStateItems =
+                            viewModel.uiState.tvShow
+                                .filter { it.id in showWatchListIds }
+                                .map { it.toMediaUiStateItem(watchlist = true) },
                         onNavigateToMedia = onNavigateToShow,
+                        onWatchListToggle = viewModel::onWatchListToggle,
                     )
                 }
             }
@@ -98,6 +112,7 @@ fun WatchListRoute(
 fun WatchListScreen(
     mediaUiStateItems: List<MediaUiStateItem>,
     onNavigateToMedia: (Long) -> Unit,
+    onWatchListToggle: (Long, String, Boolean) -> Unit = { _, _, _ -> },
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -106,6 +121,7 @@ fun WatchListScreen(
         MovieList(
             mediaUiStateItems = mediaUiStateItems,
             onNavigateToMedia = onNavigateToMedia,
+            onWatchListToggle = onWatchListToggle,
         )
     }
 }
@@ -114,6 +130,7 @@ fun WatchListScreen(
 fun MovieList(
     mediaUiStateItems: List<MediaUiStateItem>,
     onNavigateToMedia: (Long) -> Unit,
+    onWatchListToggle: (Long, String, Boolean) -> Unit = { _, _, _ -> },
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -122,9 +139,11 @@ fun MovieList(
         items(mediaUiStateItems) {
             MediaItem(
                 item = it,
-                actions = Actions(
-                    onMediaClick = onNavigateToMedia,
-                )
+                actions =
+                    Actions(
+                        onMediaClick = onNavigateToMedia,
+                        onAddToWatchList = onWatchListToggle,
+                    ),
             )
         }
     }
